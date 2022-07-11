@@ -1,6 +1,12 @@
 use leap_sys::*;
 
+pub enum HandType {
+    Left,
+    Right,
+}
+
 pub trait Hand {
+    fn get_type(&self) -> HandType;
     fn get_digits(&self) -> &[LEAP_DIGIT; 5];
     fn get_thumb(&self) -> &LEAP_DIGIT;
     fn get_index(&self) -> &LEAP_DIGIT;
@@ -10,6 +16,14 @@ pub trait Hand {
 }
 
 impl Hand for LEAP_HAND {
+    fn get_type(&self) -> HandType {
+        match self.type_ {
+            leap_sys::_eLeapHandType_eLeapHandType_Left => HandType::Left,
+            leap_sys::_eLeapHandType_eLeapHandType_Right => HandType::Right,
+            _ => unreachable!(),
+        }
+    }
+
     fn get_digits(&self) -> &[LEAP_DIGIT; 5] {
         unsafe { &self.__bindgen_anon_1.digits }
     }
