@@ -1,6 +1,12 @@
 mod connection;
+mod connection_message;
 mod device_ref;
+mod event;
+mod event_type;
 mod leap_rs;
 pub use connection::*;
+pub use connection_message::*;
 pub use device_ref::*;
+pub use event::*;
+pub use event_type::*;
 pub use leap_rs::*;

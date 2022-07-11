@@ -2,7 +2,7 @@ use std::mem;
 
 use leap_sys::*;
 
-use crate::{leap_try, DeviceRef, Error};
+use crate::{leap_try, ConnectionMessage, DeviceRef, Error};
 
 #[doc = " \\ingroup Structs"]
 #[doc = " \\struct LEAP_CONNECTION"]
@@ -10,16 +10,22 @@ use crate::{leap_try, DeviceRef, Error};
 #[doc = " Use this handle to specify the connection for an operation."]
 #[doc = " @since 3.0.0"]
 pub struct Connection {
-    leap_connection: LEAP_CONNECTION,
+    handle: LEAP_CONNECTION,
+    // Each call to call() invalidates the connection message pointer,
+    // and it is distroy on the connection drop.
+    // Only distribute non mutable references of this one.
+    connection_message: Option<ConnectionMessage>,
 }
 
 impl Drop for Connection {
     fn drop(&mut self) {
         unsafe {
-            LeapCloseConnection(self.leap_connection);
+            LeapCloseConnection(self.handle);
         }
     }
 }
+
+unsafe impl Send for Connection {}
 
 impl Connection {
     pub fn create() -> Result<Self, Error> {
@@ -29,69 +35,32 @@ impl Connection {
             leap_try(LeapCreateConnection(std::ptr::null(), &mut leap_connection))?;
         }
 
-        Ok(Self { leap_connection })
+        Ok(Self {
+            handle: leap_connection,
+            connection_message: None,
+        })
     }
 
     pub fn open(&mut self) -> Result<(), Error> {
         unsafe {
-            leap_try(LeapOpenConnection(self.leap_connection))?;
+            leap_try(LeapOpenConnection(self.handle))?;
         }
 
         Ok(())
     }
 
     pub fn close(&mut self) {
-        unsafe { LeapCloseConnection(self.leap_connection) }
+        unsafe { LeapCloseConnection(self.handle) }
     }
 
-    pub fn poll(&mut self, timeout: u32) -> Result<(), Error> {
+    pub fn poll<'a>(&'a mut self, timeout: u32) -> Result<&'a ConnectionMessage, Error> {
         unsafe {
             let mut msg: LEAP_CONNECTION_MESSAGE = mem::zeroed();
-            leap_try(LeapPollConnection(self.leap_connection, timeout, &mut msg))?;
+            leap_try(LeapPollConnection(self.handle, timeout, &mut msg))?;
+            self.connection_message = Some(msg.into());
         }
 
-        Ok(())
-    }
-
-    pub fn get_device_list2(&mut self) -> Result<Vec<DeviceRef>, Error> {
-        let mut computed_array_size: u32 = 0;
-        unsafe {
-            leap_try(LeapGetDeviceList(
-                self.leap_connection,
-                std::ptr::null_mut(),
-                &mut computed_array_size,
-            ))?;
-        }
-
-        if computed_array_size == 0 {
-            return Ok(vec![]);
-        }
-
-        let mut devices: Vec<LEAP_DEVICE_REF>;
-        unsafe {
-            devices = vec![std::mem::zeroed(); computed_array_size as usize];
-            leap_try(LeapGetDeviceList(
-                self.leap_connection,
-                devices.as_mut_ptr(),
-                &mut computed_array_size,
-            ))?;
-        }
-
-        let devices: Vec<DeviceRef> = devices.into_iter().map(|d| d.into()).collect();
-
-        Ok(devices)
-    }
-
-    pub fn get_device_list_count(&mut self) -> Result<u32, Error> {
-        let mut computed_array_size: u32 = 0;
-        unsafe {
-            leap_try(LeapGetDeviceList(
-                self.leap_connection,
-                std::ptr::null_mut(),
-                &mut computed_array_size,
-            ))?;
-        }
-        Ok(computed_array_size)
+        Ok(self.connection_message.as_ref().unwrap())
     }
 
     pub fn get_device_list(&mut self, count: u32) -> Result<Vec<DeviceRef>, Error> {
@@ -100,7 +69,7 @@ impl Connection {
         unsafe {
             devices = vec![std::mem::zeroed(); count as usize];
             leap_try(LeapGetDeviceList(
-                self.leap_connection,
+                self.handle,
                 devices.as_mut_ptr(),
                 &mut received,
             ))?;
@@ -111,5 +80,17 @@ impl Connection {
             .map(|d| d.into())
             .collect();
         Ok(devices)
+    }
+
+    pub fn get_device_list_count(&mut self) -> Result<u32, Error> {
+        let mut computed_array_size: u32 = 0;
+        unsafe {
+            leap_try(LeapGetDeviceList(
+                self.handle,
+                std::ptr::null_mut(),
+                &mut computed_array_size,
+            ))?;
+        }
+        Ok(computed_array_size)
     }
 }
