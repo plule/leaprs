@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 leap-sys = {path = "../leap-sys"}
+num_enum = "0.5"

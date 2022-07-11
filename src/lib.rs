@@ -1,10 +1,23 @@
+mod connection;
+mod leap_rs;
+pub use connection::*;
+pub use leap_rs::*;
+
 #[cfg(test)]
 mod tests {
     use leap_sys::*;
     use std::mem;
 
+    use crate::Connection;
+
     #[test]
     fn hello_leap() {
+        let mut connection = Connection::try_new().expect("Failed to create connection");
+        connection.open().expect("Failed to open the connection");
+    }
+
+    #[test]
+    fn hello_leap_unsafe() {
         #[allow(nonstandard_style)]
         unsafe {
             let mut connection: LEAP_CONNECTION = mem::zeroed();
