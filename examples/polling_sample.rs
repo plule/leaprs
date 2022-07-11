@@ -6,31 +6,17 @@ fn main() {
 
     loop {
         if let Ok(message) = connection.poll(100) {
-            let msg = match message.event() {
-                Event::NoEvent => "no event",
-                Event::ConnectionEvent(_) => "connection",
-                Event::ConnectionLostEvent(_) => "connection lost",
-                Event::DeviceEvent(_) => "device",
-                Event::DeviceStatusChangeEvent(_) => "device status change",
-                Event::PolicyEvent(_) => "policy event",
-                Event::DeviceFailureEvent(_) => "device failure",
-                Event::TrakingEvent(_) => "tracking",
-                Event::TrackingModeEvent(_) => "tracking mode",
-                Event::LogEvent(_) => "log event",
-                Event::LogEvents(_) => "log events",
-                Event::ConfigResponseEvent(_) => "config response",
-                Event::DroppedFrameEvent(_) => "dropped frame",
-                Event::ImageEvent(_) => "image event",
-                Event::PointMappingChangeEvent(_) => "point mapping",
-                Event::HeadPoseEvent(_) => "head pose",
-                Event::EyeEvent(_) => "eye",
-                Event::IMUEvent(_) => "imu",
-                Event::LeapConfigChangeEvent(_) => "config",
-                Event::ImageComplete => "image complete",
-                Event::ImageRequestError => "image request error",
-                Event::DeviceLost => "device lost",
+            match message.event() {
+                Event::TrakingEvent(e) => {
+                    for hand in e.get_hands() {
+                        let id = hand.id;
+                        let grb = hand.grab_angle;
+                        let index = hand.get_index();
+                        println!("hand {} grab {}", id, grb)
+                    }
+                }
+                _ => {}
             };
-            println!("{}", msg);
         }
     }
 }
