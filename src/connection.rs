@@ -2,7 +2,7 @@ use std::mem;
 
 use leap_sys::*;
 
-use crate::{leap_try, ConnectionMessage, DeviceRef, Error};
+use crate::{leap_try, ConnectionMessage, Error};
 
 #[doc = " \\ingroup Structs"]
 #[doc = " \\struct LEAP_CONNECTION"]
@@ -63,23 +63,18 @@ impl Connection {
         Ok(self.connection_message.as_ref().unwrap())
     }
 
-    pub fn get_device_list(&mut self, count: u32) -> Result<Vec<DeviceRef>, Error> {
-        let mut received = count;
-        let mut devices: Vec<LEAP_DEVICE_REF>;
+    pub fn get_device_list(&mut self, count: u32) -> Result<Vec<LEAP_DEVICE_REF>, Error> {
         unsafe {
-            devices = vec![std::mem::zeroed(); count as usize];
+            let mut devices = vec![std::mem::zeroed(); count as usize];
+            let mut received = count;
             leap_try(LeapGetDeviceList(
                 self.handle,
                 devices.as_mut_ptr(),
                 &mut received,
             ))?;
+            devices.truncate(received as usize);
+            Ok(devices)
         }
-        let devices: Vec<DeviceRef> = devices
-            .into_iter()
-            .take(received as usize)
-            .map(|d| d.into())
-            .collect();
-        Ok(devices)
     }
 
     pub fn get_device_list_count(&mut self) -> Result<u32, Error> {

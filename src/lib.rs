@@ -1,6 +1,7 @@
 mod connection;
 mod connection_message;
-mod device_ref;
+mod device;
+mod device_info;
 mod digit;
 mod event;
 mod event_type;
@@ -10,7 +11,8 @@ mod leap_vector;
 mod quaternion;
 pub use connection::*;
 pub use connection_message::*;
-pub use device_ref::*;
+pub use device::*;
+pub use device_info::*;
 pub use digit::*;
 pub use event::*;
 pub use event_type::*;

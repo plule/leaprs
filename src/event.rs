@@ -1,9 +1,13 @@
 use leap_sys::*;
 
 pub enum Event<'a> {
+    //
     NoEvent,
+    //
     ConnectionEvent(&'a LEAP_CONNECTION_EVENT),
+    //
     ConnectionLostEvent(&'a LEAP_CONNECTION_LOST_EVENT),
+    // BUG: serial
     DeviceEvent(&'a LEAP_DEVICE_EVENT),
     DeviceStatusChangeEvent(&'a LEAP_DEVICE_STATUS_CHANGE_EVENT),
     PolicyEvent(&'a LEAP_POLICY_EVENT),
