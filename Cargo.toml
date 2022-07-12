@@ -7,3 +7,8 @@ edition = "2021"
 leap-sys = { path = "../leap-sys" }
 num_enum = "0.5"
 thiserror = "1"
+
+[workspace]
+members = [
+    "leaprs_testing",
+]

@@ -16,6 +16,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "leaprs_testing"
+version = "0.1.0"
+dependencies = [
+ "leaprs",
+ "throbber",
+]
+
+[[package]]
 name = "num_enum"
 version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -100,6 +108,12 @@ dependencies = [
  "quote",
  "syn",
 ]
+
+[[package]]
+name = "throbber"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fa679cdc0bc079431af2e764d22d46b261a21349b6fd9595749ba686d2170f05"
 
 [[package]]
 name = "toml"
