@@ -2,7 +2,7 @@ use std::mem;
 
 use leap_sys::*;
 
-use crate::{leap_try, ConnectionMessage, Error, VersionPart};
+use crate::{leap_try, ConnectionMessage, Error, PolicyFlags, VersionPart};
 
 #[doc = " \\ingroup Structs"]
 #[doc = " \\struct LEAP_CONNECTION"]
@@ -96,5 +96,12 @@ impl Connection {
             leap_try(LeapGetVersion(self.handle, part.into(), &mut version))?;
         }
         Ok(version)
+    }
+
+    pub fn set_policy_flags(&mut self, set: PolicyFlags, clear: PolicyFlags) -> Result<(), Error> {
+        unsafe {
+            leap_try(LeapSetPolicyFlags(self.handle, set.bits(), clear.bits()))?;
+        }
+        Ok(())
     }
 }

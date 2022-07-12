@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 leaprs = { path = ".." }
 throbber = "0.1"
+image = "0.24.2"

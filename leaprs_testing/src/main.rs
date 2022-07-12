@@ -59,6 +59,26 @@ fn main() {
         }
         _ => Msg::None,
     });
+
+    connection
+        .set_policy_flags(PolicyFlags::IMAGES, PolicyFlags::empty())
+        .expect("Failed to set policy flags");
+
+    connection.wait_for("Reading image".to_string(), |e| match e {
+        Event::ImageEvent(e) => {
+            let w = e.image[0].properties.width;
+            let h = e.image[0].properties.height;
+            let image_data = e.image[0].get_data();
+            image::save_buffer("image.png", image_data, w, h, image::ColorType::L8)
+                .expect("failed to save buffer");
+            Msg::Success(format!("Saved image.png"))
+        }
+        _ => Msg::None,
+    });
+
+    connection
+        .set_policy_flags(PolicyFlags::empty(), PolicyFlags::IMAGES)
+        .expect("Failed to set policy flags");
 }
 
 pub enum Msg {
