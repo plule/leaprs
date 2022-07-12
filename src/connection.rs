@@ -53,7 +53,7 @@ impl Connection {
         unsafe { LeapCloseConnection(self.handle) }
     }
 
-    pub fn poll<'a>(&'a mut self, timeout: u32) -> Result<&'a ConnectionMessage, Error> {
+    pub fn poll(&mut self, timeout: u32) -> Result<&ConnectionMessage, Error> {
         unsafe {
             let mut msg: LEAP_CONNECTION_MESSAGE = mem::zeroed();
             leap_try(LeapPollConnection(self.handle, timeout, &mut msg))?;

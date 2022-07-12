@@ -9,10 +9,7 @@ pub trait LeapVector {
 
 impl LeapVector for LEAP_VECTOR {
     fn get_array(&self) -> [f32; 3] {
-        unsafe {
-            let arr = self.__bindgen_anon_1.v;
-            arr
-        }
+        unsafe { self.__bindgen_anon_1.v }
     }
 
     fn get_x(&self) -> f32 {

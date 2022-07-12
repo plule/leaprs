@@ -6,7 +6,7 @@ pub struct ConnectionMessage {
     handle: LEAP_CONNECTION_MESSAGE,
 }
 
-impl<'a> From<LEAP_CONNECTION_MESSAGE> for ConnectionMessage {
+impl From<LEAP_CONNECTION_MESSAGE> for ConnectionMessage {
     fn from(handle: LEAP_CONNECTION_MESSAGE) -> Self {
         Self { handle }
     }

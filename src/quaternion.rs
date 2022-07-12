@@ -10,10 +10,7 @@ pub trait Quaternion {
 
 impl Quaternion for LEAP_QUATERNION {
     fn get_array(&self) -> [f32; 4] {
-        unsafe {
-            let arr = self.__bindgen_anon_1.v;
-            arr
-        }
+        unsafe { self.__bindgen_anon_1.v }
     }
 
     fn get_x(&self) -> f32 {
