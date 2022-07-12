@@ -24,12 +24,11 @@ impl Device {
     pub fn get_info_serial_length(&mut self) -> Result<u32, Error> {
         unsafe {
             let mut info: LEAP_DEVICE_INFO = std::mem::zeroed();
+            info.size = std::mem::size_of::<LEAP_DEVICE_INFO>() as u32;
 
             let res = LeapGetDeviceInfo(self.handle, &mut info);
+            // Expected failure to get the serial length
             if res == _eLeapRS_eLeapRS_InsufficientBuffer || res == _eLeapRS_eLeapRS_Success {
-                let len = info.serial_length;
-                let hfov = info.h_fov;
-                println!("{}", hfov);
                 return Ok(info.serial_length);
             }
             Err(res.into())
@@ -40,7 +39,7 @@ impl Device {
         unsafe {
             let mut serial: Vec<i8> = vec![0; serial_length as usize];
             let mut info: LEAP_DEVICE_INFO = LEAP_DEVICE_INFO {
-                size: 0,
+                size: std::mem::size_of::<LEAP_DEVICE_INFO>() as u32,
                 status: 0,
                 caps: 0,
                 pid: 0,

@@ -2,7 +2,7 @@ use std::mem;
 
 use leap_sys::*;
 
-use crate::{leap_try, ConnectionMessage, Error};
+use crate::{leap_try, ConnectionMessage, Error, VersionPart};
 
 #[doc = " \\ingroup Structs"]
 #[doc = " \\struct LEAP_CONNECTION"]
@@ -87,5 +87,14 @@ impl Connection {
             ))?;
         }
         Ok(computed_array_size)
+    }
+
+    pub fn get_version(&mut self, part: VersionPart) -> Result<LEAP_VERSION, Error> {
+        let mut version: LEAP_VERSION;
+        unsafe {
+            version = std::mem::zeroed();
+            leap_try(LeapGetVersion(self.handle, part.into(), &mut version))?;
+        }
+        Ok(version)
     }
 }
