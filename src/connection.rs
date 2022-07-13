@@ -63,30 +63,26 @@ impl Connection {
         Ok(self.connection_message.as_ref().unwrap())
     }
 
-    pub fn get_device_list(&mut self, count: u32) -> Result<Vec<LEAP_DEVICE_REF>, Error> {
+    pub fn get_device_list_raw(&mut self, count: &mut u32) -> Result<Vec<LEAP_DEVICE_REF>, Error> {
         unsafe {
-            let mut devices = vec![std::mem::zeroed(); count as usize];
-            let mut received = count;
-            leap_try(LeapGetDeviceList(
-                self.handle,
-                devices.as_mut_ptr(),
-                &mut received,
-            ))?;
-            devices.truncate(received as usize);
+            let mut devices = vec![std::mem::zeroed(); *count as usize];
+            let devices_ptr = if *count > 0 {
+                devices.as_mut_ptr()
+            } else {
+                std::ptr::null_mut()
+            };
+            leap_try(LeapGetDeviceList(self.handle, devices_ptr, count))?;
+            devices.truncate(*count as usize);
             Ok(devices)
         }
     }
 
-    pub fn get_device_list_count(&mut self) -> Result<u32, Error> {
-        let mut computed_array_size: u32 = 0;
-        unsafe {
-            leap_try(LeapGetDeviceList(
-                self.handle,
-                std::ptr::null_mut(),
-                &mut computed_array_size,
-            ))?;
-        }
-        Ok(computed_array_size)
+    pub fn get_device_list(&mut self) -> Result<Vec<LEAP_DEVICE_REF>, Error> {
+        let mut count = 0;
+        // First call to get the number of devices
+        let _ = self.get_device_list_raw(&mut count)?;
+        // Second call to get the list of devices
+        self.get_device_list_raw(&mut count)
     }
 
     pub fn get_version(&mut self, part: VersionPart) -> Result<LEAP_VERSION, Error> {

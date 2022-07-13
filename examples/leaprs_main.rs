@@ -4,7 +4,7 @@ fn main() {
     let mut connection = Connection::create().expect("Failed to create connection");
     connection.open().expect("Failed to open the connection");
 
-    let mut device_count = 0;
+    let mut devices = Vec::new();
     for _ in 0..=7 {
         let res = connection.poll(1000);
 
@@ -12,20 +12,24 @@ fn main() {
             continue;
         }
 
-        device_count = connection
-            .get_device_list_count()
-            .expect("Failed to count devices");
+        devices = connection
+            .get_device_list()
+            .expect("Failed to list devices");
 
-        println!("Number of devices available: {}", device_count);
-        if device_count > 0 {
+        println!("Number of devices available: {}", devices.len());
+        if devices.len() > 0 {
             break;
         }
     }
 
-    if device_count > 0 {
-        let _devices = connection
-            .get_device_list(device_count)
-            .expect("Failed to get devices");
+    for device in devices {
+        let serial = Device::open(device)
+            .expect("Failed to open the device")
+            .get_info()
+            .expect("Failed to get info about the device")
+            .get_serial_string()
+            .expect("Failed to decode the serial");
+        println!("{serial}");
     }
 
     connection.close();
