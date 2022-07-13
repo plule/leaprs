@@ -15,10 +15,11 @@ fn main() {
     connection.wait_for("Waiting for a device...".to_string(), |e| match e {
         Event::DeviceEvent(e) => {
             let mut device = Device::open(e.device).expect("Failed to open the device");
-            let device_info = device.get_info().expect("Failed to get device info");
-            let serial = device_info.get_serial();
-            let serial = String::from_utf8(serial.iter().map(|&c| c as u8).collect())
-                .expect("Failed to decode serial");
+            let serial = device
+                .get_info()
+                .expect("Failed to get device info")
+                .get_serial_string()
+                .expect("Failed to get the device serial");
             Msg::Success(format!("Got the device {serial}"))
         }
         _ => Msg::None,
