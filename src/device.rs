@@ -21,37 +21,42 @@ impl Device {
         Ok(Self { handle })
     }
 
-    pub fn get_info_serial_length(&mut self) -> Result<u32, Error> {
+    pub fn get_info_raw(&mut self, info: &mut LEAP_DEVICE_INFO, serial: &mut Vec<i8>) -> eLeapRS {
         unsafe {
-            let mut info: LEAP_DEVICE_INFO = std::mem::zeroed();
-            info.size = std::mem::size_of::<LEAP_DEVICE_INFO>() as u32;
-
-            let res = LeapGetDeviceInfo(self.handle, &mut info);
-            // Expected failure to get the serial length
-            if res == _eLeapRS_eLeapRS_InsufficientBuffer || res == _eLeapRS_eLeapRS_Success {
-                return Ok(info.serial_length);
-            }
-            Err(res.into())
+            info.serial_length = serial.len() as u32;
+            info.serial = if serial.len() > 0 {
+                serial.as_mut_ptr()
+            } else {
+                std::ptr::null_mut()
+            };
+            LeapGetDeviceInfo(self.handle, info)
         }
     }
 
-    pub fn get_info(&mut self, serial_length: u32) -> Result<DeviceInfo, Error> {
-        unsafe {
-            let mut serial: Vec<i8> = vec![0; serial_length as usize];
-            let mut info: LEAP_DEVICE_INFO = LEAP_DEVICE_INFO {
-                size: std::mem::size_of::<LEAP_DEVICE_INFO>() as u32,
-                status: 0,
-                caps: 0,
-                pid: 0,
-                baseline: 0,
-                serial_length,
-                serial: serial.as_mut_ptr(),
-                h_fov: 0.0,
-                v_fov: 0.0,
-                range: 0,
-            };
-            leap_try(LeapGetDeviceInfo(self.handle, &mut info))?;
-            Ok(DeviceInfo::new(info, serial))
+    pub fn get_info(&mut self) -> Result<DeviceInfo, Error> {
+        let mut serial: Vec<i8> = vec![0];
+        let mut info: LEAP_DEVICE_INFO = LEAP_DEVICE_INFO {
+            size: std::mem::size_of::<LEAP_DEVICE_INFO>() as u32,
+            status: 0,
+            caps: 0,
+            pid: 0,
+            baseline: 0,
+            serial_length: 0,
+            serial: serial.as_mut_ptr(),
+            h_fov: 0.0,
+            v_fov: 0.0,
+            range: 0,
+        };
+
+        let mut res = self.get_info_raw(&mut info, &mut serial);
+
+        if res == _eLeapRS_eLeapRS_InsufficientBuffer {
+            serial.resize(info.serial_length as usize, 0);
+            res = self.get_info_raw(&mut info, &mut serial);
         }
+
+        leap_try(res)?;
+
+        Ok(DeviceInfo::new(info, serial))
     }
 }

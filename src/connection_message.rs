@@ -13,7 +13,7 @@ impl From<LEAP_CONNECTION_MESSAGE> for ConnectionMessage {
 }
 
 impl ConnectionMessage {
-    pub fn event(&self) -> Event {
+    pub fn get_event(&self) -> Event {
         unsafe {
             return match self.handle.type_.into() {
                 EventType::None => Event::NoEvent,

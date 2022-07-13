@@ -13,7 +13,14 @@ fn main() {
     });
 
     connection.wait_for("Waiting for a device...".to_string(), |e| match e {
-        Event::DeviceEvent(_) => Msg::Success("Got a device".to_string()),
+        Event::DeviceEvent(e) => {
+            let mut device = Device::open(e.device).expect("Failed to open the device");
+            let device_info = device.get_info().expect("Failed to get device info");
+            let serial = device_info.get_serial();
+            let serial = String::from_utf8(serial.iter().map(|&c| c as u8).collect())
+                .expect("Failed to decode serial");
+            Msg::Success(format!("Got the device {serial}"))
+        }
         _ => Msg::None,
     });
 
@@ -105,7 +112,7 @@ impl WaitFor for Connection {
 
         loop {
             if let Ok(message) = self.poll(100) {
-                match condition(&message.event()) {
+                match condition(&message.get_event()) {
                     Msg::None => {}
                     Msg::Success(message) => {
                         throbber.success(message);
