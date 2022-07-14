@@ -8,7 +8,10 @@ fn main() {
     connection.open().expect("Failed to open the connection");
 
     connection.wait_for("Connecting to the service...".to_string(), |e| match e {
-        Event::Connection(_) => Msg::Success("Connected".to_string()),
+        Event::Connection(e) => {
+            let flags = e.get_flags().expect("Invalid service state flags");
+            Msg::Success(format!("Connected. Service state: {:?}", flags))
+        }
         _ => Msg::None,
     });
 
