@@ -18,16 +18,22 @@ fn main() {
 
     connection.wait_for("Waiting for a device...".to_string(), |e| match e {
         Event::Device(e) => {
-            let serial = e
+            let info = e
                 .device
                 .open()
                 .expect("Failed to open the device")
                 .get_info()
-                .expect("Failed to get device info")
-                .get_serial_string()
+                .expect("Failed to get device info");
+
+            let device_info = info.get_info();
+
+            let serial = device_info
+                .get_serial()
                 .expect("Failed to get the device serial");
 
-            Msg::Success(format!("Got the device {serial}"))
+            let pid = device_info.get_pid();
+
+            Msg::Success(format!("Got the device {} ({:#?})", serial, pid))
         }
         _ => Msg::None,
     });

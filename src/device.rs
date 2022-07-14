@@ -1,4 +1,4 @@
-use crate::{leap_try, DeviceInfo, Error};
+use crate::{leap_try, DeviceInfoWrapper, Error};
 use leap_sys::*;
 
 pub struct Device {
@@ -27,7 +27,7 @@ impl Device {
         unsafe { LeapGetDeviceInfo(self.handle, info) }
     }
 
-    pub fn get_info(&mut self) -> Result<DeviceInfo, Error> {
+    pub fn get_info(&mut self) -> Result<DeviceInfoWrapper, Error> {
         let mut serial: Vec<i8> = vec![0];
         let mut info: LEAP_DEVICE_INFO = LEAP_DEVICE_INFO {
             size: std::mem::size_of::<LEAP_DEVICE_INFO>() as u32,
@@ -54,6 +54,6 @@ impl Device {
         // Don't return the struct on error
         leap_try(res)?;
 
-        Ok(DeviceInfo::new(info, serial))
+        Ok(DeviceInfoWrapper::new(info, serial))
     }
 }
