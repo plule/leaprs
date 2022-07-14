@@ -14,7 +14,9 @@ fn main() {
 
     connection.wait_for("Waiting for a device...".to_string(), |e| match e {
         Event::Device(e) => {
-            let serial = Device::open(e.device)
+            let serial = e
+                .device
+                .open()
                 .expect("Failed to open the device")
                 .get_info()
                 .expect("Failed to get device info")
