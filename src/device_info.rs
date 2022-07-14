@@ -42,3 +42,27 @@ impl DeviceInfoWrapper {
         &self.handle
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::tests::*;
+    use crate::*;
+
+    #[test]
+    fn get_device_info() {
+        let mut connection = initialize_connection();
+        let devices = connection
+            .get_device_list()
+            .expect("Failed to list devices");
+        let device_info = devices.first().expect("No devices plugged for tests.");
+        let mut device = device_info.open().expect("Failed to open the device");
+        let device_info_wrapper = device.get_info().expect("Failed to get device info");
+        let device_info = device_info_wrapper.get_info();
+        assert_ne!(device_info.get_pid(), DevicePID::Unknown);
+        let serial = device_info.get_serial().expect("Failed to get serial");
+        assert!(serial.len() > 0);
+        device_info
+            .get_status()
+            .expect("Failed to get device status");
+    }
+}

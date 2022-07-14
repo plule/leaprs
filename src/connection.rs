@@ -112,3 +112,34 @@ impl Connection {
         unsafe { leap_try(LeapSetTrackingMode(self.handle, mode.into())) }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::tests::*;
+    use crate::*;
+
+    #[test]
+    fn get_device_list() {
+        let devices = initialize_connection()
+            .get_device_list()
+            .expect("Failed to list devices");
+        assert!(devices.len() > 0, "No devices, tests will not run.");
+    }
+
+    #[test]
+    fn get_version() {
+        let mut connection = initialize_connection();
+        connection
+            .get_version(VersionPart::ClientLibrary)
+            .expect("Failed to get client library version");
+        connection
+            .get_version(VersionPart::ClientProtocol)
+            .expect("Failed to get client protocol version");
+        connection
+            .get_version(VersionPart::ServerLibrary)
+            .expect("Failed to get server library version");
+        connection
+            .get_version(VersionPart::ServerProtocol)
+            .expect("Failed to get server protocol version");
+    }
+}

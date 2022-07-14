@@ -81,3 +81,26 @@ impl TrackingModeEvent for LEAP_TRACKING_MODE_EVENT {
         self.current_tracking_mode.into()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::tests::*;
+    use crate::*;
+
+    #[test]
+    fn get_tracking_mode() {
+        let mut connection = initialize_connection();
+        connection
+            .set_tracking_mode(TrackingMode::Unknown)
+            .expect_err("Set tracking mode unknown did not create an error");
+        connection.expect_event(
+            "Did not receive the tracking mode".to_string(),
+            |e| match e {
+                Event::TrackingMode(mode) => {
+                    mode.get_current_tracking_mode() != TrackingMode::Unknown
+                }
+                _ => false,
+            },
+        )
+    }
+}

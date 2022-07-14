@@ -38,3 +38,55 @@ pub use quaternion::*;
 pub use service_state::*;
 pub use tracking_mode::*;
 pub use version_part::*;
+
+#[cfg(test)]
+mod tests {
+    use crate::*;
+
+    /// Connect to the service and wait for the first events necessary for LeapC to be functional
+    pub fn initialize_connection() -> Connection {
+        let mut connection =
+            Connection::create(ConnectionConfig::default()).expect("Failed to connect");
+        connection.open().expect("Failed to open the connection");
+
+        connection.expect_event(
+            "Did not receive connection message".to_string(),
+            |e| match e {
+                Event::Connection(_) => true,
+                _ => false,
+            },
+        );
+
+        connection.expect_event(
+            "Did not receive device connection".to_string(),
+            |e| match e {
+                Event::Device(_) => true,
+                _ => false,
+            },
+        );
+
+        connection
+    }
+
+    pub trait ConnectionTestExtensions {
+        fn expect_event<F>(&mut self, message: String, condition: F)
+        where
+            F: Fn(&Event) -> bool;
+    }
+
+    impl ConnectionTestExtensions for Connection {
+        fn expect_event<F>(&mut self, message: String, condition: F)
+        where
+            F: Fn(&Event) -> bool,
+        {
+            for _ in 0..10 {
+                if let Ok(event_message) = self.poll(100) {
+                    if condition(&event_message.get_event()) {
+                        return;
+                    }
+                }
+            }
+            panic!("{}", message);
+        }
+    }
+}
