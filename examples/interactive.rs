@@ -32,6 +32,21 @@ fn main() {
         _ => Msg::None,
     });
 
+    // Set the tracking mode to unknown.
+    connection.set_tracking_mode(TrackingMode::Unknown)
+        .expect_err("Setting the tracking mode to unknown triggers an error, but also allow retrieving the current tracking mode.");
+
+    connection.wait_for(
+        "Waiting for the tracking mode message...".to_string(),
+        |e| match e {
+            Event::TrackingMode(e) => Msg::Success(format!(
+                "Tracking mode: {:#?}",
+                e.get_current_tracking_mode()
+            )),
+            _ => Msg::None,
+        },
+    );
+
     connection.wait_for("Waiting for a hand...".to_string(), |e| match e {
         Event::Traking(e) => {
             if e.get_hands().len() > 0 {

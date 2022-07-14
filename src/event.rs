@@ -1,6 +1,6 @@
 use leap_sys::*;
 
-use crate::DeviceStatus;
+use crate::{DeviceStatus, TrackingMode};
 
 pub enum Event<'a> {
     //
@@ -69,5 +69,15 @@ impl DeviceStatusChangeEvent for LEAP_DEVICE_STATUS_CHANGE_EVENT {
 
     fn get_last_status(&self) -> Option<DeviceStatus> {
         DeviceStatus::from_bits(self.last_status)
+    }
+}
+
+pub trait TrackingModeEvent {
+    fn get_current_tracking_mode(&self) -> TrackingMode;
+}
+
+impl TrackingModeEvent for LEAP_TRACKING_MODE_EVENT {
+    fn get_current_tracking_mode(&self) -> TrackingMode {
+        self.current_tracking_mode.into()
     }
 }

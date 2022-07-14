@@ -2,7 +2,9 @@ use std::mem;
 
 use leap_sys::*;
 
-use crate::{leap_try, ConnectionConfig, ConnectionMessage, Error, PolicyFlags, VersionPart};
+use crate::{
+    leap_try, ConnectionConfig, ConnectionMessage, Error, PolicyFlags, TrackingMode, VersionPart,
+};
 
 #[doc = " \\ingroup Structs"]
 #[doc = " \\struct LEAP_CONNECTION"]
@@ -104,5 +106,9 @@ impl Connection {
 
     pub fn set_policy_flags(&mut self, set: PolicyFlags, clear: PolicyFlags) -> Result<(), Error> {
         unsafe { leap_try(LeapSetPolicyFlags(self.handle, set.bits(), clear.bits())) }
+    }
+
+    pub fn set_tracking_mode(&mut self, mode: TrackingMode) -> Result<(), Error> {
+        unsafe { leap_try(LeapSetTrackingMode(self.handle, mode.into())) }
     }
 }
