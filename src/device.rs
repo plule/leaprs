@@ -24,10 +24,10 @@ impl Device {
     pub fn get_info_raw(&mut self, info: &mut LEAP_DEVICE_INFO, serial: &mut Vec<i8>) -> eLeapRS {
         unsafe {
             info.serial_length = serial.len() as u32;
-            info.serial = if serial.len() > 0 {
-                serial.as_mut_ptr()
-            } else {
+            info.serial = if serial.is_empty() {
                 std::ptr::null_mut()
+            } else {
+                serial.as_mut_ptr()
             };
             LeapGetDeviceInfo(self.handle, info)
         }
