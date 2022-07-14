@@ -1,4 +1,5 @@
 mod connection;
+mod connection_config;
 mod connection_event;
 mod connection_message;
 mod device;
@@ -15,6 +16,7 @@ mod quaternion;
 mod service_state;
 mod version_part;
 pub use connection::*;
+pub use connection_config::*;
 pub use connection_event::*;
 pub use connection_message::*;
 pub use device::*;

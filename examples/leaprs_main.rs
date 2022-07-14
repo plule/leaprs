@@ -1,7 +1,8 @@
 use leaprs::*;
 
 fn main() {
-    let mut connection = Connection::create().expect("Failed to create connection");
+    let mut connection =
+        Connection::create(ConnectionConfig::default()).expect("Failed to create connection");
     connection.open().expect("Failed to open the connection");
 
     let mut devices = Vec::new();

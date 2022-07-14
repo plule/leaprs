@@ -2,7 +2,7 @@ use std::mem;
 
 use leap_sys::*;
 
-use crate::{leap_try, ConnectionMessage, Error, PolicyFlags, VersionPart};
+use crate::{leap_try, ConnectionConfig, ConnectionMessage, Error, PolicyFlags, VersionPart};
 
 #[doc = " \\ingroup Structs"]
 #[doc = " \\struct LEAP_CONNECTION"]
@@ -28,11 +28,11 @@ impl Drop for Connection {
 unsafe impl Send for Connection {}
 
 impl Connection {
-    pub fn create() -> Result<Self, Error> {
+    pub fn create(config: ConnectionConfig) -> Result<Self, Error> {
         let mut leap_connection: LEAP_CONNECTION;
         unsafe {
             leap_connection = mem::zeroed();
-            leap_try(LeapCreateConnection(std::ptr::null(), &mut leap_connection))?;
+            leap_try(LeapCreateConnection(&config.handle, &mut leap_connection))?;
         }
 
         Ok(Self {
