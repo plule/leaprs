@@ -307,17 +307,10 @@ version = "0.1.0"
 dependencies = [
  "bitflags",
  "copy_to_output",
+ "image",
  "leap-sys",
  "num_enum",
  "thiserror",
-]
-
-[[package]]
-name = "leaprs_testing"
-version = "0.1.0"
-dependencies = [
- "image",
- "leaprs",
  "throbber",
 ]
 
