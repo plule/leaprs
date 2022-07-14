@@ -1,5 +1,7 @@
 use leap_sys::*;
 
+use crate::DeviceStatus;
+
 pub enum Event<'a> {
     //
     None,
@@ -51,5 +53,21 @@ impl TrakingEvent for LEAP_TRACKING_EVENT {
                 .map(|hand_index| &*self.pHands.offset(hand_index))
                 .collect()
         }
+    }
+}
+
+pub trait DeviceStatusChangeEvent {
+    fn get_status(&self) -> Option<DeviceStatus>;
+
+    fn get_last_status(&self) -> Option<DeviceStatus>;
+}
+
+impl DeviceStatusChangeEvent for LEAP_DEVICE_STATUS_CHANGE_EVENT {
+    fn get_status(&self) -> Option<DeviceStatus> {
+        DeviceStatus::from_bits(self.status)
+    }
+
+    fn get_last_status(&self) -> Option<DeviceStatus> {
+        DeviceStatus::from_bits(self.last_status)
     }
 }
