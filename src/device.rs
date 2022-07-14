@@ -22,15 +22,9 @@ impl Device {
     }
 
     pub fn get_info_raw(&mut self, info: &mut LEAP_DEVICE_INFO, serial: &mut Vec<i8>) -> eLeapRS {
-        unsafe {
-            info.serial_length = serial.len() as u32;
-            info.serial = if serial.is_empty() {
-                std::ptr::null_mut()
-            } else {
-                serial.as_mut_ptr()
-            };
-            LeapGetDeviceInfo(self.handle, info)
-        }
+        info.serial_length = serial.len() as u32;
+        info.serial = serial.as_mut_ptr();
+        unsafe { LeapGetDeviceInfo(self.handle, info) }
     }
 
     pub fn get_info(&mut self) -> Result<DeviceInfo, Error> {
@@ -48,13 +42,16 @@ impl Device {
             range: 0,
         };
 
+        // First call to get serial length
         let mut res = self.get_info_raw(&mut info, &mut serial);
 
         if res == _eLeapRS_eLeapRS_InsufficientBuffer {
+            // Second call to get serial
             serial.resize(info.serial_length as usize, 0);
             res = self.get_info_raw(&mut info, &mut serial);
         }
 
+        // Don't return the struct on error
         leap_try(res)?;
 
         Ok(DeviceInfo::new(info, serial))

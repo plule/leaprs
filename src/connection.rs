@@ -54,27 +54,35 @@ impl Connection {
     }
 
     pub fn poll(&mut self, timeout: u32) -> Result<&ConnectionMessage, Error> {
+        // The code after will invalidate it.
+        self.connection_message = None;
+        let mut msg: LEAP_CONNECTION_MESSAGE;
         unsafe {
-            let mut msg: LEAP_CONNECTION_MESSAGE = mem::zeroed();
+            msg = mem::zeroed();
             leap_try(LeapPollConnection(self.handle, timeout, &mut msg))?;
-            self.connection_message = Some(msg.into());
         }
+        self.connection_message = Some(msg.into());
 
         Ok(self.connection_message.as_ref().unwrap())
     }
 
     pub fn get_device_list_raw(&mut self, count: &mut u32) -> Result<Vec<LEAP_DEVICE_REF>, Error> {
+        let mut devices;
         unsafe {
-            let mut devices = vec![std::mem::zeroed(); *count as usize];
+            // Initialize enough space for the devices
+            devices = vec![std::mem::zeroed(); *count as usize];
             let devices_ptr = if *count > 0 {
                 devices.as_mut_ptr()
             } else {
                 std::ptr::null_mut()
             };
+            // Attempt to fill with the devices
             leap_try(LeapGetDeviceList(self.handle, devices_ptr, count))?;
+
+            // Truncate the null devices if less than asked were received.
             devices.truncate(*count as usize);
-            Ok(devices)
         }
+        Ok(devices)
     }
 
     pub fn get_device_list(&mut self) -> Result<Vec<LEAP_DEVICE_REF>, Error> {
@@ -95,9 +103,6 @@ impl Connection {
     }
 
     pub fn set_policy_flags(&mut self, set: PolicyFlags, clear: PolicyFlags) -> Result<(), Error> {
-        unsafe {
-            leap_try(LeapSetPolicyFlags(self.handle, set.bits(), clear.bits()))?;
-        }
-        Ok(())
+        unsafe { leap_try(LeapSetPolicyFlags(self.handle, set.bits(), clear.bits())) }
     }
 }
