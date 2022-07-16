@@ -1,3 +1,4 @@
+mod bone;
 mod connection;
 mod connection_config;
 mod connection_message;
@@ -20,6 +21,7 @@ mod tracking_mode;
 mod version;
 mod version_part;
 pub use crate::image::*;
+pub use bone::*;
 pub use connection::*;
 pub use connection_config::*;
 pub use connection_message::*;

@@ -1,5 +1,7 @@
 use leap_sys::*;
 
+use crate::Digit;
+
 pub enum HandType {
     Left,
     Right,
@@ -48,27 +50,79 @@ impl<'a> Hand<'a> {
         &self.handle.palm
     }
 
-    pub fn digits(&self) -> &[LEAP_DIGIT; 5] {
-        unsafe { &self.handle.__bindgen_anon_1.digits }
+    pub fn digits(&self) -> [Digit; 5] {
+        let digits;
+        unsafe {
+            digits = &self.handle.__bindgen_anon_1.digits;
+        }
+        [
+            (&digits[0]).into(),
+            (&digits[1]).into(),
+            (&digits[2]).into(),
+            (&digits[3]).into(),
+            (&digits[4]).into(),
+        ]
     }
 
-    pub fn thumb(&self) -> &LEAP_DIGIT {
-        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.thumb }
+    pub fn thumb(&self) -> Digit {
+        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.thumb }.into()
     }
 
-    pub fn index(&self) -> &LEAP_DIGIT {
-        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.index }
+    pub fn index(&self) -> Digit {
+        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.index }.into()
     }
 
-    pub fn middle(&self) -> &LEAP_DIGIT {
-        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.middle }
+    pub fn middle(&self) -> Digit {
+        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.middle }.into()
     }
 
-    pub fn ring(&self) -> &LEAP_DIGIT {
-        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.ring }
+    pub fn ring(&self) -> Digit {
+        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.ring }.into()
     }
 
-    pub fn pinky(&self) -> &LEAP_DIGIT {
-        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.pinky }
+    pub fn pinky(&self) -> Digit {
+        unsafe { &self.handle.__bindgen_anon_1.__bindgen_anon_1.pinky }.into()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::tests::*;
+    use crate::*;
+
+    #[test]
+    fn get_all_hand_bones() {
+        let mut connection = initialize_connection();
+        connection.expect_event("No hand in view".to_string(), |e| match e {
+            Event::Tracking(e) => {
+                let hands = e.hands();
+                if !hands.is_empty() {
+                    let digits_by_array = hands.iter().flat_map(|h| h.digits());
+
+                    let digits_by_name = hands
+                        .iter()
+                        .flat_map(|h| [h.thumb(), h.index(), h.middle(), h.ring(), h.pinky()]);
+
+                    for digit in digits_by_array.chain(digits_by_name) {
+                        let bones_by_array = digit.bones();
+                        let bones_by_name = [
+                            digit.proximal(),
+                            digit.intermediate(),
+                            digit.proximal(),
+                            digit.distal(),
+                        ];
+
+                        for bone in bones_by_array.iter().chain(bones_by_name.iter()) {
+                            assert!(bone.width() > 0.0);
+                        }
+                    }
+
+                    Some(())
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        });
     }
 }
