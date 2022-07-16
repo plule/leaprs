@@ -1,7 +1,5 @@
 use leap_sys::*;
 
-use crate::{DeviceStatus, TrackingMode};
-
 pub enum Event<'a> {
     //
     None,
@@ -20,7 +18,7 @@ pub enum Event<'a> {
     ConnectionLost(&'a LEAP_CONNECTION_LOST_EVENT),
     //
     Device(&'a LEAP_DEVICE_EVENT),
-    DeviceStatusChangeEvent(&'a LEAP_DEVICE_STATUS_CHANGE_EVENT),
+    DeviceStatusChange(&'a LEAP_DEVICE_STATUS_CHANGE_EVENT),
     Policy(&'a LEAP_POLICY_EVENT),
     DeviceFailure(&'a LEAP_DEVICE_FAILURE_EVENT),
     Traking(&'a LEAP_TRACKING_EVENT),
@@ -39,69 +37,4 @@ pub enum Event<'a> {
     ImageRequestError,
     DeviceLost,
     Unknown(eLeapEventType),
-}
-
-pub trait TrakingEvent {
-    fn get_hands(&self) -> Vec<&LEAP_HAND>;
-}
-
-impl TrakingEvent for LEAP_TRACKING_EVENT {
-    fn get_hands(&self) -> Vec<&LEAP_HAND> {
-        let n_hand = self.nHands as isize;
-        unsafe {
-            (0..n_hand)
-                .map(|hand_index| &*self.pHands.offset(hand_index))
-                .collect()
-        }
-    }
-}
-
-pub trait DeviceStatusChangeEvent {
-    fn get_status(&self) -> Option<DeviceStatus>;
-
-    fn get_last_status(&self) -> Option<DeviceStatus>;
-}
-
-impl DeviceStatusChangeEvent for LEAP_DEVICE_STATUS_CHANGE_EVENT {
-    fn get_status(&self) -> Option<DeviceStatus> {
-        DeviceStatus::from_bits(self.status)
-    }
-
-    fn get_last_status(&self) -> Option<DeviceStatus> {
-        DeviceStatus::from_bits(self.last_status)
-    }
-}
-
-pub trait TrackingModeEvent {
-    fn get_current_tracking_mode(&self) -> TrackingMode;
-}
-
-impl TrackingModeEvent for LEAP_TRACKING_MODE_EVENT {
-    fn get_current_tracking_mode(&self) -> TrackingMode {
-        self.current_tracking_mode.into()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::tests::*;
-    use crate::*;
-
-    #[test]
-    fn get_tracking_mode() {
-        let mut connection = initialize_connection();
-        connection
-            .set_tracking_mode(TrackingMode::Unknown)
-            .expect_err("Set tracking mode unknown did not create an error");
-        let mode =
-            connection.expect_event(
-                "Did not receive the tracking mode".to_string(),
-                |e| match e {
-                    Event::TrackingMode(mode) => Some(mode.clone().clone()),
-                    _ => None,
-                },
-            );
-
-        assert_ne!(mode.get_current_tracking_mode(), TrackingMode::Unknown);
-    }
 }

@@ -52,7 +52,7 @@ impl ConnectionMessage {
                 Event::ConfigChange(unsafe { &*self.handle.__bindgen_anon_1.config_change_event })
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceStatusChange => {
-                Event::DeviceStatusChangeEvent(unsafe {
+                Event::DeviceStatusChange(unsafe {
                     &*self.handle.__bindgen_anon_1.device_status_change_event
                 })
             }

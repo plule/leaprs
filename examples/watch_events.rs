@@ -9,7 +9,7 @@ fn main() {
     loop {
         if let Ok(message) = connection.poll(1000) {
             match message.get_event() {
-                Event::DeviceStatusChangeEvent(event) => {
+                Event::DeviceStatusChange(event) => {
                     println!("Device status changed.");
                     if let Some(status) = event.get_status() {
                         println!("{:?}", status);
