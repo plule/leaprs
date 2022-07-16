@@ -1,19 +1,19 @@
 use leap_sys::LEAP_DEVICE_STATUS_CHANGE_EVENT;
 
-use crate::DeviceStatus;
+use crate::{DeviceRef, DeviceStatus};
 
-pub trait DeviceStatusChangeEvent {
-    fn status(&self) -> Option<DeviceStatus>;
+crate::leap_ref_struct!(DeviceStatusChangeEvent, LEAP_DEVICE_STATUS_CHANGE_EVENT);
 
-    fn last_status(&self) -> Option<DeviceStatus>;
-}
-
-impl DeviceStatusChangeEvent for LEAP_DEVICE_STATUS_CHANGE_EVENT {
-    fn status(&self) -> Option<DeviceStatus> {
-        DeviceStatus::from_bits(self.status)
+impl<'a> DeviceStatusChangeEvent<'a> {
+    pub fn device(&self) -> DeviceRef {
+        self.handle.device.into()
     }
 
-    fn last_status(&self) -> Option<DeviceStatus> {
-        DeviceStatus::from_bits(self.last_status)
+    pub fn status(&self) -> Option<DeviceStatus> {
+        DeviceStatus::from_bits(self.handle.status)
+    }
+
+    pub fn last_status(&self) -> Option<DeviceStatus> {
+        DeviceStatus::from_bits(self.handle.last_status)
     }
 }

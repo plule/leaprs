@@ -1,6 +1,6 @@
 use leap_sys::*;
 
-use crate::{ConnectionEvent, DeviceEvent, ImageEvent, TrackingEvent};
+use crate::{ConnectionEvent, DeviceEvent, DeviceStatusChangeEvent, ImageEvent, TrackingEvent};
 
 pub enum Event<'a> {
     //
@@ -20,7 +20,7 @@ pub enum Event<'a> {
     ConnectionLost(&'a LEAP_CONNECTION_LOST_EVENT),
     //
     Device(DeviceEvent<'a>),
-    DeviceStatusChange(&'a LEAP_DEVICE_STATUS_CHANGE_EVENT),
+    DeviceStatusChange(DeviceStatusChangeEvent<'a>),
     Policy(&'a LEAP_POLICY_EVENT),
     DeviceFailure(&'a LEAP_DEVICE_FAILURE_EVENT),
     Tracking(TrackingEvent<'a>),
@@ -79,7 +79,7 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
                 Event::ConfigChange(unsafe { &*event.config_change_event })
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceStatusChange => {
-                Event::DeviceStatusChange(unsafe { &*event.device_status_change_event })
+                Event::DeviceStatusChange(unsafe { &*event.device_status_change_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_DroppedFrame => {
                 Event::DroppedFrame(unsafe { &*event.dropped_frame_event })
