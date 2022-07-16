@@ -19,6 +19,7 @@ mod image_properties;
 mod image_type;
 mod leap_rs;
 mod leap_vector;
+mod log_severity;
 mod policy_flag;
 mod quaternion;
 mod service_state;
@@ -47,6 +48,7 @@ pub use image_type::*;
 pub use leap_rs::*;
 use leap_sys::LeapGetNow;
 pub use leap_vector::*;
+pub use log_severity::*;
 pub use policy_flag::*;
 pub use quaternion::*;
 pub use service_state::*;
@@ -79,6 +81,7 @@ pub(crate) use leap_struct;
 macro_rules! leap_ref_struct {
     ($struct_name:ident, $sys_name:ident) => {
         pub struct $struct_name<'a> {
+            #[allow(dead_code)]
             pub(crate) handle: &'a $sys_name,
         }
 
