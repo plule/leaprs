@@ -1,6 +1,6 @@
 use leap_sys::*;
 
-use crate::{DeviceEvent, TrackingEvent};
+use crate::{DeviceEvent, ImageEvent, TrackingEvent};
 
 pub enum Event<'a> {
     //
@@ -29,7 +29,7 @@ pub enum Event<'a> {
     LogEvents(&'a LEAP_LOG_EVENTS),
     ConfigResponse(&'a LEAP_CONFIG_RESPONSE_EVENT),
     DroppedFrame(&'a LEAP_DROPPED_FRAME_EVENT),
-    Image(&'a LEAP_IMAGE_EVENT),
+    Image(ImageEvent<'a>),
     PointMappingChange(&'a LEAP_POINT_MAPPING_CHANGE_EVENT),
     HeadPose(&'a LEAP_HEAD_POSE_EVENT),
     Eyes(&'a LEAP_EYE_EVENT),
@@ -85,7 +85,7 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
                 Event::DroppedFrame(unsafe { &*event.dropped_frame_event })
             }
             leap_sys::_eLeapEventType_eLeapEventType_Image => {
-                Event::Image(unsafe { &*event.image_event })
+                Event::Image(unsafe { &*event.image_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_PointMappingChange => {
                 Event::PointMappingChange(unsafe { &*event.point_mapping_change_event })

@@ -99,9 +99,10 @@ fn main() {
 
     connection.wait_for("Reading image".to_string(), |e| match e {
         Event::Image(e) => {
-            let w = e.image[0].properties.width;
-            let h = e.image[0].properties.height;
-            let image_data = e.image[0].data();
+            let w = e.images()[0].properties().width();
+            let h = e.images()[0].properties().height();
+            let images = e.images();
+            let image_data = images[0].data();
             image::save_buffer("image.png", image_data, w, h, image::ColorType::L8)
                 .expect("failed to save buffer");
             Msg::Success(format!("Saved image.png"))

@@ -1,16 +1,28 @@
 use leap_sys::LEAP_IMAGE;
 
-pub trait Image {
-    fn data(&self) -> &[u8];
-}
+use crate::ImageProperties;
 
-impl Image for LEAP_IMAGE {
-    fn data(&self) -> &[u8] {
-        let width = self.properties.width;
-        let height = self.properties.height;
+crate::leap_ref_struct!(Image, LEAP_IMAGE);
+
+impl<'a> Image<'a> {
+    pub fn properties(&self) -> ImageProperties {
+        (&self.handle.properties).into()
+    }
+
+    pub fn matrix_version(&self) -> u64 {
+        self.handle.matrix_version
+    }
+
+    pub fn distorion_matrix(&self) {
+        todo!()
+    }
+
+    pub fn data(&self) -> &[u8] {
+        let width = self.handle.properties.width;
+        let height = self.handle.properties.height;
         let size = (width * height) as usize;
         unsafe {
-            let start = self.data.offset(self.offset as isize) as *const u8;
+            let start = self.handle.data.offset(self.handle.offset as isize) as *const u8;
             std::slice::from_raw_parts(start, size)
         }
     }

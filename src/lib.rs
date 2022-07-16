@@ -13,6 +13,9 @@ mod events;
 mod frame_header;
 mod hand;
 mod image;
+mod image_format;
+mod image_properties;
+mod image_type;
 mod leap_rs;
 mod leap_vector;
 mod policy_flag;
@@ -36,6 +39,9 @@ pub use event::*;
 pub use events::*;
 pub use frame_header::*;
 pub use hand::*;
+pub use image_format::*;
+pub use image_properties::*;
+pub use image_type::*;
 pub use leap_rs::*;
 use leap_sys::LeapGetNow;
 pub use leap_vector::*;
@@ -129,7 +135,7 @@ mod tests {
         where
             F: Fn(&Event) -> Option<T>,
         {
-            for _ in 0..10 {
+            for _ in 0..20 {
                 if let Ok(event_message) = self.poll(100) {
                     if let Some(ret) = condition(&event_message.event()) {
                         return ret;

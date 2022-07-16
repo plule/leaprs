@@ -15,3 +15,4 @@ copy_to_output = "2.0.0"
 [dev-dependencies]
 throbber = "0.1"
 image = "0.24.2"
+tempfile = "3.3.0"
