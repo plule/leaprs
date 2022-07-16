@@ -1,6 +1,9 @@
 use leap_sys::*;
 
-use crate::{ConnectionEvent, DeviceEvent, DeviceStatusChangeEvent, ImageEvent, TrackingEvent};
+use crate::{
+    ConnectionEvent, DeviceEvent, DeviceStatusChangeEvent, ImageEvent, TrackingEvent,
+    TrackingModeEvent,
+};
 
 pub enum Event<'a> {
     //
@@ -24,7 +27,7 @@ pub enum Event<'a> {
     Policy(&'a LEAP_POLICY_EVENT),
     DeviceFailure(&'a LEAP_DEVICE_FAILURE_EVENT),
     Tracking(TrackingEvent<'a>),
-    TrackingMode(&'a LEAP_TRACKING_MODE_EVENT),
+    TrackingMode(TrackingModeEvent<'a>),
     LogEvent(&'a LEAP_LOG_EVENT),
     LogEvents(&'a LEAP_LOG_EVENTS),
     ConfigResponse(&'a LEAP_CONFIG_RESPONSE_EVENT),
@@ -91,7 +94,7 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
                 Event::PointMappingChange(unsafe { &*event.point_mapping_change_event })
             }
             leap_sys::_eLeapEventType_eLeapEventType_TrackingMode => {
-                Event::TrackingMode(unsafe { &*event.tracking_mode_event })
+                Event::TrackingMode(unsafe { &*event.tracking_mode_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_LogEvents => {
                 Event::LogEvents(unsafe { &*event.log_events })

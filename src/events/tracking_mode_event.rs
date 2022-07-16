@@ -2,13 +2,11 @@ use leap_sys::LEAP_TRACKING_MODE_EVENT;
 
 use crate::TrackingMode;
 
-pub trait TrackingModeEvent {
-    fn current_tracking_mode(&self) -> TrackingMode;
-}
+crate::leap_ref_struct!(TrackingModeEvent, LEAP_TRACKING_MODE_EVENT);
 
-impl TrackingModeEvent for LEAP_TRACKING_MODE_EVENT {
-    fn current_tracking_mode(&self) -> TrackingMode {
-        self.current_tracking_mode.into()
+impl<'a> TrackingModeEvent<'a> {
+    pub fn current_tracking_mode(&self) -> TrackingMode {
+        self.handle.current_tracking_mode.into()
     }
 }
 
@@ -27,11 +25,11 @@ mod tests {
             connection.expect_event(
                 "Did not receive the tracking mode".to_string(),
                 |e| match e {
-                    Event::TrackingMode(mode) => Some(mode.clone().clone()),
+                    Event::TrackingMode(mode) => Some(mode.current_tracking_mode()),
                     _ => None,
                 },
             );
 
-        assert_ne!(mode.current_tracking_mode(), TrackingMode::Unknown);
+        assert_ne!(mode, TrackingMode::Unknown);
     }
 }
