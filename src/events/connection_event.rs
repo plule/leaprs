@@ -2,16 +2,11 @@ use leap_sys::LEAP_CONNECTION_EVENT;
 
 use crate::ServiceState;
 
-pub trait ConnectionEvent {
-    /// Get the service state flags.
-    ///
-    /// None if contains unknown bits.
-    fn flags(&self) -> Option<ServiceState>;
-}
+crate::leap_ref_struct!(ConnectionEvent, LEAP_CONNECTION_EVENT);
 
-impl ConnectionEvent for LEAP_CONNECTION_EVENT {
-    fn flags(&self) -> Option<ServiceState> {
-        ServiceState::from_bits(self.flags)
+impl<'a> ConnectionEvent<'a> {
+    pub fn flags(&self) -> Option<ServiceState> {
+        ServiceState::from_bits(self.handle.flags)
     }
 }
 

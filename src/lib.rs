@@ -137,7 +137,7 @@ mod tests {
         where
             F: Fn(&Event) -> Option<T>,
         {
-            for _ in 0..20 {
+            for _ in 0..50 {
                 if let Ok(event_message) = self.poll(100) {
                     if let Some(ret) = condition(&event_message.event()) {
                         return ret;

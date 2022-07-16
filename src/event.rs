@@ -1,6 +1,6 @@
 use leap_sys::*;
 
-use crate::{DeviceEvent, ImageEvent, TrackingEvent};
+use crate::{ConnectionEvent, DeviceEvent, ImageEvent, TrackingEvent};
 
 pub enum Event<'a> {
     //
@@ -8,7 +8,7 @@ pub enum Event<'a> {
     #[doc = " \\ingroup Structs"]
     #[doc = " Received from LeapPollConnection() when a connection to the Ultraleap Tracking Service is established."]
     #[doc = " @since 3.0.0"]
-    Connection(&'a LEAP_CONNECTION_EVENT),
+    Connection(ConnectionEvent<'a>),
     #[doc = " \\ingroup Structs"]
     #[doc = " Received from LeapPollConnection() when a connection to the Ultraleap Tracking Service is lost."]
     #[doc = ""]
@@ -49,7 +49,7 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
         match event_type {
             leap_sys::_eLeapEventType_eLeapEventType_None => Event::None,
             leap_sys::_eLeapEventType_eLeapEventType_Connection => {
-                Event::Connection(unsafe { &*event.connection_event })
+                Event::Connection(unsafe { &*event.connection_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_ConnectionLost => {
                 Event::ConnectionLost(unsafe { &*event.connection_lost_event })
@@ -119,7 +119,7 @@ mod tests {
     fn detect_unknown_events() {
         let mut connection = initialize_connection();
         for _ in 0..100 {
-            let msg = connection.poll(1000).expect("Failed to poll");
+            let msg = connection.poll(5000).expect("Failed to poll");
             if let Event::Unknown(_) = msg.event() {
                 panic!("Received an unknown event");
             }
