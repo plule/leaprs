@@ -1,6 +1,6 @@
 use leap_sys::LEAP_IMAGE;
 
-use crate::ImageProperties;
+use crate::{DistortionMatrix, ImageProperties};
 
 crate::leap_ref_struct!(Image, LEAP_IMAGE);
 
@@ -13,8 +13,14 @@ impl<'a> Image<'a> {
         self.handle.matrix_version
     }
 
-    pub fn distorion_matrix(&self) {
-        todo!()
+    pub fn distorion_matrix(&self) -> DistortionMatrix {
+        let distortion_matrix;
+
+        unsafe {
+            distortion_matrix = &*self.handle.distortion_matrix;
+        }
+
+        distortion_matrix.into()
     }
 
     pub fn data(&self) -> &[u8] {
