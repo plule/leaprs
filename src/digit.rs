@@ -1,35 +1,35 @@
 use leap_sys::{LEAP_BONE, LEAP_DIGIT};
 
 pub trait Digit {
-    fn get_bones(&self) -> &[LEAP_BONE; 4];
+    fn bones(&self) -> &[LEAP_BONE; 4];
 
-    fn get_metacarpal(&self) -> &LEAP_BONE;
+    fn metacarpal(&self) -> &LEAP_BONE;
 
-    fn get_proximal(&self) -> &LEAP_BONE;
+    fn proximal(&self) -> &LEAP_BONE;
 
-    fn get_intermediate(&self) -> &LEAP_BONE;
+    fn intermediate(&self) -> &LEAP_BONE;
 
-    fn get_distal(&self) -> &LEAP_BONE;
+    fn distal(&self) -> &LEAP_BONE;
 }
 
 impl Digit for LEAP_DIGIT {
-    fn get_bones(&self) -> &[LEAP_BONE; 4] {
+    fn bones(&self) -> &[LEAP_BONE; 4] {
         unsafe { &self.__bindgen_anon_1.bones }
     }
 
-    fn get_metacarpal(&self) -> &LEAP_BONE {
+    fn metacarpal(&self) -> &LEAP_BONE {
         unsafe { &self.__bindgen_anon_1.__bindgen_anon_1.metacarpal }
     }
 
-    fn get_proximal(&self) -> &LEAP_BONE {
+    fn proximal(&self) -> &LEAP_BONE {
         unsafe { &self.__bindgen_anon_1.__bindgen_anon_1.metacarpal }
     }
 
-    fn get_intermediate(&self) -> &LEAP_BONE {
+    fn intermediate(&self) -> &LEAP_BONE {
         unsafe { &self.__bindgen_anon_1.__bindgen_anon_1.intermediate }
     }
 
-    fn get_distal(&self) -> &LEAP_BONE {
+    fn distal(&self) -> &LEAP_BONE {
         unsafe { &self.__bindgen_anon_1.__bindgen_anon_1.distal }
     }
 }

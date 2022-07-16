@@ -45,7 +45,7 @@ pub use version_part::*;
 macro_rules! leap_struct {
     ($struct_name:ident, $sys_name:ident) => {
         pub struct $struct_name {
-            pub handle: $sys_name,
+            pub(crate) handle: $sys_name,
         }
 
         impl From<$sys_name> for $struct_name {
@@ -62,7 +62,7 @@ pub(crate) use leap_struct;
 macro_rules! leap_ref_struct {
     ($struct_name:ident, $sys_name:ident) => {
         pub struct $struct_name<'a> {
-            pub handle: &'a $sys_name,
+            pub(crate) handle: &'a $sys_name,
         }
 
         impl<'a> From<&'a $sys_name> for $struct_name<'a> {
@@ -117,7 +117,7 @@ mod tests {
         {
             for _ in 0..10 {
                 if let Ok(event_message) = self.poll(100) {
-                    if let Some(ret) = condition(&event_message.get_event()) {
+                    if let Some(ret) = condition(&event_message.event()) {
                         return ret;
                     }
                 }

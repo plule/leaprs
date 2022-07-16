@@ -6,11 +6,11 @@ pub trait ConnectionEvent {
     /// Get the service state flags.
     ///
     /// None if contains unknown bits.
-    fn get_flags(&self) -> Option<ServiceState>;
+    fn flags(&self) -> Option<ServiceState>;
 }
 
 impl ConnectionEvent for LEAP_CONNECTION_EVENT {
-    fn get_flags(&self) -> Option<ServiceState> {
+    fn flags(&self) -> Option<ServiceState> {
         ServiceState::from_bits(self.flags)
     }
 }
@@ -28,7 +28,7 @@ mod tests {
         let flags = connection.expect_event(
             "Did not receive a connection event.".to_string(),
             |e| match e {
-                Event::Connection(e) => Some(e.get_flags()),
+                Event::Connection(e) => Some(e.flags()),
                 _ => None,
             },
         );

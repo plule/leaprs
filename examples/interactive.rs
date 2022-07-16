@@ -10,7 +10,7 @@ fn main() {
 
     connection.wait_for("Connecting to the service...".to_string(), |e| match e {
         Event::Connection(e) => {
-            let flags = e.get_flags().expect("Invalid service state flags");
+            let flags = e.flags().expect("Invalid service state flags");
             Msg::Success(format!("Connected. Service state: {:?}", flags))
         }
         _ => Msg::None,
@@ -19,17 +19,17 @@ fn main() {
     connection.wait_for("Waiting for a device...".to_string(), |e| match e {
         Event::Device(e) => {
             let device_info = e
-                .get_device()
+                .device()
                 .open()
                 .expect("Failed to open the device")
                 .get_info()
                 .expect("Failed to get device info");
 
             let serial = device_info
-                .get_serial()
+                .serial()
                 .expect("Failed to get the device serial");
 
-            let pid = device_info.get_pid();
+            let pid = device_info.pid();
 
             Msg::Success(format!("Got the device {} ({:#?})", serial, pid))
         }
@@ -43,17 +43,16 @@ fn main() {
     connection.wait_for(
         "Waiting for the tracking mode message...".to_string(),
         |e| match e {
-            Event::TrackingMode(e) => Msg::Success(format!(
-                "Tracking mode: {:#?}",
-                e.get_current_tracking_mode()
-            )),
+            Event::TrackingMode(e) => {
+                Msg::Success(format!("Tracking mode: {:#?}", e.current_tracking_mode()))
+            }
             _ => Msg::None,
         },
     );
 
     connection.wait_for("Waiting for a hand...".to_string(), |e| match e {
         Event::Tracking(e) => {
-            if e.get_hands().len() > 0 {
+            if e.hands().len() > 0 {
                 Msg::Success("Got a hand".to_string())
             } else {
                 Msg::None
@@ -64,8 +63,8 @@ fn main() {
 
     connection.wait_for("Close the hand".to_string(), |e| match e {
         Event::Tracking(e) => {
-            if let Some(hand) = e.get_hands().first() {
-                let grab_strength = hand.grab_strength;
+            if let Some(hand) = e.hands().first() {
+                let grab_strength = hand.grab_strength();
                 if grab_strength >= 1.0 {
                     Msg::Success("The hand is closed".to_string())
                 } else {
@@ -80,8 +79,8 @@ fn main() {
 
     connection.wait_for("Open the hand".to_string(), |e| match e {
         Event::Tracking(e) => {
-            if let Some(hand) = e.get_hands().first() {
-                let ungrab_strength = 1.0 - hand.grab_strength;
+            if let Some(hand) = e.hands().first() {
+                let ungrab_strength = 1.0 - hand.grab_strength();
                 if ungrab_strength >= 0.999 {
                     Msg::Success("The hand is opened".to_string())
                 } else {
@@ -102,7 +101,7 @@ fn main() {
         Event::Image(e) => {
             let w = e.image[0].properties.width;
             let h = e.image[0].properties.height;
-            let image_data = e.image[0].get_data();
+            let image_data = e.image[0].data();
             image::save_buffer("image.png", image_data, w, h, image::ColorType::L8)
                 .expect("failed to save buffer");
             Msg::Success(format!("Saved image.png"))
@@ -139,7 +138,7 @@ impl WaitFor for Connection {
 
         loop {
             if let Ok(message) = self.poll(100) {
-                match condition(&message.get_event()) {
+                match condition(&message.event()) {
                     Msg::None => {}
                     Msg::Success(message) => {
                         throbber.success(message);

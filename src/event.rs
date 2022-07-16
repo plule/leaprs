@@ -120,7 +120,7 @@ mod tests {
         let mut connection = initialize_connection();
         for _ in 0..100 {
             let msg = connection.poll(1000).expect("Failed to poll");
-            if let Event::Unknown(_) = msg.get_event() {
+            if let Event::Unknown(_) = msg.event() {
                 panic!("Received an unknown event");
             }
         }

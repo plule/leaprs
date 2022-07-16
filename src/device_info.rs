@@ -15,34 +15,34 @@ impl DeviceInfo {
         Self { handle, serial }
     }
 
-    pub fn get_status(&self) -> Option<DeviceStatus> {
+    pub fn status(&self) -> Option<DeviceStatus> {
         DeviceStatus::from_bits(self.handle.status)
     }
 
     // TODO get_caps
 
-    pub fn get_pid(&self) -> DevicePID {
+    pub fn pid(&self) -> DevicePID {
         DevicePID::from_primitive(self.handle.pid)
     }
 
-    pub fn get_baseline(&self) -> u32 {
+    pub fn baseline(&self) -> u32 {
         self.handle.baseline
     }
 
-    pub fn get_serial(&self) -> Option<&str> {
+    pub fn serial(&self) -> Option<&str> {
         let serial = unsafe { CStr::from_ptr(self.handle.serial) };
         serial.to_str().ok()
     }
 
-    pub fn get_h_fov(&self) -> f32 {
+    pub fn h_fov(&self) -> f32 {
         self.handle.h_fov
     }
 
-    pub fn get_v_fov(&self) -> f32 {
+    pub fn v_fov(&self) -> f32 {
         self.handle.v_fov
     }
 
-    pub fn get_range(&self) -> u32 {
+    pub fn range(&self) -> u32 {
         self.handle.range
     }
 }
@@ -61,11 +61,9 @@ mod tests {
         let device_info = devices.first().expect("No devices plugged for tests.");
         let mut device = device_info.open().expect("Failed to open the device");
         let device_info = device.get_info().expect("Failed to get device info");
-        assert_ne!(device_info.get_pid(), DevicePID::Unknown);
-        let serial = device_info.get_serial().expect("Failed to get serial");
+        assert_ne!(device_info.pid(), DevicePID::Unknown);
+        let serial = device_info.serial().expect("Failed to get serial");
         assert!(serial.len() > 0);
-        device_info
-            .get_status()
-            .expect("Failed to get device status");
+        device_info.status().expect("Failed to get device status");
     }
 }

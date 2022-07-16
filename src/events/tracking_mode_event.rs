@@ -3,11 +3,11 @@ use leap_sys::LEAP_TRACKING_MODE_EVENT;
 use crate::TrackingMode;
 
 pub trait TrackingModeEvent {
-    fn get_current_tracking_mode(&self) -> TrackingMode;
+    fn current_tracking_mode(&self) -> TrackingMode;
 }
 
 impl TrackingModeEvent for LEAP_TRACKING_MODE_EVENT {
-    fn get_current_tracking_mode(&self) -> TrackingMode {
+    fn current_tracking_mode(&self) -> TrackingMode {
         self.current_tracking_mode.into()
     }
 }
@@ -32,6 +32,6 @@ mod tests {
                 },
             );
 
-        assert_ne!(mode.get_current_tracking_mode(), TrackingMode::Unknown);
+        assert_ne!(mode.current_tracking_mode(), TrackingMode::Unknown);
     }
 }

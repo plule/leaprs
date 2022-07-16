@@ -9,7 +9,7 @@ impl DeviceRef {
         Device::open(self.handle)
     }
 
-    pub fn get_id(&self) -> u32 {
+    pub fn id(&self) -> u32 {
         self.handle.id
     }
 }
