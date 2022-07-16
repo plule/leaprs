@@ -1,8 +1,8 @@
 use leap_sys::*;
 
 use crate::{
-    ConnectionEvent, DeviceEvent, DeviceStatusChangeEvent, ImageEvent, TrackingEvent,
-    TrackingModeEvent,
+    ConnectionEvent, ConnectionLostEvent, DeviceEvent, DeviceStatusChangeEvent, ImageEvent,
+    TrackingEvent, TrackingModeEvent,
 };
 
 pub enum Event<'a> {
@@ -20,7 +20,7 @@ pub enum Event<'a> {
     #[doc = " this event. Otherwise, it can take up to 5 seconds of polling the connection to"]
     #[doc = " receive this event."]
     #[doc = " @since 3.0.0"]
-    ConnectionLost(&'a LEAP_CONNECTION_LOST_EVENT),
+    ConnectionLost(ConnectionLostEvent<'a>),
     //
     Device(DeviceEvent<'a>),
     DeviceStatusChange(DeviceStatusChangeEvent<'a>),
@@ -55,7 +55,7 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
                 Event::Connection(unsafe { &*event.connection_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_ConnectionLost => {
-                Event::ConnectionLost(unsafe { &*event.connection_lost_event })
+                Event::ConnectionLost(unsafe { &*event.connection_lost_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_Device => {
                 Event::Device(unsafe { &*event.device_event }.into())
