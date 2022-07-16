@@ -2,15 +2,7 @@ use leap_sys::LEAP_DEVICE_EVENT;
 
 use crate::{DeviceRef, DeviceStatus};
 
-pub struct DeviceEvent<'a> {
-    pub handle: &'a LEAP_DEVICE_EVENT,
-}
-
-impl<'a> From<&'a LEAP_DEVICE_EVENT> for DeviceEvent<'a> {
-    fn from(handle: &'a LEAP_DEVICE_EVENT) -> Self {
-        Self { handle }
-    }
-}
+super::leap_event_struct!(DeviceEvent, LEAP_DEVICE_EVENT);
 
 impl<'a> DeviceEvent<'a> {
     pub fn get_device(&self) -> DeviceRef {
