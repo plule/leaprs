@@ -1,12 +1,12 @@
-use leap_sys::{LEAP_FRAME_HEADER, LEAP_TRACKING_EVENT};
+use leap_sys::LEAP_TRACKING_EVENT;
 
-use crate::Hand;
+use crate::{FrameHeader, Hand};
 
 crate::leap_ref_struct!(TrackingEvent, LEAP_TRACKING_EVENT);
 
 impl<'a> TrackingEvent<'a> {
-    pub fn info(&self) -> &LEAP_FRAME_HEADER {
-        &self.handle.info
+    pub fn info(&self) -> FrameHeader {
+        (&self.handle.info).into()
     }
 
     pub fn tracking_frame_id(&self) -> i64 {

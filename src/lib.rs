@@ -10,6 +10,7 @@ mod device_status;
 mod digit;
 mod event;
 mod events;
+mod frame_header;
 mod hand;
 mod image;
 mod leap_rs;
@@ -33,8 +34,10 @@ pub use device_status::*;
 pub use digit::*;
 pub use event::*;
 pub use events::*;
+pub use frame_header::*;
 pub use hand::*;
 pub use leap_rs::*;
+use leap_sys::LeapGetNow;
 pub use leap_vector::*;
 pub use policy_flag::*;
 pub use quaternion::*;
@@ -42,6 +45,10 @@ pub use service_state::*;
 pub use tracking_mode::*;
 pub use version::*;
 pub use version_part::*;
+
+pub fn get_now() -> i64 {
+    unsafe { LeapGetNow() }
+}
 
 /// Declare a leap struct wrapper that owns it.
 macro_rules! leap_struct {
@@ -80,6 +87,11 @@ pub(crate) use leap_ref_struct;
 #[cfg(test)]
 mod tests {
     use crate::*;
+
+    #[test]
+    pub fn leap_get_now() {
+        assert!(get_now() > 0)
+    }
 
     /// Connect to the service and wait for the first events necessary for LeapC to be functional
     pub fn initialize_connection() -> Connection {
