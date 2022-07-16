@@ -1,5 +1,7 @@
 use leap_sys::*;
 
+use crate::DeviceEvent;
+
 pub enum Event<'a> {
     //
     None,
@@ -17,7 +19,7 @@ pub enum Event<'a> {
     #[doc = " @since 3.0.0"]
     ConnectionLost(&'a LEAP_CONNECTION_LOST_EVENT),
     //
-    Device(&'a LEAP_DEVICE_EVENT),
+    Device(DeviceEvent<'a>),
     DeviceStatusChange(&'a LEAP_DEVICE_STATUS_CHANGE_EVENT),
     Policy(&'a LEAP_POLICY_EVENT),
     DeviceFailure(&'a LEAP_DEVICE_FAILURE_EVENT),

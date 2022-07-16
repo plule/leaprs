@@ -3,7 +3,8 @@ use std::mem;
 use leap_sys::*;
 
 use crate::{
-    leap_try, ConnectionConfig, ConnectionMessage, Error, PolicyFlags, TrackingMode, VersionPart,
+    leap_try, ConnectionConfig, ConnectionMessage, DeviceRef, Error, PolicyFlags, TrackingMode,
+    VersionPart,
 };
 
 #[doc = " \\ingroup Structs"]
@@ -68,7 +69,7 @@ impl Connection {
         Ok(self.connection_message.as_ref().unwrap())
     }
 
-    pub fn get_device_list_raw(&mut self, count: &mut u32) -> Result<Vec<LEAP_DEVICE_REF>, Error> {
+    pub fn get_device_list_raw(&mut self, count: &mut u32) -> Result<Vec<DeviceRef>, Error> {
         let mut devices;
         unsafe {
             // Initialize enough space for the devices
@@ -84,10 +85,10 @@ impl Connection {
             // Truncate the null devices if less than asked were received.
             devices.truncate(*count as usize);
         }
-        Ok(devices)
+        Ok(devices.into_iter().map(|r| r.into()).collect())
     }
 
-    pub fn get_device_list(&mut self) -> Result<Vec<LEAP_DEVICE_REF>, Error> {
+    pub fn get_device_list(&mut self) -> Result<Vec<DeviceRef>, Error> {
         let mut count = 0;
         // First call to get the number of devices
         let _ = self.get_device_list_raw(&mut count)?;

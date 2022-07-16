@@ -26,7 +26,7 @@ impl ConnectionMessage {
                 })
             }
             leap_sys::_eLeapEventType_eLeapEventType_Device => {
-                Event::Device(unsafe { &*self.handle.__bindgen_anon_1.device_event })
+                Event::Device(unsafe { &*self.handle.__bindgen_anon_1.device_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceFailure => {
                 Event::DeviceFailure(unsafe { &*self.handle.__bindgen_anon_1.device_failure_event })
