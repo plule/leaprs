@@ -1,4 +1,4 @@
-use leap_sys::*;
+use leap_sys::{LEAP_BONE, LEAP_DIGIT};
 
 pub trait Digit {
     fn get_bones(&self) -> &[LEAP_BONE; 4];

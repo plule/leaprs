@@ -1,9 +1,7 @@
 use crate::{leap_try, DeviceInfo, Error};
 use leap_sys::*;
 
-pub struct Device {
-    handle: LEAP_DEVICE,
-}
+crate::leap_struct!(Device, LEAP_DEVICE);
 
 impl Drop for Device {
     fn drop(&mut self) {
@@ -18,7 +16,7 @@ impl Device {
             handle = std::mem::zeroed();
             leap_try(LeapOpenDevice(device_ref, &mut handle))?;
         }
-        Ok(Self { handle })
+        Ok(handle.into())
     }
 
     pub fn get_info_raw(&mut self, info: &mut LEAP_DEVICE_INFO, serial: &mut Vec<i8>) -> eLeapRS {

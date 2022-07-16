@@ -2,15 +2,7 @@ use leap_sys::LEAP_DEVICE_REF;
 
 use crate::Device;
 
-pub struct DeviceRef {
-    handle: LEAP_DEVICE_REF,
-}
-
-impl From<LEAP_DEVICE_REF> for DeviceRef {
-    fn from(handle: LEAP_DEVICE_REF) -> Self {
-        Self { handle }
-    }
-}
+crate::leap_struct!(DeviceRef, LEAP_DEVICE_REF);
 
 impl DeviceRef {
     pub fn open(&self) -> Result<Device, crate::Error> {

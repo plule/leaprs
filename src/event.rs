@@ -1,6 +1,6 @@
 use leap_sys::*;
 
-use crate::DeviceEvent;
+use crate::{DeviceEvent, TrackingEvent};
 
 pub enum Event<'a> {
     //
@@ -23,7 +23,7 @@ pub enum Event<'a> {
     DeviceStatusChange(&'a LEAP_DEVICE_STATUS_CHANGE_EVENT),
     Policy(&'a LEAP_POLICY_EVENT),
     DeviceFailure(&'a LEAP_DEVICE_FAILURE_EVENT),
-    Traking(&'a LEAP_TRACKING_EVENT),
+    Tracking(TrackingEvent<'a>),
     TrackingMode(&'a LEAP_TRACKING_MODE_EVENT),
     LogEvent(&'a LEAP_LOG_EVENT),
     LogEvents(&'a LEAP_LOG_EVENTS),

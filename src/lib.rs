@@ -17,6 +17,7 @@ mod policy_flag;
 mod quaternion;
 mod service_state;
 mod tracking_mode;
+mod version;
 mod version_part;
 pub use crate::image::*;
 pub use connection::*;
@@ -37,7 +38,42 @@ pub use policy_flag::*;
 pub use quaternion::*;
 pub use service_state::*;
 pub use tracking_mode::*;
+pub use version::*;
 pub use version_part::*;
+
+/// Declare a leap struct wrapper that owns it.
+macro_rules! leap_struct {
+    ($struct_name:ident, $sys_name:ident) => {
+        pub struct $struct_name {
+            pub handle: $sys_name,
+        }
+
+        impl From<$sys_name> for $struct_name {
+            fn from(handle: $sys_name) -> Self {
+                Self { handle }
+            }
+        }
+    };
+}
+
+pub(crate) use leap_struct;
+
+/// Declare a leap struct wrapper that does not own it.
+macro_rules! leap_ref_struct {
+    ($struct_name:ident, $sys_name:ident) => {
+        pub struct $struct_name<'a> {
+            pub handle: &'a $sys_name,
+        }
+
+        impl<'a> From<&'a $sys_name> for $struct_name<'a> {
+            fn from(handle: &'a $sys_name) -> Self {
+                Self { handle }
+            }
+        }
+    };
+}
+
+pub(crate) use leap_ref_struct;
 
 #[cfg(test)]
 mod tests {

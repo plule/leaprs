@@ -52,7 +52,7 @@ fn main() {
     );
 
     connection.wait_for("Waiting for a hand...".to_string(), |e| match e {
-        Event::Traking(e) => {
+        Event::Tracking(e) => {
             if e.get_hands().len() > 0 {
                 Msg::Success("Got a hand".to_string())
             } else {
@@ -63,7 +63,7 @@ fn main() {
     });
 
     connection.wait_for("Close the hand".to_string(), |e| match e {
-        Event::Traking(e) => {
+        Event::Tracking(e) => {
             if let Some(hand) = e.get_hands().first() {
                 let grab_strength = hand.grab_strength;
                 if grab_strength >= 1.0 {
@@ -79,7 +79,7 @@ fn main() {
     });
 
     connection.wait_for("Open the hand".to_string(), |e| match e {
-        Event::Traking(e) => {
+        Event::Tracking(e) => {
             if let Some(hand) = e.get_hands().first() {
                 let ungrab_strength = 1.0 - hand.grab_strength;
                 if ungrab_strength >= 0.999 {

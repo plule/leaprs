@@ -4,7 +4,7 @@ use leap_sys::*;
 
 use crate::{
     leap_try, ConnectionConfig, ConnectionMessage, DeviceRef, Error, PolicyFlags, TrackingMode,
-    VersionPart,
+    Version, VersionPart,
 };
 
 #[doc = " \\ingroup Structs"]
@@ -96,13 +96,13 @@ impl Connection {
         self.get_device_list_raw(&mut count)
     }
 
-    pub fn get_version(&mut self, part: VersionPart) -> Result<LEAP_VERSION, Error> {
+    pub fn get_version(&mut self, part: VersionPart) -> Result<Version, Error> {
         let mut version: LEAP_VERSION;
         unsafe {
             version = std::mem::zeroed();
             leap_try(LeapGetVersion(self.handle, part.into(), &mut version))?;
         }
-        Ok(version)
+        Ok(version.into())
     }
 
     pub fn set_policy_flags(&mut self, set: PolicyFlags, clear: PolicyFlags) -> Result<(), Error> {

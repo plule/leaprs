@@ -2,15 +2,7 @@ use leap_sys::LEAP_CONNECTION_MESSAGE;
 
 use crate::event::Event;
 
-pub struct ConnectionMessage {
-    handle: LEAP_CONNECTION_MESSAGE,
-}
-
-impl From<LEAP_CONNECTION_MESSAGE> for ConnectionMessage {
-    fn from(handle: LEAP_CONNECTION_MESSAGE) -> Self {
-        Self { handle }
-    }
-}
+crate::leap_struct!(ConnectionMessage, LEAP_CONNECTION_MESSAGE);
 
 impl ConnectionMessage {
     pub fn get_event(&self) -> Event {
@@ -35,7 +27,7 @@ impl ConnectionMessage {
                 Event::Policy(unsafe { &*self.handle.__bindgen_anon_1.policy_event })
             }
             leap_sys::_eLeapEventType_eLeapEventType_Tracking => {
-                Event::Traking(unsafe { &*self.handle.__bindgen_anon_1.tracking_event })
+                Event::Tracking(unsafe { &*self.handle.__bindgen_anon_1.tracking_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_ImageRequestError => Event::ImageRequestError,
             leap_sys::_eLeapEventType_eLeapEventType_ImageComplete => Event::ImageComplete,
