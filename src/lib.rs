@@ -52,16 +52,16 @@ mod tests {
         connection.expect_event(
             "Did not receive connection message".to_string(),
             |e| match e {
-                Event::Connection(_) => true,
-                _ => false,
+                Event::Connection(_) => Some(()),
+                _ => None,
             },
         );
 
         connection.expect_event(
             "Did not receive device connection".to_string(),
             |e| match e {
-                Event::Device(_) => true,
-                _ => false,
+                Event::Device(_) => Some(()),
+                _ => None,
             },
         );
 
@@ -69,20 +69,20 @@ mod tests {
     }
 
     pub trait ConnectionTestExtensions {
-        fn expect_event<F>(&mut self, message: String, condition: F)
+        fn expect_event<F, T>(&mut self, message: String, condition: F) -> T
         where
-            F: Fn(&Event) -> bool;
+            F: Fn(&Event) -> Option<T>;
     }
 
     impl ConnectionTestExtensions for Connection {
-        fn expect_event<F>(&mut self, message: String, condition: F)
+        fn expect_event<F, T>(&mut self, message: String, condition: F) -> T
         where
-            F: Fn(&Event) -> bool,
+            F: Fn(&Event) -> Option<T>,
         {
             for _ in 0..10 {
                 if let Ok(event_message) = self.poll(100) {
-                    if condition(&event_message.get_event()) {
-                        return;
+                    if let Some(ret) = condition(&event_message.get_event()) {
+                        return ret;
                     }
                 }
             }

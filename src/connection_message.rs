@@ -86,3 +86,20 @@ impl ConnectionMessage {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::tests::*;
+    use crate::*;
+
+    #[test]
+    fn detect_unknown_events() {
+        let mut connection = initialize_connection();
+        for _ in 0..100 {
+            let msg = connection.poll(1000).expect("Failed to poll");
+            if let Event::Unknown(_) = msg.get_event() {
+                panic!("Received an unknown event");
+            }
+        }
+    }
+}

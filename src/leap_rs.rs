@@ -97,7 +97,7 @@ pub enum Error {
     /// The value is not a code. This is likely a bug or a version mixup.
     #[num_enum(default)]
     #[error(
-        "The returned value is not a code. This is likely a bug or a LeapSDK version mismatch."
+        "The returned value is not a code. This is likely a LeapRS bug or a LeapSDK version mismatch."
     )]
-    NotACode,
+    Unknown,
 }

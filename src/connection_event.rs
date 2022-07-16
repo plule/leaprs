@@ -14,3 +14,24 @@ impl ConnectionEvent for LEAP_CONNECTION_EVENT {
         ServiceState::from_bits(self.flags)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::tests::*;
+    use crate::*;
+
+    #[test]
+    fn connection_event_test() {
+        let mut connection =
+            Connection::create(ConnectionConfig::default()).expect("Failed to connect");
+        connection.open().expect("Failed to open the connection");
+        let flags = connection.expect_event(
+            "Did not receive a connection event.".to_string(),
+            |e| match e {
+                Event::Connection(e) => Some(e.get_flags()),
+                _ => None,
+            },
+        );
+        flags.expect("Connection event with unknown flags.");
+    }
+}
