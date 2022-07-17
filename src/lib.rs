@@ -1,3 +1,4 @@
+#![allow(rustdoc::broken_intra_doc_links)] // The doc is mostly c/c from the origin, the links need repair.
 mod bone;
 mod connection;
 mod connection_config;
@@ -64,7 +65,11 @@ pub fn get_now() -> i64 {
 
 /// Declare a leap struct wrapper that owns it.
 macro_rules! leap_struct {
-    ($struct_name:ident, $sys_name:ident) => {
+    (
+        $(#[$meta:meta])*
+        $struct_name:ident, $sys_name:ident
+    ) => {
+        $(#[$meta])*
         pub struct $struct_name {
             pub(crate) handle: $sys_name,
         }

@@ -3,6 +3,7 @@ use num_enum::{FromPrimitive, IntoPrimitive};
 
 #[derive(Debug, Eq, PartialEq, IntoPrimitive, FromPrimitive)]
 #[repr(i32)]
+#[doc = " Device hardware types. @since 3.0.0"]
 pub enum DevicePID {
     #[doc = " An unknown device that is compatible with the tracking software. @since 3.1.3"]
     #[num_enum(default)]

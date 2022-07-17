@@ -3,6 +3,8 @@ use leap_sys::*;
 use bitflags::bitflags;
 
 bitflags! {
+    #[doc = " Enumerates the device status codes."]
+    #[doc = " @since 3.0.0"]
     pub struct DeviceStatus: u32 {
         #[doc = " The device is sending out frames. @since 3.0.0"]
         const STREAMING = _eLeapDeviceStatus_eLeapDeviceStatus_Streaming as u32;

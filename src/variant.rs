@@ -4,10 +4,16 @@ use leap_sys::{
 };
 use std::ffi::CString;
 
+#[doc = " A variant data type used to get and set service configuration values."]
+#[doc = " @since 3.0.0"]
 pub enum Variant {
+    #[doc = " A boolean value. @since 3.0.0"]
     Boolean(bool),
+    #[doc = " An integer value. @since 3.0.0"]
     Int32(i32),
+    #[doc = " A floating point value. @since 3.0.0"]
     Float(f32),
+    #[doc = " A string value. @since 3.0.0"]
     String(CString),
 }
 

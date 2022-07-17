@@ -2,6 +2,7 @@ use bitflags::bitflags;
 use leap_sys::*;
 
 bitflags! {
+    #[doc = " Enumerates flags for the service policies."]
     pub struct PolicyFlags: u64 {
         #[doc = " The policy allowing an application to receive frames in the background. @since 3.0.0"]
         const BACKGROUND_FRAMES = _eLeapPolicyFlag_eLeapPolicyFlag_BackgroundFrames as u64;

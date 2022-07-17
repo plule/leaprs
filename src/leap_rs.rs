@@ -12,6 +12,7 @@ pub(crate) fn leap_try(leap_rs: i32) -> Result<(), Error> {
 
 #[derive(Debug, Eq, PartialEq, IntoPrimitive, FromPrimitive, Error)]
 #[repr(i32)]
+#[doc = " Defines the codes returned by all LeapC functions."]
 pub enum Error {
     #[error("An undetermined error has occurred.")]
     #[doc = " This is usually the result of an abnormal operating condition in LeapC,"]

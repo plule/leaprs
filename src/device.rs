@@ -1,7 +1,13 @@
 use crate::{leap_try, DeviceInfo, Error};
 use leap_sys::*;
 
-crate::leap_struct!(Device, LEAP_DEVICE);
+crate::leap_struct!(
+    #[doc = " A handle to a Leap device object."]
+    #[doc = " Use this handle to specify the device for an operation."]
+    #[doc = " @since 3.0.0"]
+    Device,
+    LEAP_DEVICE
+);
 
 impl Drop for Device {
     fn drop(&mut self) {
@@ -10,6 +16,16 @@ impl Drop for Device {
 }
 
 impl Device {
+    #[doc = " Opens a device reference and retrieves a handle to the device."]
+    #[doc = ""]
+    #[doc = " To ensure resources are properly freed, users must call LeapCloseDevice()"]
+    #[doc = " when finished with the device, even if the retrieved device has problems"]
+    #[doc = " or cannot stream."]
+    #[doc = ""]
+    #[doc = " @param rDevice A device reference."]
+    #[doc = " @param[out] phDevice A pointer that receives the opened device handle."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 3.0.0"]
     pub fn open(device_ref: LEAP_DEVICE_REF) -> Result<Self, Error> {
         let mut handle: LEAP_DEVICE;
         unsafe {
@@ -19,12 +35,26 @@ impl Device {
         Ok(handle.into())
     }
 
+    #[doc = " Gets device properties."]
+    #[doc = ""]
+    #[doc = " To get the device serial number, you must supply a LEAP_DEVICE_INFO struct whose"]
+    #[doc = " serial member points to a char array large enough to hold the null-terminated"]
+    #[doc = " serial number string. To get the required length, call LeapGetDeviceInfo() using"]
+    #[doc = " a LEAP_DEVICE_INFO struct that has serial set to NULL. LeapC sets serial_length field of"]
+    #[doc = " the struct to the required length. You can then allocate memory for the string,"]
+    #[doc = " set the serial field, and call this function again."]
+    #[doc = ""]
+    #[doc = " @param hDevice A handle to the device to be queried."]
+    #[doc = " @param[out] info The struct to receive the device property data."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 3.0.0"]
     pub fn get_info_raw(&mut self, info: &mut LEAP_DEVICE_INFO, serial: &mut Vec<i8>) -> eLeapRS {
         info.serial_length = serial.len() as u32;
         info.serial = serial.as_mut_ptr();
         unsafe { LeapGetDeviceInfo(self.handle, info) }
     }
 
+    #[doc = " Gets device properties."]
     pub fn get_info(&mut self) -> Result<DeviceInfo, Error> {
         let mut serial: Vec<i8> = vec![0];
         let mut info: LEAP_DEVICE_INFO = LEAP_DEVICE_INFO {
