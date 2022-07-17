@@ -13,8 +13,6 @@ fn main() {
 
     if !leapsdk_path.is_dir() {
         println!("cargo:warning=Could not find LeapSDK at the location {}. Install it from https://developer.leapmotion.com/tracking-software-download or set its location with the environment variable LEAPSDK_LIB_PATH.", leapsdk_path.display());
-        // Building the library is still ok, but binaries will not run.
-        return;
     } else {
         let path_str = leapsdk_path
             .to_str()
