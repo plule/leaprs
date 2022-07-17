@@ -1,4 +1,5 @@
 #![allow(rustdoc::broken_intra_doc_links)] // The doc is mostly c/c from the origin, the links need repair.
+#![doc = include_str!("../README.md")]
 mod bone;
 mod connection;
 mod connection_config;
