@@ -11,25 +11,25 @@ fn main() {
 
     let leapsdk_path = PathBuf::from(leapsdk_path);
 
-    assert!(
-        leapsdk_path.is_dir(),
-        "Could not find LeapSDK at the location {}. Install it from https://developer.leapmotion.com/tracking-software-download or set its location with the environment variable LEAPSDK_LIB_PATH.",
-        leapsdk_path.display()
-    );
+    if !leapsdk_path.is_dir() {
+        println!("cargo:warning=Could not find LeapSDK at the location {}. Install it from https://developer.leapmotion.com/tracking-software-download or set its location with the environment variable LEAPSDK_LIB_PATH.", leapsdk_path.display());
+        // Building the library is still ok, but binaries will not run.
+        return;
+    } else {
+        let path_str = leapsdk_path
+            .to_str()
+            .unwrap_or_else(|| panic!("{} is not a valid path.", leapsdk_path.display()));
 
-    let path_str = leapsdk_path
-        .to_str()
-        .unwrap_or_else(|| panic!("{} is not a valid path.", leapsdk_path.display()));
+        // Link to LeapC.lib
+        println!(r"cargo:rustc-link-search={}", path_str);
+        println!(r"cargo:rustc-link-lib=static=LeapC");
 
-    // Link to LeapC.lib
-    println!(r"cargo:rustc-link-search={}", path_str);
-    println!(r"cargo:rustc-link-lib=static=LeapC");
-
-    // Copy LeapC.dll to the output
-    let mut leapcdll_path = leapsdk_path.clone();
-    leapcdll_path.push("LeapC.dll");
-    let leapcdll_path = leapcdll_path.to_str().unwrap();
-    println!("cargo:rerun-if-changed={}", leapcdll_path);
-    copy_to_output(leapcdll_path, &env::var("PROFILE").unwrap())
-        .expect("Failed to copy LeapC.dll to the output path");
+        // Copy LeapC.dll to the output
+        let mut leapcdll_path = leapsdk_path.clone();
+        leapcdll_path.push("LeapC.dll");
+        let leapcdll_path = leapcdll_path.to_str().unwrap();
+        println!("cargo:rerun-if-changed={}", leapcdll_path);
+        copy_to_output(leapcdll_path, &env::var("PROFILE").unwrap())
+            .expect("Failed to copy LeapC.dll to the output path");
+    }
 }
