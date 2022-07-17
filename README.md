@@ -1,7 +1,8 @@
 # LeapRS
 
 LeapRS is a safe wrapper for LeapC, the [Leap Motion C
-API](https://docs.ultraleap.com/tracking-api/).
+API](https://docs.ultraleap.com/tracking-api/). It uses the generated binding
+provided by [leap-sys](https://crates.io/crates/leap-sys).
 
 This is an API for accessing Leap Motion/Ultraleap hand tracking device. It only
 works on Windows.
