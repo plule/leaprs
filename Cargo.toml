@@ -1,8 +1,24 @@
 [package]
 name = "leaprs"
-version = "0.1.0"
+version = "0.1.0-dev"
 edition = "2021"
+authors = ["Pierre Lulé <pierre@lule.fr>"]
+description = "Safe wrapper for the LeapC Ultraleap (Leap Motion) hand tracking device API."
 readme = "README.md"
+repository = "https://github.com/plule/leaprs"
+license = "MIT OR Apache-2.0"
+categories = [
+    "api-bindings",
+    "game-development",
+    "computer-vision",
+    "hardware-support",
+]
+keywords = [
+    "leapc",
+    "leap",
+    "ultraleap",
+    "hand",
+]
 
 [dependencies]
 leap-sys = "0.2"
