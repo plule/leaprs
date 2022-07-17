@@ -1,8 +1,9 @@
 use leap_sys::*;
 
 use crate::{
-    ConnectionEvent, ConnectionLostEvent, DeviceEvent, DeviceStatusChangeEvent, ImageEvent,
-    LogEvent, LogEvents, PolicyEvent, TrackingEvent, TrackingModeEvent,
+    ConfigChangeEvent, ConfigResponseEvent, ConnectionEvent, ConnectionLostEvent, DeviceEvent,
+    DeviceStatusChangeEvent, ImageEvent, LogEvent, LogEvents, PolicyEvent, TrackingEvent,
+    TrackingModeEvent,
 };
 
 pub enum Event<'a> {
@@ -30,14 +31,14 @@ pub enum Event<'a> {
     TrackingMode(TrackingModeEvent<'a>),
     LogEvent(LogEvent<'a>),
     LogEvents(LogEvents<'a>),
-    ConfigResponse(&'a LEAP_CONFIG_RESPONSE_EVENT),
+    ConfigResponse(ConfigResponseEvent<'a>),
     DroppedFrame(&'a LEAP_DROPPED_FRAME_EVENT),
     Image(ImageEvent<'a>),
     PointMappingChange(&'a LEAP_POINT_MAPPING_CHANGE_EVENT),
     HeadPose(&'a LEAP_HEAD_POSE_EVENT),
     Eyes(&'a LEAP_EYE_EVENT),
     IMU(&'a LEAP_IMU_EVENT),
-    ConfigChange(&'a LEAP_CONFIG_CHANGE_EVENT),
+    ConfigChange(ConfigChangeEvent<'a>),
     ImageComplete,
     ImageRequestError,
     DeviceLost,
@@ -76,10 +77,10 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceLost => Event::DeviceLost,
             leap_sys::_eLeapEventType_eLeapEventType_ConfigResponse => {
-                Event::ConfigResponse(unsafe { &*event.config_response_event })
+                Event::ConfigResponse(unsafe { &*event.config_response_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_ConfigChange => {
-                Event::ConfigChange(unsafe { &*event.config_change_event })
+                Event::ConfigChange(unsafe { &*event.config_change_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceStatusChange => {
                 Event::DeviceStatusChange(unsafe { &*event.device_status_change_event }.into())

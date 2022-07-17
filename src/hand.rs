@@ -91,7 +91,7 @@ mod tests {
     use crate::*;
 
     #[test]
-    #[ignore] // needs to put hand in front of leap
+    #[ignore = "needs to put hand in front of leap"]
     fn get_all_hand_bones() {
         let mut connection = initialize_connection();
         connection.expect_event("No hand in view".to_string(), |e| match e {

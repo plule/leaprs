@@ -1,3 +1,5 @@
+mod config_change_event;
+mod config_response_event;
 mod connection_event;
 mod connection_lost_event;
 mod device_event;
@@ -8,6 +10,8 @@ mod log_events;
 mod policy_event;
 mod tracking_event;
 mod tracking_mode_event;
+pub use config_change_event::*;
+pub use config_response_event::*;
 pub use connection_event::*;
 pub use connection_lost_event::*;
 pub use device_event::*;

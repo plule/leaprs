@@ -24,6 +24,7 @@ mod policy_flag;
 mod quaternion;
 mod service_state;
 mod tracking_mode;
+mod variant;
 mod version;
 mod version_part;
 pub use crate::image::*;
@@ -53,6 +54,7 @@ pub use policy_flag::*;
 pub use quaternion::*;
 pub use service_state::*;
 pub use tracking_mode::*;
+pub use variant::*;
 pub use version::*;
 pub use version_part::*;
 
@@ -140,7 +142,7 @@ mod tests {
         where
             F: Fn(&Event) -> Option<T>,
         {
-            for _ in 0..50 {
+            for _ in 0..200 {
                 if let Ok(event_message) = self.poll(100) {
                     if let Some(ret) = condition(&event_message.event()) {
                         return ret;

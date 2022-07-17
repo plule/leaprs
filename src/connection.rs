@@ -1,10 +1,10 @@
-use std::mem;
+use std::{ffi::CString, mem};
 
 use leap_sys::*;
 
 use crate::{
     leap_try, ConnectionConfig, ConnectionMessage, DeviceRef, Error, PolicyFlags, TrackingMode,
-    Version, VersionPart,
+    Variant, Version, VersionPart,
 };
 
 #[doc = " \\ingroup Structs"]
@@ -112,10 +112,53 @@ impl Connection {
     pub fn set_tracking_mode(&mut self, mode: TrackingMode) -> Result<(), Error> {
         unsafe { leap_try(LeapSetTrackingMode(self.handle, mode.into())) }
     }
+
+    pub fn save_config_value(
+        &mut self,
+        key: CString,
+        value: Variant,
+        request_id: Option<&mut u32>,
+    ) -> Result<(), Error> {
+        let request_id: *mut u32 = match request_id {
+            Some(id) => id,
+            None => std::ptr::null_mut(),
+        };
+        let value: LEAP_VARIANT = value.into();
+        unsafe {
+            leap_try(LeapSaveConfigValue(
+                self.handle,
+                key.as_ptr(),
+                &value,
+                request_id,
+            ))?;
+        }
+        Ok(())
+    }
+
+    pub fn request_config_value(
+        &mut self,
+        key: CString,
+        request_id: Option<&mut u32>,
+    ) -> Result<(), Error> {
+        let request_id: *mut u32 = match request_id {
+            Some(id) => id,
+            None => std::ptr::null_mut(),
+        };
+        unsafe {
+            leap_try(LeapRequestConfigValue(
+                self.handle,
+                key.as_ptr(),
+                request_id,
+            ))?;
+        }
+        Ok(())
+    }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::ffi::CString;
+
     use crate::tests::*;
     use crate::*;
 
@@ -142,5 +185,30 @@ mod tests {
         connection
             .get_version(VersionPart::ServerProtocol)
             .expect("Failed to get server protocol version");
+    }
+
+    #[test]
+    #[ignore = "Does not work"]
+    fn manipulate_configuration() {
+        let mut connection = initialize_connection();
+        let mut request_id: u32 = 0;
+        let config_key = CString::new("robust_mode_enabled").unwrap();
+        connection
+            .request_config_value(config_key, Some(&mut request_id))
+            .expect("Failed to request the config value");
+        connection.expect_event("Did not receive the config".to_string(), |e| match e {
+            Event::ConfigResponse(c) => {
+                if c.request_id() != request_id {
+                    None
+                } else {
+                    if let Variant::Boolean(robust_mode_enabled) = c.value() {
+                        Some(robust_mode_enabled)
+                    } else {
+                        panic!("Type mismatch for the configuration value.")
+                    }
+                }
+            }
+            _ => None,
+        });
     }
 }
