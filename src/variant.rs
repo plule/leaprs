@@ -56,7 +56,7 @@ impl From<LEAP_VARIANT> for Variant {
             }
             leap_sys::_eLeapValueType_eLeapValueType_String => Variant::String(unsafe {
                 // Could not find a way to create a const cstring, create a clone
-                CString::from_raw(v.__bindgen_anon_1.strValue as *mut i8).clone()
+                CString::from_raw(v.__bindgen_anon_1.strValue as *mut i8)
             }),
             _ => todo!(),
         }
