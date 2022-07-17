@@ -22,6 +22,7 @@ impl Drop for Connection {
     fn drop(&mut self) {
         unsafe {
             LeapCloseConnection(self.handle);
+            LeapDestroyConnection(self.handle);
         }
     }
 }
