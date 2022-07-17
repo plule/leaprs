@@ -92,3 +92,8 @@ the C struct is the only member of the wrapper, except when external allocation
 is needed (when providing a pre-allocated array to LeapC). Accessors are then
 exposing all the functions and members associated with these structs in a
 consistent way.
+
+## Tests
+
+The test require to have the Leap software up and running, and to have a device
+connected.
