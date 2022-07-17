@@ -1,5 +1,10 @@
 # LeapRS
 
+[![Github](https://img.shields.io/badge/github-plule%2Fleaprs-8da0cb?style=flat-square)](https://github.com/plule/leaprs)
+[![Crates.io](https://img.shields.io/crates/v/leaprs?style=flat-square)](https://crates.io/crates/leaprs)
+[![docs.rs](https://img.shields.io/docsrs/leaprs?style=flat-square)](https://docs.rs/leaprs)
+![Crates.io](https://img.shields.io/crates/l/leaprs?style=flat-square)
+
 LeapRS is a safe wrapper for LeapC, the [Leap Motion C
 API](https://docs.ultraleap.com/tracking-api/). It uses the generated binding
 provided by [leap-sys](https://crates.io/crates/leap-sys).
@@ -33,15 +38,22 @@ the image manipulation methods. It also misses interpolation methods.
 
 ## Installation
 
-To build and run programs, you first need to install the [LeapMotion Tracking Software](https://developer.leapmotion.com/tracking-software-download).
+`cargo add leaprs`
+
+You also need to install the [LeapMotion Tracking
+Software](https://developer.leapmotion.com/tracking-software-download).
 
 This library was created for the version named `Geminy` (5.6.1).
 
 If you install this software in a custom path, you need to define the
 environment variable `LEAPSDK_LIB_PATH` (default: `C:\Program
-Files\Ultraleap\LeapSDK\lib\x64`)
+Files\Ultraleap\LeapSDK\lib\x64`).
 
-**Cargo.toml** TODO
+## Runtime
+
+At runtime, the application requires the LeapC.dll file to be available. The
+easiest way to do it during development is to add its folder to the `PATH`
+environment variable. For distribution, refer to the SDK licensing.
 
 ## Quick start
 
@@ -64,3 +76,15 @@ for _ in 0..10 {
     }
 }
 ```
+
+## Implementation
+
+The enum safety is provided through [num_enum](https://docs.rs/num_enum/latest/num_enum/).
+
+The bitflags are wrapped using [bitflags](https://docs.rs/bitflags/latest/bitflags/).
+
+Most struct are simple wrappers around their C counter-part. Most of the time,
+the C struct is the only member of the wrapper, except when external allocation
+is needed (when providing a pre-allocated array to LeapC). Accessors are then
+exposing all the functions and members associated with these structs in a
+consistent way.
