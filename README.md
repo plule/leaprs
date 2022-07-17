@@ -49,6 +49,10 @@ If you install this software in a custom path, you need to define the
 environment variable `LEAPSDK_LIB_PATH` (default: `C:\Program
 Files\Ultraleap\LeapSDK\lib\x64`).
 
+The Ultraleap backend is only compatible with Windows, and so is LeapRS. Older
+versions of the software were multi-platform, so it could be possible to create
+a more compatible library, but it is not in the scope at the moment.
+
 ## Runtime
 
 At runtime, the application requires the LeapC.dll file to be available. The
