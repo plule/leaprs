@@ -12,8 +12,8 @@ crate::leap_ref_struct!(
 
 impl<'a> ConnectionEvent<'a> {
     #[doc = " A combination of eLeapServiceDisposition flags. @since 3.1.3"]
-    pub fn flags(&self) -> Option<ServiceState> {
-        ServiceState::from_bits(self.handle.flags)
+    pub fn flags(&self) -> ServiceState {
+        ServiceState::from_bits_truncate(self.handle.flags)
     }
 }
 
@@ -27,13 +27,12 @@ mod tests {
         let mut connection =
             Connection::create(ConnectionConfig::default()).expect("Failed to connect");
         connection.open().expect("Failed to open the connection");
-        let flags = connection.expect_event(
+        let _flags = connection.expect_event(
             "Did not receive a connection event.".to_string(),
             |e| match e {
                 Event::Connection(e) => Some(e.flags()),
                 _ => None,
             },
         );
-        flags.expect("Connection event with unknown flags.");
     }
 }

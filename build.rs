@@ -1,7 +1,5 @@
 use std::{env, path::PathBuf};
 
-use copy_to_output::copy_to_output;
-
 fn main() {
     // Find Leap SDK
     println!(r"cargo:rerun-if-env-changed=LEAPSDK_LIB_PATH");
@@ -21,13 +19,5 @@ fn main() {
         // Link to LeapC.lib
         println!(r"cargo:rustc-link-search={}", path_str);
         println!(r"cargo:rustc-link-lib=static=LeapC");
-
-        // Copy LeapC.dll to the output
-        let mut leapcdll_path = leapsdk_path.clone();
-        leapcdll_path.push("LeapC.dll");
-        let leapcdll_path = leapcdll_path.to_str().unwrap();
-        println!("cargo:rerun-if-changed={}", leapcdll_path);
-        copy_to_output(leapcdll_path, &env::var("PROFILE").unwrap())
-            .expect("Failed to copy LeapC.dll to the output path");
     }
 }

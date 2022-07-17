@@ -20,7 +20,7 @@ impl<'a> DeviceEvent<'a> {
     }
 
     #[doc = " The status of the connected device. A combination of flags from the eLeapDeviceStatus collection."]
-    pub fn status(&self) -> Option<DeviceStatus> {
-        DeviceStatus::from_bits(self.handle.status)
+    pub fn status(&self) -> DeviceStatus {
+        DeviceStatus::from_bits_truncate(self.handle.status)
     }
 }

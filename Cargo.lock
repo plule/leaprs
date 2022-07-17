@@ -15,12 +15,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aae1277d39aeec15cb388266ecc24b11c80469deae6067e17a1a7aa9e5c1f234"
 
 [[package]]
-name = "anyhow"
-version = "1.0.58"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb07d2053ccdbe10e2af2995a2f116c1330396493dc1269f6a91d0ae82e19704"
-
-[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -67,16 +61,6 @@ name = "color_quant"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d7b894f5411737b7867f4827955924d7c254fc9f4d91a6aad6b097804b1018b"
-
-[[package]]
-name = "copy_to_output"
-version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38b0be9c79199e3ea04d8526600ebe0d00378bb0797b828170e4bfde85b26796"
-dependencies = [
- "anyhow",
- "fs_extra",
-]
 
 [[package]]
 name = "crc32fast"
@@ -194,12 +178,6 @@ dependencies = [
  "pin-project",
  "spin",
 ]
-
-[[package]]
-name = "fs_extra"
-version = "1.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2022715d62ab30faffd124d40b76f4134a550a87792276512b18d63272333394"
 
 [[package]]
 name = "futures-core"
@@ -324,7 +302,6 @@ name = "leaprs"
 version = "0.0.2-dev"
 dependencies = [
  "bitflags",
- "copy_to_output",
  "image",
  "leap-sys",
  "num_enum",

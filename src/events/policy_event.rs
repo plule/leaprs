@@ -13,8 +13,8 @@ crate::leap_ref_struct!(
 impl<'a> PolicyEvent<'a> {
     #[doc = " A bitfield containing the policies effective at the"]
     #[doc = " time the policy event was processed. @since 3.0.0"]
-    pub fn current_policy(&self) -> Option<PolicyFlags> {
-        PolicyFlags::from_bits(self.handle.current_policy.into())
+    pub fn current_policy(&self) -> PolicyFlags {
+        PolicyFlags::from_bits_truncate(self.handle.current_policy.into())
     }
 }
 
@@ -32,10 +32,7 @@ mod tests {
             "Did not receive an image policy event".to_string(),
             |e| match e {
                 Event::Policy(e) => {
-                    if e.current_policy()
-                        .expect("Failed to parse a policy flag")
-                        .contains(PolicyFlags::IMAGES)
-                    {
+                    if e.current_policy().contains(PolicyFlags::IMAGES) {
                         Some(())
                     } else {
                         None

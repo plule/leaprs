@@ -10,7 +10,7 @@ fn main() {
 
     connection.wait_for("Connecting to the service...".to_string(), |e| match e {
         Event::Connection(e) => {
-            let flags = e.flags().expect("Invalid service state flags");
+            let flags = e.flags();
             Msg::Success(format!("Connected. Service state: {:?}", flags))
         }
         _ => Msg::None,

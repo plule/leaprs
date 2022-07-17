@@ -20,8 +20,8 @@ impl DeviceInfo {
     }
 
     #[doc = " A combination of eLeapDeviceStatus flags. @since 3.0.0"]
-    pub fn status(&self) -> Option<DeviceStatus> {
-        DeviceStatus::from_bits(self.handle.status)
+    pub fn status(&self) -> DeviceStatus {
+        DeviceStatus::from_bits_truncate(self.handle.status)
     }
 
     // TODO get_caps
@@ -79,6 +79,6 @@ mod tests {
         assert_ne!(device_info.pid(), DevicePID::Unknown);
         let serial = device_info.serial().expect("Failed to get serial");
         assert!(serial.len() > 0);
-        device_info.status().expect("Failed to get device status");
+        let _status = device_info.status();
     }
 }

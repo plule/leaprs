@@ -17,12 +17,12 @@ impl<'a> DeviceStatusChangeEvent<'a> {
     }
 
     #[doc = " The last known status of the device. This is a combination of eLeapDeviceStatus flags. @since 3.1.3"]
-    pub fn status(&self) -> Option<DeviceStatus> {
-        DeviceStatus::from_bits(self.handle.status)
+    pub fn status(&self) -> DeviceStatus {
+        DeviceStatus::from_bits_truncate(self.handle.status)
     }
 
     #[doc = " The current status of the device. This is a combination of eLeapDeviceStatus flags. @since 3.1.3"]
-    pub fn last_status(&self) -> Option<DeviceStatus> {
-        DeviceStatus::from_bits(self.handle.last_status)
+    pub fn last_status(&self) -> DeviceStatus {
+        DeviceStatus::from_bits_truncate(self.handle.last_status)
     }
 }
