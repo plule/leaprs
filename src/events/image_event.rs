@@ -1,13 +1,25 @@
 use crate::{FrameHeader, Image};
 use leap_sys::LEAP_IMAGE_EVENT;
 
-crate::leap_ref_struct!(ImageEvent, LEAP_IMAGE_EVENT);
+crate::leap_ref_struct!(
+    #[doc = " Streaming stereo image pairs from the device."]
+    #[doc = ""]
+    #[doc = " LeapPollConnection() produces this message when an image is available."]
+    #[doc = " The struct contains image properties, the distortion grid, and a pointer to"]
+    #[doc = " the buffer containing the image data -- which was allocated using the allocator"]
+    #[doc = " function passed to LeapC using the LeapSetAllocator."]
+    #[doc = " @since 4.0.0"]
+    ImageEvent,
+    LEAP_IMAGE_EVENT
+);
 
 impl<'a> ImageEvent<'a> {
+    #[doc = " The information header identifying the images tracking frame."]
     pub fn info(&self) -> FrameHeader {
         (&self.handle.info).into()
     }
 
+    #[doc = " The left and right images."]
     pub fn images(&self) -> [Image; 2] {
         [
             (&self.handle.image[0]).into(),

@@ -2,9 +2,16 @@ use leap_sys::LEAP_CONNECTION_EVENT;
 
 use crate::ServiceState;
 
-crate::leap_ref_struct!(ConnectionEvent, LEAP_CONNECTION_EVENT);
+crate::leap_ref_struct!(
+    #[doc = "  \\ingroup Structs"]
+    #[doc = " Received from LeapPollConnection() when a connection to the Ultraleap Tracking Service is established."]
+    #[doc = " @since 3.0.0"]
+    ConnectionEvent,
+    LEAP_CONNECTION_EVENT
+);
 
 impl<'a> ConnectionEvent<'a> {
+    #[doc = " A combination of eLeapServiceDisposition flags. @since 3.1.3"]
     pub fn flags(&self) -> Option<ServiceState> {
         ServiceState::from_bits(self.handle.flags)
     }

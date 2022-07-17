@@ -81,7 +81,11 @@ pub(crate) use leap_struct;
 
 /// Declare a leap struct wrapper that does not own it.
 macro_rules! leap_ref_struct {
-    ($struct_name:ident, $sys_name:ident) => {
+    (
+        $(#[$meta:meta])*
+        $struct_name:ident, $sys_name:ident
+    ) => {
+        $(#[$meta])*
         pub struct $struct_name<'a> {
             #[allow(dead_code)]
             pub(crate) handle: &'a $sys_name,
