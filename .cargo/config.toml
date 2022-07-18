@@ -1,5 +1,0 @@
-[build]
-rustflags = ["-C", "instrument-coverage"]
-
-[env]
-LLVM_PROFILE_FILE = "coverage/leaprs-%m.profraw"
