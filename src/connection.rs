@@ -68,18 +68,6 @@ impl Connection {
         Ok(())
     }
 
-    #[doc = " Closes a previously opened connection."]
-    #[doc = ""]
-    #[doc = " This method closes the specified connection object if it is opened"]
-    #[doc = ""]
-    #[doc = " This method never fails."]
-    #[doc = ""]
-    #[doc = " @param hConnection A handle to the connection object to be closed."]
-    #[doc = " @since 4.0.0"]
-    pub fn close(&mut self) {
-        unsafe { LeapCloseConnection(self.handle) }
-    }
-
     #[doc = " Polls the connection for a new event."]
     #[doc = ""]
     #[doc = " The specific types of events that may be received are not configurable in this entrypoint. Configure"]
@@ -308,8 +296,23 @@ mod tests {
     }
 
     #[test]
+    fn config_value() {
+        let mut connection = initialize_connection();
+        let mut request_id: u32 = 0;
+        let config_key = CString::new("fake_config").unwrap();
+        connection
+            .request_config_value(config_key.clone(), Some(&mut request_id))
+            .expect("Failed to request the config value");
+        // Note: No response event are received: useless?
+
+        connection
+            .save_config_value(config_key.clone(), true.into(), Some(&mut request_id))
+            .expect("Failed to save a config value");
+    }
+
+    #[test]
     #[ignore = "Does not work"]
-    fn manipulate_configuration() {
+    fn set_config_value() {
         let mut connection = initialize_connection();
         let mut request_id: u32 = 0;
         let config_key = CString::new("robust_mode_enabled").unwrap();

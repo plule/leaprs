@@ -62,3 +62,27 @@ impl From<LEAP_VARIANT> for Variant {
         }
     }
 }
+
+impl From<bool> for Variant {
+    fn from(v: bool) -> Self {
+        Variant::Boolean(v)
+    }
+}
+
+impl From<i32> for Variant {
+    fn from(v: i32) -> Self {
+        Variant::Int32(v)
+    }
+}
+
+impl From<f32> for Variant {
+    fn from(v: f32) -> Self {
+        Variant::Float(v)
+    }
+}
+
+impl From<CString> for Variant {
+    fn from(v: CString) -> Self {
+        Variant::String(v)
+    }
+}
