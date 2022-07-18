@@ -2,6 +2,7 @@
 #![doc = include_str!("../README.md")]
 #![deny(clippy::all)]
 mod bone;
+mod capabilities;
 mod connection;
 mod connection_config;
 mod connection_message;
@@ -33,6 +34,7 @@ mod version;
 mod version_part;
 pub use crate::image::*;
 pub use bone::*;
+pub use capabilities::*;
 pub use connection::*;
 pub use connection_config::*;
 pub use connection_message::*;

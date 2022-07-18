@@ -2,7 +2,7 @@ use leap_sys::LEAP_DEVICE_INFO;
 use num_enum::FromPrimitive;
 use std::ffi::CStr;
 
-use crate::{DevicePID, DeviceStatus};
+use crate::{Capabilities, DevicePID, DeviceStatus};
 
 #[doc = " Properties of a Leap device."]
 #[doc = " Get a LEAP_DEVICE_INFO by calling LeapGetDeviceInfo() with the handle for"]
@@ -24,7 +24,9 @@ impl DeviceInfo {
         DeviceStatus::from_bits_truncate(self.handle.status)
     }
 
-    // TODO get_caps
+    pub fn caps(&self) -> Capabilities {
+        Capabilities::from_bits_truncate(self.handle.caps)
+    }
 
     #[doc = " One of the eLeapDevicePID members. @since 3.0.0"]
     pub fn pid(&self) -> DevicePID {
@@ -79,6 +81,8 @@ mod tests {
         assert_ne!(device_info.pid(), DevicePID::Unknown);
         let serial = device_info.serial().expect("Failed to get serial");
         assert!(serial.len() > 0);
+        assert!(device_info.baseline() > 0);
         let _status = device_info.status();
+        let _caps = device_info.caps();
     }
 }
