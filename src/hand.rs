@@ -1,6 +1,6 @@
 use leap_sys::*;
 
-use crate::Digit;
+use crate::{Digit, Palm};
 
 #[doc = " The Hand chirality types."]
 #[doc = " Used in the LEAP_HAND struct."]
@@ -73,8 +73,8 @@ impl<'a> Hand<'a> {
     }
 
     #[doc = " Additional information associated with the palm. @since 3.0.0"]
-    pub fn palm(&self) -> &LEAP_PALM {
-        &self.handle.palm
+    pub fn palm(&self) -> Palm {
+        (&self.handle.palm).into()
     }
 
     #[doc = " The fingers of the hand as an array. @since 3.0.0"]

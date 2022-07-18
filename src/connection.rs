@@ -308,6 +308,19 @@ mod tests {
         connection
             .save_config_value(config_key.clone(), true.into(), Some(&mut request_id))
             .expect("Failed to save a config value");
+        connection
+            .save_config_value(config_key.clone(), 0.into(), Some(&mut request_id))
+            .expect("Failed to save a config value");
+        connection
+            .save_config_value(config_key.clone(), 0.0.into(), Some(&mut request_id))
+            .expect("Failed to save a config value");
+        connection
+            .save_config_value(
+                config_key.clone(),
+                CString::new("hello").unwrap().into(),
+                Some(&mut request_id),
+            )
+            .expect("Failed to save a config value");
     }
 
     #[test]
