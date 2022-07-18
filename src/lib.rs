@@ -3,6 +3,7 @@
 #![deny(clippy::all)]
 mod bone;
 mod capabilities;
+mod clock_rebaser;
 mod connection;
 mod connection_config;
 mod connection_message;
@@ -35,6 +36,7 @@ mod version_part;
 pub use crate::image::*;
 pub use bone::*;
 pub use capabilities::*;
+pub use clock_rebaser::*;
 pub use connection::*;
 pub use connection_config::*;
 pub use connection_message::*;
@@ -65,7 +67,7 @@ pub use variant::*;
 pub use version::*;
 pub use version_part::*;
 
-pub fn get_now() -> i64 {
+pub fn leap_get_now() -> i64 {
     unsafe { LeapGetNow() }
 }
 
@@ -117,8 +119,8 @@ mod tests {
     use crate::*;
 
     #[test]
-    pub fn leap_get_now() {
-        assert!(get_now() > 0)
+    pub fn test_leap_get_now() {
+        assert!(leap_get_now() > 0)
     }
 
     /// Connect to the service and wait for the first events necessary for LeapC to be functional

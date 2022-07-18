@@ -2,10 +2,7 @@ use std::{ffi::CString, mem};
 
 use leap_sys::*;
 
-use crate::{
-    leap_try, ConnectionConfig, ConnectionMessage, DeviceRef, Error, PolicyFlags, TrackingMode,
-    Variant, Version, VersionPart,
-};
+use crate::*;
 
 #[doc = " A handle to the Leap connection object."]
 #[doc = " Use this handle to specify the connection for an operation."]
@@ -199,6 +196,8 @@ impl Connection {
         unsafe { leap_try(LeapSetTrackingMode(self.handle, mode.into())) }
     }
 
+    #[doc = "**Warning**: Does not appear to work."]
+    #[doc = ""]
     #[doc = " Causes the client to commit a configuration change to the Ultraleap Tracking Service."]
     #[doc = ""]
     #[doc = " The change is performed asynchronously -- and may fail. LeapPollConnection()"]
@@ -233,6 +232,8 @@ impl Connection {
         Ok(())
     }
 
+    #[doc = "**Warning**: Does not appear to work."]
+    #[doc = ""]
     #[doc = " Requests the current value of a service configuration setting."]
     #[doc = " The value is fetched asynchronously since it requires a service transaction. LeapPollConnection()"]
     #[doc = " returns this event structure when the request has been processed. Use the pRequestID"]
@@ -261,11 +262,66 @@ impl Connection {
         }
         Ok(())
     }
+
+    #[doc = " Retrieves the number of bytes required to allocate an interpolated frame at the specified time."]
+    #[doc = ""]
+    #[doc = " Use this function to determine the size of the buffer to allocate when calling"]
+    #[doc = " LeapInterpolateFrame()."]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param timestamp The timestamp of the frame whose size is to be queried."]
+    #[doc = " @param[out] pncbEvent A pointer that receives the number of bytes required to store the specified frame."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 3.1.1"]
+    pub fn get_frame_size(&mut self, timestamp: i64) -> Result<u64, Error> {
+        let mut result: u64 = 0;
+        unsafe {
+            leap_try(LeapGetFrameSize(self.handle, timestamp, &mut result))?;
+        }
+        Ok(result)
+    }
+
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Constructs a frame at the specified timestamp by interpolating between measured"]
+    #[doc = " frames."]
+    #[doc = ""]
+    #[doc = " Caller is responsible for allocating a buffer large enough to hold the data of the frame."]
+    #[doc = " Use LeapGetFrameSize() to calculate the minimum size of this buffer."]
+    #[doc = ""]
+    #[doc = " Use LeapCreateClockRebaser(), LeapUpdateRebase(), and LeapRebaseClock() to"]
+    #[doc = " synchronize time measurements in the application with time measurements in"]
+    #[doc = " the Ultraleap Tracking Service. This process is required to achieve accurate, smooth"]
+    #[doc = " interpolation."]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param timestamp The timestamp at which to interpolate the frame data."]
+    #[doc = " @param[out] pEvent A pointer to a flat buffer which is filled with an interpolated frame."]
+    #[doc = " @param ncbEvent The number of bytes pointed to by pEvent."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 3.1.1"]
+    pub fn interpolate_frame<const N: usize>(
+        &mut self,
+        timestamp: i64,
+    ) -> Result<InterpolationTrackingEvent<N>, Error> {
+        // LEAP_TRACKING_EVENT with more size to account for the dynamic frame data.
+        unsafe {
+            let mut event_with_more: InterpolationTrackingEvent<N> =
+                InterpolationTrackingEvent::<N>::new();
+            leap_try(LeapInterpolateFrame(
+                self.handle,
+                timestamp,
+                &mut event_with_more.event_with_more().event,
+                std::mem::size_of::<LeapTrackingEventWithMore<N>>() as u64,
+            ))?;
+            Ok(event_with_more)
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use std::ffi::CString;
+    use std::time::{Duration, SystemTime};
+
+    use leap_sys::LEAP_TRACKING_EVENT;
 
     use crate::tests::*;
     use crate::*;
@@ -346,5 +402,50 @@ mod tests {
             }
             _ => None,
         });
+    }
+
+    #[test]
+    fn frame_size_is_tracking_event_size() {
+        let start = SystemTime::now();
+
+        let mut connection = initialize_connection();
+        let mut clock_synchronizer = ClockRebaser::create().expect("Failed to create clock sync");
+
+        for _ in 0..10 {
+            // Note: this guy should be done in a background thread, but polling frame data
+            // seems necessary for frame interpolation to work.
+            connection.expect_event("no tracking data".to_string(), |e| match e {
+                Event::Tracking(_) => Some(()),
+                _ => None,
+            });
+            let cpu_time = SystemTime::now().duration_since(start).unwrap().as_micros() as i64;
+            clock_synchronizer
+                .update_rebase(cpu_time, leap_get_now())
+                .expect("Failed to update rebase");
+
+            std::thread::sleep(Duration::from_millis(10));
+
+            let cpu_time = SystemTime::now().duration_since(start).unwrap().as_micros() as i64;
+
+            let target_frame_time = clock_synchronizer
+                .rebase_clock(cpu_time)
+                .expect("Failed to rebase clock");
+
+            let requested_size = connection
+                .get_frame_size(target_frame_time)
+                .expect("Failed to get requested size");
+
+            // interpolate_frame takes a static size
+            // it will fail if this static size is not enough.
+            println!(
+                "Effective need for interpolate_frame: {}",
+                requested_size - std::mem::size_of::<LEAP_TRACKING_EVENT>() as u64
+            );
+
+            let frame = connection
+                .interpolate_frame::<4096>(target_frame_time)
+                .expect("Failed to interpolate frame");
+            let _hands = frame.hands();
+        }
     }
 }
