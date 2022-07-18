@@ -29,6 +29,7 @@ mod palm;
 mod policy_flag;
 mod quaternion;
 mod service_state;
+mod sized_with_trailing_data;
 mod tracking_mode;
 mod variant;
 mod version;

@@ -1,50 +1,27 @@
 use leap_sys::LEAP_TRACKING_EVENT;
 
-use crate::{FrameHeader, Hand};
+use crate::{sized_with_trailing_data::SizedWithTrailingData, FrameHeader, Hand};
 
-/// A LEAP_TRACKING_EVENT with additional data.
-/// When using interpolation frames, LeapC requires a dynamically sized object taken as a LEAP_TRACKING_EVENT.
-/// The extra size is likely used to store dynamic data (variable number of hands).
-#[repr(C, packed)]
-pub(crate) struct LeapTrackingEventWithMore<const N: usize> {
-    pub event: LEAP_TRACKING_EVENT,
-    // More should be dynamically sized but DST fried my brain.
-    more: [u8; N],
+pub struct InterpolationTrackingEvent {
+    /// Store a boxed dynamic sized event
+    /// The size is only known at runtime
+    pub(crate) handle: Box<SizedWithTrailingData<LEAP_TRACKING_EVENT>>,
 }
 
-impl<const N: usize> LeapTrackingEventWithMore<N> {
-    /// Allocate a LEAP_TRACKING_EVENT with more data contiguous to it.
-    /// frame_size should be given by Connection::get_frame_size()
-    /// panics if frame_size is less than LEAP_TRACKING_EVENT size.
-    /// Unsafe: inner struct is uninitialized
-    pub unsafe fn new() -> LeapTrackingEventWithMore<N> {
-        LeapTrackingEventWithMore {
-            event: std::mem::zeroed(),
-            more: [0; N],
-        }
-    }
-}
-
-pub struct InterpolationTrackingEvent<const N: usize> {
-    handle: LeapTrackingEventWithMore<N>,
-}
-
-impl<const N: usize> InterpolationTrackingEvent<N> {
+impl InterpolationTrackingEvent {
     /// Allocate a LEAP_TRACKING_EVENT with more data contiguous to it.
     /// Unsafe: inner struct is uninitialized
-    pub(crate) unsafe fn new() -> Self {
+    pub(crate) unsafe fn new_uninitialized(requested_frame_size: u64) -> Self {
+        let trailing_size =
+            requested_frame_size as usize - std::mem::size_of::<LEAP_TRACKING_EVENT>();
         Self {
-            handle: LeapTrackingEventWithMore::new(),
+            handle: SizedWithTrailingData::allocate(std::mem::zeroed(), trailing_size),
         }
-    }
-
-    pub(crate) fn event_with_more(&mut self) -> &mut LeapTrackingEventWithMore<N> {
-        &mut self.handle
     }
 
     #[doc = " A universal frame identification header. @since 3.0.0"]
     pub fn info(&self) -> FrameHeader {
-        (&self.handle.event.info).into()
+        (&self.handle.sized.info).into()
     }
 
     #[doc = " An identifier for this tracking frame. This identifier is meant to be monotonically"]
@@ -54,16 +31,16 @@ impl<const N: usize> InterpolationTrackingEvent<N> {
     #[doc = " identifier may increase faster."]
     #[doc = " @since 3.0.0"]
     pub fn tracking_frame_id(&self) -> i64 {
-        self.handle.event.tracking_frame_id
+        self.handle.sized.tracking_frame_id
     }
 
     #[doc = " A pointer to the array of hands tracked in this frame."]
     #[doc = " @since 3.0.0"]
     pub fn hands(&self) -> Vec<Hand> {
-        let n_hand = self.handle.event.nHands as isize;
+        let n_hand = self.handle.sized.nHands as isize;
         unsafe {
             (0..n_hand)
-                .map(|hand_index| &*self.handle.event.pHands.offset(hand_index))
+                .map(|hand_index| &*self.handle.sized.pHands.offset(hand_index))
                 .map(|h| h.into())
                 .collect()
         }
@@ -84,6 +61,6 @@ impl<const N: usize> InterpolationTrackingEvent<N> {
     #[doc = " This number cannot be negative."]
     #[doc = " @since 3.0.0"]
     pub fn framerate(&self) -> f32 {
-        self.handle.event.framerate
+        self.handle.sized.framerate
     }
 }

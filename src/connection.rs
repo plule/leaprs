@@ -297,21 +297,22 @@ impl Connection {
     #[doc = " @param ncbEvent The number of bytes pointed to by pEvent."]
     #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
     #[doc = " @since 3.1.1"]
-    pub fn interpolate_frame<const N: usize>(
+    pub fn interpolate_frame(
         &mut self,
         timestamp: i64,
-    ) -> Result<InterpolationTrackingEvent<N>, Error> {
+        requested_frame_size: u64,
+    ) -> Result<InterpolationTrackingEvent, Error> {
         // LEAP_TRACKING_EVENT with more size to account for the dynamic frame data.
         unsafe {
-            let mut event_with_more: InterpolationTrackingEvent<N> =
-                InterpolationTrackingEvent::<N>::new();
+            let mut event = InterpolationTrackingEvent::new_uninitialized(requested_frame_size);
+
             leap_try(LeapInterpolateFrame(
                 self.handle,
                 timestamp,
-                &mut event_with_more.event_with_more().event,
-                std::mem::size_of::<LeapTrackingEventWithMore<N>>() as u64,
+                &mut event.handle.sized,
+                event.handle.size() as u64,
             ))?;
-            Ok(event_with_more)
+            Ok(event)
         }
     }
 }
@@ -320,8 +321,6 @@ impl Connection {
 mod tests {
     use std::ffi::CString;
     use std::time::{Duration, SystemTime};
-
-    use leap_sys::LEAP_TRACKING_EVENT;
 
     use crate::tests::*;
     use crate::*;
@@ -405,15 +404,14 @@ mod tests {
     }
 
     #[test]
-    fn frame_size_is_tracking_event_size() {
+    fn frame_interpolation() {
         let start = SystemTime::now();
 
         let mut connection = initialize_connection();
         let mut clock_synchronizer = ClockRebaser::create().expect("Failed to create clock sync");
 
         for _ in 0..10 {
-            // Note: this guy should be done in a background thread, but polling frame data
-            // seems necessary for frame interpolation to work.
+            // Note: If events are not polled, the frame interpolation fails with "is not seer"
             connection.expect_event("no tracking data".to_string(), |e| match e {
                 Event::Tracking(_) => Some(()),
                 _ => None,
@@ -435,15 +433,8 @@ mod tests {
                 .get_frame_size(target_frame_time)
                 .expect("Failed to get requested size");
 
-            // interpolate_frame takes a static size
-            // it will fail if this static size is not enough.
-            println!(
-                "Effective need for interpolate_frame: {}",
-                requested_size - std::mem::size_of::<LEAP_TRACKING_EVENT>() as u64
-            );
-
             let frame = connection
-                .interpolate_frame::<4096>(target_frame_time)
+                .interpolate_frame(target_frame_time, requested_size)
                 .expect("Failed to interpolate frame");
             let _hands = frame.hands();
         }
