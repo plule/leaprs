@@ -56,3 +56,22 @@ impl<'a> TrackingEvent<'a> {
         self.handle.framerate
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::tests::*;
+    use crate::*;
+
+    #[test]
+    fn read_hands() {
+        let mut conn = initialize_connection();
+        conn.expect_event("No tracking event received".to_string(), |e| match e {
+            Event::Tracking(e) => {
+                let hands = e.hands();
+                let hand_ids: Vec<_> = hands.iter().map(|h| h.id()).collect();
+                Some(hand_ids)
+            }
+            _ => None,
+        });
+    }
+}

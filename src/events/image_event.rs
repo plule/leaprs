@@ -40,7 +40,7 @@ mod tests {
             .set_policy_flags(PolicyFlags::IMAGES, PolicyFlags::empty())
             .expect("Failed to set policy flags");
 
-        let (width, height, data) =
+        let (width, height, data, _frame_id) =
             connection.expect_event("Did not receive an image".to_string(), |e| match e {
                 Event::Image(e) => {
                     let right_image = &e.images()[1];
@@ -48,7 +48,7 @@ mod tests {
                     let width = right_image.properties().width();
                     let height = right_image.properties().height();
                     let _distortion_matrix = right_image.distorion_matrix();
-                    Some((width, height, data.to_vec()))
+                    Some((width, height, data.to_vec(), e.info().frame_id()))
                 }
                 _ => None,
             });
