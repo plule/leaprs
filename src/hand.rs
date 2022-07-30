@@ -80,7 +80,7 @@ impl<'a> Hand<'a> {
     #[doc = " The arm to which this hand is attached."]
     #[doc = " An arm consists of a single LEAP_BONE struct."]
     #[doc = " @since 3.0.0"]
-    pub fn arm(&self) ->Bone{
+    pub fn arm(&self) -> Bone {
         (&self.handle.arm).into()
     }
 
