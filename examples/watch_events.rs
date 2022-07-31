@@ -25,6 +25,7 @@ fn main() {
                 Event::DroppedFrame(_) => println!("DroppedFrame"),
                 Event::Image(_) => println!("Image"),
                 Event::PointMappingChange(_) => println!("PointMappingChange"),
+                #[cfg(feature = "gemini")]
                 Event::TrackingMode(_) => println!("TrackingMode"),
                 Event::LogEvents(_) => println!("LogEvents"),
                 Event::HeadPose(_) => println!("HeadPose"),

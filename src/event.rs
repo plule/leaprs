@@ -150,6 +150,7 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
             leap_sys::_eLeapEventType_eLeapEventType_PointMappingChange => {
                 Event::PointMappingChange(unsafe { &*event.point_mapping_change_event })
             }
+            #[cfg(feature = "gemini")]
             leap_sys::_eLeapEventType_eLeapEventType_TrackingMode => {
                 Event::TrackingMode(unsafe { &*event.tracking_mode_event }.into())
             }

@@ -150,6 +150,7 @@ impl Connection {
     #[doc = " @param[out] pVersion A pointer to a struct used to store the version number."]
     #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
     #[doc = " @since 5.2.x"]
+    #[cfg(feature = "gemini")]
     pub fn get_version(&mut self, part: VersionPart) -> Result<Version, Error> {
         let mut version: LEAP_VERSION;
         unsafe {
@@ -192,6 +193,7 @@ impl Connection {
     #[doc = " @param mode The enum value specifying the requested tracking mode"]
     #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
     #[doc = " @since 5.0.0"]
+    #[cfg(feature = "gemini")]
     pub fn set_tracking_mode(&mut self, mode: TrackingMode) -> Result<(), Error> {
         unsafe { leap_try(LeapSetTrackingMode(self.handle, mode.into())) }
     }
