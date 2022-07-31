@@ -10,6 +10,7 @@ mod log_event;
 mod log_events;
 mod policy_event;
 mod tracking_event;
+#[cfg(feature = "gemini")]
 mod tracking_mode_event;
 pub use config_change_event::*;
 pub use config_response_event::*;
@@ -23,4 +24,5 @@ pub use log_event::*;
 pub use log_events::*;
 pub use policy_event::*;
 pub use tracking_event::*;
+#[cfg(feature = "gemini")]
 pub use tracking_mode_event::*;

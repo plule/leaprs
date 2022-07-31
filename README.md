@@ -53,6 +53,17 @@ The Ultraleap backend is only compatible with Windows, and so is LeapRS. Older
 versions of the software were multi-platform, so it could be possible to create
 a more compatible library, but it is not in the scope at the moment.
 
+### Using with previous SDK versions
+
+Disabling the `geminy` feature enables building application for the previous SDK
+generation (Orion). In Cargo.toml:
+
+```toml
+[dependencies = { version = "*", default-features = false }]
+```
+
+You also need to point the `LEAPSDK_LIB_PATH` to a SDK with the Orion version.
+
 ## Runtime
 
 At runtime, the application requires the LeapC.dll file to be available. The

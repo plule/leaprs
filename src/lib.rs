@@ -30,8 +30,10 @@ mod policy_flag;
 mod quaternion;
 mod service_state;
 mod sized_with_trailing_data;
+#[cfg(feature = "gemini")]
 mod tracking_mode;
 mod variant;
+#[cfg(feature = "gemini")]
 mod version;
 mod version_part;
 pub use crate::image::*;
@@ -63,8 +65,10 @@ pub use palm::*;
 pub use policy_flag::*;
 pub use quaternion::*;
 pub use service_state::*;
+#[cfg(feature = "gemini")]
 pub use tracking_mode::*;
 pub use variant::*;
+#[cfg(feature = "gemini")]
 pub use version::*;
 pub use version_part::*;
 

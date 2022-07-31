@@ -3,7 +3,6 @@ use leap_sys::*;
 use crate::{
     ConfigChangeEvent, ConfigResponseEvent, ConnectionEvent, ConnectionLostEvent, DeviceEvent,
     DeviceStatusChangeEvent, ImageEvent, LogEvent, LogEvents, PolicyEvent, TrackingEvent,
-    TrackingModeEvent,
 };
 
 #[doc = " The types of event messages resulting from calling LeapPollConnection()."]
@@ -87,7 +86,8 @@ pub enum Event<'a> {
     #[doc = " This can be due to changing the hmd or screentop policy with LeapSetPolicyFlags()."]
     #[doc = " or setting the tracking mode using LeapSetTrackingMode()."]
     #[doc = " @since 5.0.0"]
-    TrackingMode(TrackingModeEvent<'a>),
+    #[cfg(feature = "gemini")]
+    TrackingMode(crate::TrackingModeEvent<'a>),
     #[doc = " An array of system messages. @since 4.0.0"]
     LogEvents(LogEvents<'a>),
     #[doc = " A head pose. The message contains the timestamped head position and orientation."]

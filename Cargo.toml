@@ -20,6 +20,10 @@ keywords = [
     "hand",
 ]
 
+[features]
+default = ["gemini"]
+gemini = []
+
 [dependencies]
 leap-sys = "0.2"
 num_enum = "0.5"
