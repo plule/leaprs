@@ -118,6 +118,7 @@ fn main() {
         .expect("Failed to set policy flags");
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Msg {
     None,
     Success(String),

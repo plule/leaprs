@@ -2,6 +2,7 @@ use leap_sys::*;
 
 use crate::{Bone, Digit, Palm};
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = " The Hand chirality types."]
 #[doc = " Used in the LEAP_HAND struct."]
 #[doc = " @since 3.0.0"]

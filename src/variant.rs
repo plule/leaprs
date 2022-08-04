@@ -4,6 +4,7 @@ use leap_sys::{
 };
 use std::ffi::CString;
 
+#[derive(Debug, PartialEq)]
 #[doc = " A variant data type used to get and set service configuration values."]
 #[doc = " @since 3.0.0"]
 pub enum Variant {

@@ -4,7 +4,7 @@ use leap_sys::{
 };
 use num_enum::{FromPrimitive, IntoPrimitive};
 
-#[derive(Debug, Eq, PartialEq, IntoPrimitive, FromPrimitive)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, IntoPrimitive, FromPrimitive)]
 #[repr(i32)]
 #[doc = " Functional image types (not data formats)."]
 pub enum ImageType {

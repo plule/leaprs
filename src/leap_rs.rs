@@ -10,7 +10,7 @@ pub(crate) fn leap_try(leap_rs: i32) -> Result<(), Error> {
     Err(leap_rs.into())
 }
 
-#[derive(Debug, Eq, PartialEq, IntoPrimitive, FromPrimitive, Error)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, IntoPrimitive, FromPrimitive, Error)]
 #[repr(i32)]
 #[doc = " Defines the codes returned by all LeapC functions."]
 pub enum Error {

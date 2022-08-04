@@ -1,7 +1,7 @@
 use leap_sys::*;
 use num_enum::{FromPrimitive, IntoPrimitive};
 
-#[derive(Debug, Eq, PartialEq, IntoPrimitive, FromPrimitive)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, IntoPrimitive, FromPrimitive)]
 #[repr(i32)]
 #[doc = " Enumerates values for the tracking mode."]
 pub enum TrackingMode {
