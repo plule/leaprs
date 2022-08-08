@@ -11,6 +11,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  LEAPSDK_LIB_PATH: leap-sdk-redist/LeapSDK/lib/x64
 
 jobs:
   build:
@@ -19,9 +20,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+      with:
+        ref: gemini
+        repository: plule/leap-sdk-redist
+        token: ${{ secrets.LEAP_SDK_REDIST_PAT }}
+        path: leap-sdk-redist
     - uses: Swatinem/rust-cache@v1
     - name: Build
       run: cargo build
+    - name: Build Examples
+      run: cargo build --examples
+    - name: Build Tests
+      run: cargo build --tests
     - name: Doc
       run: cargo doc
     - name: Style
