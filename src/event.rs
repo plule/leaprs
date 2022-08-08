@@ -1,9 +1,5 @@
+use crate::events::*;
 use leap_sys::*;
-
-use crate::{
-    ConfigChangeEvent, ConfigResponseEvent, ConnectionEvent, ConnectionLostEvent, DeviceEvent,
-    DeviceStatusChangeEvent, ImageEvent, LogEvent, LogEvents, PolicyEvent, TrackingEvent,
-};
 
 #[doc = " The types of event messages resulting from calling LeapPollConnection()."]
 pub enum Event<'a> {
@@ -27,7 +23,7 @@ pub enum Event<'a> {
     #[doc = " other system instability. Note that unplugging a device generates an"]
     #[doc = " eLeapEventType_DeviceLost event message, not a failure message."]
     #[doc = " @since 3.0.0"]
-    DeviceFailure(&'a LEAP_DEVICE_FAILURE_EVENT),
+    DeviceFailure(DeviceFailureEvent<'a>),
     #[doc = " A policy change has occurred."]
     #[doc = " This can be due to setting a policy with LeapSetPolicyFlags() or due to changing"]
     #[doc = " or policy-related config settings, including images_mode."]
@@ -73,7 +69,7 @@ pub enum Event<'a> {
     #[doc = " Notification that a status change has been detected on an attached device"]
     #[doc = ""]
     #[doc = " @since 3.1.3"]
-    DroppedFrame(&'a LEAP_DROPPED_FRAME_EVENT),
+    DroppedFrame(DroppedFrameEvent<'a>),
     #[doc = " Notification that an unrequested stereo image pair is available"]
     #[doc = ""]
     #[doc = " @since 4.0.0"]
@@ -81,7 +77,7 @@ pub enum Event<'a> {
     #[doc = " Notification that point mapping has changed"]
     #[doc = ""]
     #[doc = " @since 4.0.0"]
-    PointMappingChange(&'a LEAP_POINT_MAPPING_CHANGE_EVENT),
+    PointMappingChange(PointMappingChangeEvent<'a>),
     #[doc = " A tracking mode change has occurred."]
     #[doc = " This can be due to changing the hmd or screentop policy with LeapSetPolicyFlags()."]
     #[doc = " or setting the tracking mode using LeapSetTrackingMode()."]
@@ -92,11 +88,11 @@ pub enum Event<'a> {
     LogEvents(LogEvents<'a>),
     #[doc = " A head pose. The message contains the timestamped head position and orientation."]
     #[doc = " @since 4.1.0"]
-    HeadPose(&'a LEAP_HEAD_POSE_EVENT),
+    HeadPose(HeadPoseEvent<'a>),
     #[doc = " Tracked eye positions. @since 4.1.0"]
-    Eyes(&'a LEAP_EYE_EVENT),
+    Eyes(EyeEvent<'a>),
     #[doc = " An IMU reading. @since 4.1.0"]
-    IMU(&'a LEAP_IMU_EVENT),
+    IMU(ImuEvent<'a>),
 
     Unknown(eLeapEventType),
 }
@@ -118,7 +114,7 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
                 Event::Device(unsafe { &*event.device_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceFailure => {
-                Event::DeviceFailure(unsafe { &*event.device_failure_event })
+                Event::DeviceFailure(unsafe { &*event.device_failure_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_Policy => {
                 Event::Policy(unsafe { &*event.policy_event }.into())
@@ -142,13 +138,13 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
                 Event::DeviceStatusChange(unsafe { &*event.device_status_change_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_DroppedFrame => {
-                Event::DroppedFrame(unsafe { &*event.dropped_frame_event })
+                Event::DroppedFrame(unsafe { &*event.dropped_frame_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_Image => {
                 Event::Image(unsafe { &*event.image_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_PointMappingChange => {
-                Event::PointMappingChange(unsafe { &*event.point_mapping_change_event })
+                Event::PointMappingChange(unsafe { &*event.point_mapping_change_event }.into())
             }
             #[cfg(feature = "gemini")]
             leap_sys::_eLeapEventType_eLeapEventType_TrackingMode => {
@@ -158,13 +154,13 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
                 Event::LogEvents(unsafe { &*event.log_events }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_HeadPose => {
-                Event::HeadPose(unsafe { &*event.head_pose_event })
+                Event::HeadPose(unsafe { &*event.head_pose_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_Eyes => {
-                Event::Eyes(unsafe { &*event.eye_event })
+                Event::Eyes(unsafe { &*event.eye_event }.into())
             }
             leap_sys::_eLeapEventType_eLeapEventType_IMU => {
-                Event::IMU(unsafe { &*event.imu_event })
+                Event::IMU(unsafe { &*event.imu_event }.into())
             }
             event_code => Event::Unknown(event_code),
         }
