@@ -526,7 +526,7 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "Call fails with NotAvailable"]
+    #[ignore = "Unsupported in gemini"]
     fn point_mapping() {
         let mut connection = initialize_connection();
         let point_mapping = connection.get_point_mapping().unwrap();
