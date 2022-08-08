@@ -1,6 +1,6 @@
 use leap_sys::LEAP_POINT_MAPPING;
 
-use crate::{sized_with_trailing_data::SizedWithTrailingData, FrameHeader, Hand, LeapVector};
+use crate::{sized_with_trailing_data::SizedWithTrailingData, LeapVector};
 
 pub struct PointMapping {
     /// Store a boxed dynamic sized event
