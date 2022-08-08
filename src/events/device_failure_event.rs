@@ -1,6 +1,6 @@
 use leap_sys::LEAP_DEVICE_FAILURE_EVENT;
 
-use crate::DeviceStatus;
+use crate::{Device, DeviceStatus};
 
 crate::leap_ref_struct!(
     #[doc = " Device failure information."]
@@ -14,9 +14,16 @@ crate::leap_ref_struct!(
 );
 
 impl<'a> DeviceFailureEvent<'a> {
+    #[doc = " The status of this failure event. @since 3.0.0"]
     pub fn status(&self) -> DeviceStatus {
         DeviceStatus::from_bits_truncate(self.handle.status as u32)
     }
 
-    // TODO: device
+    #[doc = " A handle to the device generating this failure event, if available, otherwise NULL."]
+    #[doc = ""]
+    #[doc = " You are not responsible for closing this handle."]
+    #[doc = " @since 3.0.0"]
+    pub fn device(&self) -> Device {
+        Device::attach(self.handle.hDevice)
+    }
 }

@@ -1,17 +1,25 @@
 use crate::{leap_try, DeviceInfo, Error};
 use leap_sys::*;
 
-crate::leap_struct!(
-    #[doc = " A handle to a Leap device object."]
-    #[doc = " Use this handle to specify the device for an operation."]
-    #[doc = " @since 3.0.0"]
-    Device,
-    LEAP_DEVICE
-);
+#[doc = " A handle to a Leap device object."]
+#[doc = " Use this handle to specify the device for an operation."]
+#[doc = " @since 3.0.0"]
+pub struct Device {
+    pub(crate) handle: LEAP_DEVICE,
+    drop: bool,
+}
+
+impl From<LEAP_DEVICE> for Device {
+    fn from(handle: LEAP_DEVICE) -> Self {
+        Self { handle, drop: true }
+    }
+}
 
 impl Drop for Device {
     fn drop(&mut self) {
-        unsafe { LeapCloseDevice(self.handle) };
+        if self.drop {
+            unsafe { LeapCloseDevice(self.handle) };
+        }
     }
 }
 
@@ -33,6 +41,13 @@ impl Device {
             leap_try(LeapOpenDevice(device_ref, &mut handle))?;
         }
         Ok(handle.into())
+    }
+
+    pub(crate) fn attach(handle: LEAP_DEVICE) -> Self {
+        Self {
+            handle,
+            drop: false,
+        }
     }
 
     #[doc = " Gets device properties."]
