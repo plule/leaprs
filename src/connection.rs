@@ -65,6 +65,18 @@ impl Connection {
         Ok(())
     }
 
+    pub fn info(&mut self) -> Result<ConnectionInfo, Error> {
+        let mut info = LEAP_CONNECTION_INFO {
+            size: std::mem::size_of::<LEAP_CONNECTION_INFO>() as u32,
+            status: 0,
+        };
+        unsafe {
+            leap_try(LeapGetConnectionInfo(self.handle, &mut info))?;
+        }
+
+        Ok(info.into())
+    }
+
     #[doc = " Polls the connection for a new event."]
     #[doc = ""]
     #[doc = " The specific types of events that may be received are not configurable in this entrypoint. Configure"]
