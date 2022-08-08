@@ -28,9 +28,8 @@ mod tests {
         connection
             .set_policy_flags(PolicyFlags::IMAGES, PolicyFlags::empty())
             .expect("Failed to set policy");
-        connection.expect_event(
-            "Did not receive an image policy event".to_string(),
-            |e| match e {
+        connection
+            .wait_for(|e| match e {
                 Event::Policy(e) => {
                     if e.current_policy().contains(PolicyFlags::IMAGES) {
                         Some(())
@@ -39,7 +38,7 @@ mod tests {
                     }
                 }
                 _ => None,
-            },
-        );
+            })
+            .expect("Did not receive an image policy event");
     }
 }

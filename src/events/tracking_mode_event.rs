@@ -29,14 +29,12 @@ mod tests {
         connection
             .set_tracking_mode(TrackingMode::Unknown)
             .expect_err("Set tracking mode unknown did not create an error");
-        let mode =
-            connection.expect_event(
-                "Did not receive the tracking mode".to_string(),
-                |e| match e {
-                    Event::TrackingMode(mode) => Some(mode.current_tracking_mode()),
-                    _ => None,
-                },
-            );
+        let mode = connection
+            .wait_for(|e| match e {
+                Event::TrackingMode(mode) => Some(mode.current_tracking_mode()),
+                _ => None,
+            })
+            .expect("Did not receive the tracking mode");
 
         assert_ne!(mode, TrackingMode::Unknown);
     }

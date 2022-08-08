@@ -134,35 +134,37 @@ mod tests {
     #[test]
     fn get_all_hand_bones() {
         let mut connection = initialize_connection();
-        connection.expect_event("No hand in view".to_string(), |e| match e {
-            Event::Tracking(e) => {
-                let hands = e.hands();
-                if hands.is_empty() {
-                    println!("Warning: Put hands in front of the sensor for this test.");
-                }
-
-                let digits_by_array = hands.iter().flat_map(|h| h.digits());
-
-                let digits_by_name = hands
-                    .iter()
-                    .flat_map(|h| [h.thumb(), h.index(), h.middle(), h.ring(), h.pinky()]);
-
-                for digit in digits_by_array.chain(digits_by_name) {
-                    let bones_by_array = digit.bones();
-                    let bones_by_name = [
-                        digit.proximal(),
-                        digit.intermediate(),
-                        digit.proximal(),
-                        digit.distal(),
-                    ];
-
-                    for bone in bones_by_array.iter().chain(bones_by_name.iter()) {
-                        assert!(bone.width() > 0.0);
+        connection
+            .wait_for(|e| match e {
+                Event::Tracking(e) => {
+                    let hands = e.hands();
+                    if hands.is_empty() {
+                        println!("Warning: Put hands in front of the sensor for this test.");
                     }
+
+                    let digits_by_array = hands.iter().flat_map(|h| h.digits());
+
+                    let digits_by_name = hands
+                        .iter()
+                        .flat_map(|h| [h.thumb(), h.index(), h.middle(), h.ring(), h.pinky()]);
+
+                    for digit in digits_by_array.chain(digits_by_name) {
+                        let bones_by_array = digit.bones();
+                        let bones_by_name = [
+                            digit.proximal(),
+                            digit.intermediate(),
+                            digit.proximal(),
+                            digit.distal(),
+                        ];
+
+                        for bone in bones_by_array.iter().chain(bones_by_name.iter()) {
+                            assert!(bone.width() > 0.0);
+                        }
+                    }
+                    Some(())
                 }
-                Some(())
-            }
-            _ => None,
-        });
+                _ => None,
+            })
+            .expect("No hand in view");
     }
 }

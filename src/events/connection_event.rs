@@ -27,12 +27,11 @@ mod tests {
         let mut connection =
             Connection::create(ConnectionConfig::default()).expect("Failed to connect");
         connection.open().expect("Failed to open the connection");
-        let _flags = connection.expect_event(
-            "Did not receive a connection event.".to_string(),
-            |e| match e {
+        let _flags = connection
+            .wait_for(|e| match e {
                 Event::Connection(e) => Some(e.flags()),
                 _ => None,
-            },
-        );
+            })
+            .expect("Did not receive a connection event.");
     }
 }

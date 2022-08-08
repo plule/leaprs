@@ -584,20 +584,22 @@ mod tests {
         connection
             .request_config_value(config_key, Some(&mut request_id))
             .expect("Failed to request the config value");
-        connection.expect_event("Did not receive the config".to_string(), |e| match e {
-            Event::ConfigResponse(c) => {
-                if c.request_id() != request_id {
-                    None
-                } else {
-                    if let Variant::Boolean(robust_mode_enabled) = c.value() {
-                        Some(robust_mode_enabled)
+        connection
+            .wait_for(|e| match e {
+                Event::ConfigResponse(c) => {
+                    if c.request_id() != request_id {
+                        None
                     } else {
-                        panic!("Type mismatch for the configuration value.")
+                        if let Variant::Boolean(robust_mode_enabled) = c.value() {
+                            Some(robust_mode_enabled)
+                        } else {
+                            panic!("Type mismatch for the configuration value.")
+                        }
                     }
                 }
-            }
-            _ => None,
-        });
+                _ => None,
+            })
+            .expect("Did not receive the config");
     }
 
     #[test]
@@ -609,10 +611,12 @@ mod tests {
 
         for _ in 0..10 {
             // Note: If events are not polled, the frame interpolation fails with "is not seer"
-            connection.expect_event("no tracking data".to_string(), |e| match e {
-                Event::Tracking(_) => Some(()),
-                _ => None,
-            });
+            connection
+                .wait_for(|e| match e {
+                    Event::Tracking(_) => Some(()),
+                    _ => None,
+                })
+                .expect("no tracking data");
             let cpu_time = SystemTime::now().duration_since(start).unwrap().as_micros() as i64;
             clock_synchronizer
                 .update_rebase(cpu_time, leap_get_now())
@@ -645,10 +649,12 @@ mod tests {
             .set_policy_flags(PolicyFlags::ALLOW_PAUSE_RESUME, PolicyFlags::empty())
             .expect("Failed to allow pause");
 
-        connection.expect_event("Did not receive policy change".to_string(), |e| match e {
-            Event::Policy(_) => Some(()),
-            _ => None,
-        });
+        connection
+            .wait_for(|e| match e {
+                Event::Policy(_) => Some(()),
+                _ => None,
+            })
+            .expect("Did not receive policy change");
 
         connection.set_pause(true).expect("Failed to set pause");
         connection.set_pause(false).expect("Failed to unset pause");

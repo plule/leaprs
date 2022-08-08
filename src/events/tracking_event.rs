@@ -65,13 +65,14 @@ mod tests {
     #[test]
     fn read_hands() {
         let mut conn = initialize_connection();
-        conn.expect_event("No tracking event received".to_string(), |e| match e {
+        conn.wait_for(|e| match e {
             Event::Tracking(e) => {
                 let hands = e.hands();
                 let hand_ids: Vec<_> = hands.iter().map(|h| h.id()).collect();
                 Some(hand_ids)
             }
             _ => None,
-        });
+        })
+        .expect("No tracking event received");
     }
 }

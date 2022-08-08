@@ -40,8 +40,8 @@ mod tests {
             .set_policy_flags(PolicyFlags::IMAGES, PolicyFlags::empty())
             .expect("Failed to set policy flags");
 
-        let (width, height, data, _frame_id) =
-            connection.expect_event("Did not receive an image".to_string(), |e| match e {
+        let (width, height, data, _frame_id) = connection
+            .wait_for(|e| match e {
                 Event::Image(e) => {
                     let right_image = &e.images()[1];
                     let data = right_image.data();
@@ -51,7 +51,8 @@ mod tests {
                     Some((width, height, data.to_vec(), e.info().frame_id()))
                 }
                 _ => None,
-            });
+            })
+            .expect("Did not receive an image");
 
         let temp_dir = tempfile::tempdir().expect("Failed to create a temp dir");
         let mut path = temp_dir.into_path();

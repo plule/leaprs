@@ -144,21 +144,19 @@ mod tests {
         let mut connection = Connection::create(config).expect("Failed to connect");
         connection.open().expect("Failed to open the connection");
 
-        connection.expect_event(
-            "Did not receive connection message".to_string(),
-            |e| match e {
+        connection
+            .wait_for(|e| match e {
                 Event::Connection(_) => Some(()),
                 _ => None,
-            },
-        );
+            })
+            .expect("Did not receive connection message");
 
-        connection.expect_event(
-            "Did not receive device connection".to_string(),
-            |e| match e {
+        connection
+            .wait_for(|e| match e {
                 Event::Device(_) => Some(()),
                 _ => None,
-            },
-        );
+            })
+            .expect("Did not receive device connection");
 
         connection
     }
@@ -174,24 +172,24 @@ mod tests {
     }
 
     pub trait ConnectionTestExtensions {
-        fn expect_event<F, T>(&mut self, message: String, condition: F) -> T
+        fn wait_for<F, T>(&mut self, condition: F) -> Result<T, &str>
         where
             F: Fn(&Event) -> Option<T>;
     }
 
     impl ConnectionTestExtensions for Connection {
-        fn expect_event<F, T>(&mut self, message: String, condition: F) -> T
+        fn wait_for<F, T>(&mut self, condition: F) -> Result<T, &str>
         where
             F: Fn(&Event) -> Option<T>,
         {
             for _ in 0..200 {
                 if let Ok(event_message) = self.poll(100) {
                     if let Some(ret) = condition(&event_message.event()) {
-                        return ret;
+                        return Ok(ret);
                     }
                 }
             }
-            panic!("{}", message);
+            Err("Did not receive the event")
         }
     }
 }
