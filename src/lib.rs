@@ -161,6 +161,7 @@ mod tests {
         connection
     }
 
+    #[cfg(feature = "gemini")]
     pub fn initialize_connection_ex() -> Connection {
         let config = ConnectionConfig::new(ConnectionConfigFlags::MULTI_DEVICE_AWARE, None);
         initialize_connection_config(config)

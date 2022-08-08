@@ -11,17 +11,35 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  LEAPSDK_LIB_PATH: leap-sdk-redist/LeapSDK/lib/x64
 
 jobs:
   build:
+    strategy:
+      matrix:
+        include:
+          - sdk-redist-ref: gemini
+            cargo-features: --no-default-features --features gemini
+          - sdk-redist-ref: orion
+            cargo-features: --no-default-features
     name: build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ matrix.sdk-redist-ref }}
+        repository: plule/leap-sdk-redist
+        token: ${{ secrets.LEAP_SDK_REDIST_PAT }}
+        path: leap-sdk-redist
     - uses: Swatinem/rust-cache@v1
     - name: Build
-      run: cargo build
+      run: cargo build ${{ matrix.cargo-features }}
+    - name: Build Examples
+      run: cargo build ${{ matrix.cargo-features }} --examples
+    - name: Build Tests
+      run: cargo build ${{ matrix.cargo-features }} --tests
     - name: Doc
       run: cargo doc
     - name: Style

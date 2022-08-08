@@ -409,6 +409,7 @@ impl Connection {
     #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
     #[doc = " @param[out] dest A pointer to a single-precision float array of size 9"]
     #[doc = " @since 3.2.1"]
+    #[cfg(feature = "gemini")]
     pub fn camera_matrix(&mut self, camera: PerspectiveType, dest: &mut [f32; 9]) {
         unsafe { LeapCameraMatrix(self.handle, camera.into(), dest.as_mut_ptr()) }
     }
@@ -422,6 +423,7 @@ impl Connection {
     #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
     #[doc = " @param[out] dest A pointer to a single-precision float array of size 8."]
     #[doc = " @since 3.2.1"]
+    #[cfg(feature = "gemini")]
     pub fn distortion_coeffs(&mut self, camera: PerspectiveType, dest: &mut [f32; 8]) {
         unsafe { LeapDistortionCoeffs(self.handle, camera.into(), dest.as_mut_ptr()) }
     }
@@ -473,6 +475,7 @@ impl Connection {
     #[doc = " @param unsubscribeOthers If \\c true, unsubscribe from all other devices."]
     #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
     #[doc = " @since 5.4.0"]
+    #[cfg(feature = "gemini")]
     pub fn set_primary_device(
         &mut self,
         device: &Device,
@@ -506,6 +509,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "gemini")]
     fn get_version() {
         let mut connection = initialize_connection();
         connection
@@ -559,11 +563,14 @@ mod tests {
         connection.pixel_to_rectilinear(PerspectiveType::StereoLeft, &leap_vector);
         connection.rectilinear_to_pixel(PerspectiveType::StereoRight, &leap_vector);
 
-        let mut camera_matrix = [0.0; 9];
-        connection.camera_matrix(PerspectiveType::StereoLeft, &mut camera_matrix);
+        #[cfg(feature = "gemini")]
+        {
+            let mut camera_matrix = [0.0; 9];
+            connection.camera_matrix(PerspectiveType::StereoLeft, &mut camera_matrix);
 
-        let mut distortion_coeffs = [0.0; 8];
-        connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
+            let mut distortion_coeffs = [0.0; 8];
+            connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
+        }
     }
 
     #[test]
@@ -670,6 +677,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "gemini")]
     fn set_primary_device_test() {
         let mut connection = initialize_connection_ex();
 
