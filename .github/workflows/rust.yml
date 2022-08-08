@@ -26,6 +26,10 @@ jobs:
         repository: plule/leap-sdk-redist
         token: ${{ secrets.LEAP_SDK_REDIST_PAT }}
         path: leap-sdk-redist
+    - name: ls
+      run: ls leap-sdk-redist
+    - name: tree
+      run: tree leap-sdk-redist
     - uses: Swatinem/rust-cache@v1
     - name: Build
       run: cargo build
