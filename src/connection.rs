@@ -193,6 +193,24 @@ impl Connection {
         unsafe { leap_try(LeapSetPolicyFlags(self.handle, set.bits(), clear.bits())) }
     }
 
+    #[doc = " Pauses the service"]
+    #[doc = ""]
+    #[doc = " Attempts to pause or unpause the service depending on the argument."]
+    #[doc = " This is treated as a 'user pause', as though a user had requested a pause through the"]
+    #[doc = " Leap Control Panel. The connection must have the AllowPauseResume policy set"]
+    #[doc = " or it will fail with eLeapRS_InvalidArgument."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param pause Set to 'true' to pause, or 'false' to unpause."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 4.0.0"]
+    pub fn set_pause(&mut self, pause: bool) -> Result<(), Error> {
+        unsafe {
+            leap_try(LeapSetPause(self.handle, pause))?;
+        }
+        Ok(())
+    }
+
     #[doc = " Requests a tracking mode."]
     #[doc = ""]
     #[doc = " Changing tracking modes is asynchronous. After you call this function, a subsequent"]
@@ -452,5 +470,31 @@ mod tests {
                 .expect("Failed to interpolate frame");
             let _hands = frame.hands();
         }
+    }
+
+    #[test]
+    fn pause_resume() {
+        let mut connection = initialize_connection();
+
+        connection
+            .set_policy_flags(PolicyFlags::ALLOW_PAUSE_RESUME, PolicyFlags::empty())
+            .expect("Failed to allow pause");
+
+        connection.expect_event("Did not receive policy change".to_string(), |e| match e {
+            Event::Policy(_) => Some(()),
+            _ => None,
+        });
+
+        connection.set_pause(true).expect("Failed to set pause");
+        connection.set_pause(false).expect("Failed to unset pause");
+
+        connection
+            .set_policy_flags(PolicyFlags::empty(), PolicyFlags::ALLOW_PAUSE_RESUME)
+            .expect("Failed to remove pause allow");
+
+        let pause_err = connection
+            .set_pause(true)
+            .expect_err("succeded to pause even though it was forbidden");
+        assert_eq!(pause_err, Error::InvalidArgument);
     }
 }
