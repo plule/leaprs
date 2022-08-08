@@ -31,7 +31,7 @@ fn main() {
 
             let pid = device_info.pid();
 
-            Msg::Success(format!("Got the device {} ({:#?})", serial, pid))
+            Msg::Success(format!("Got the device {} ({})", serial, pid))
         }
         _ => Msg::None,
     });

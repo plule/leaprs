@@ -1,3 +1,5 @@
+use std::{ffi::CStr, fmt::Display};
+
 use leap_sys::*;
 use num_enum::{FromPrimitive, IntoPrimitive};
 
@@ -22,4 +24,37 @@ pub enum DevicePID {
     Leap3Di = _eLeapDevicePID_eLeapDevicePID_3Di,
     #[doc = " An invalid device type. Not currently in use. @since 3.1.3"]
     Invalid = _eLeapDevicePID_eLeapDevicePID_Invalid,
+}
+
+impl DevicePID {
+    pub fn to_cstr(&self) -> &'static CStr {
+        unsafe {
+            let str = LeapDevicePIDToString(*self as eLeapDevicePID);
+            CStr::from_ptr(str)
+        }
+    }
+}
+
+impl Display for DevicePID {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let cstr = self.to_cstr().to_str().unwrap_or("Invalid");
+        write!(f, "{}", cstr)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::tests::*;
+
+    #[test]
+    fn device_pid_str() {
+        let mut connection = initialize_connection();
+        let devices = connection
+            .get_device_list()
+            .expect("Failed to list devices");
+        let device_info = devices.first().expect("No devices plugged for tests.");
+        let mut device = device_info.open().expect("Failed to open the device");
+        let device_info = device.get_info().expect("Failed to get device info");
+        assert_ne!("Invalid".to_string(), device_info.pid().to_string());
+    }
 }

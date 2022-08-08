@@ -347,6 +347,84 @@ impl Connection {
             Ok(event)
         }
     }
+
+    #[doc = " Provides the corrected camera ray intercepting the specified point on the image."]
+    #[doc = ""]
+    #[doc = " Given a point on the image, ``LeapPixelToRectilinear()`` corrects for camera distortion"]
+    #[doc = " and returns the true direction from the camera to the source of that image point"]
+    #[doc = " within the Ultraleap Tracking camera field of view."]
+    #[doc = ""]
+    #[doc = " This direction vector has an x and y component [x, y, 1], with the third element"]
+    #[doc = " always 1. Note that this vector uses the 2D camera coordinate system"]
+    #[doc = " where the x-axis parallels the longer (typically horizontal) dimension and"]
+    #[doc = " the y-axis parallels the shorter (vertical) dimension. The camera coordinate"]
+    #[doc = " system does not correlate to the 3D Ultraleap Tracking coordinate system."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param pixel A Vector containing the position of a pixel in the image."]
+    #[doc = " @returns A Vector containing the ray direction (the z-component of the vector is always 1)."]
+    #[doc = " @since 3.1.3"]
+    pub fn pixel_to_rectilinear(
+        &mut self,
+        camera: PerspectiveType,
+        pixel: &LeapVector,
+    ) -> LeapVector {
+        unsafe { LeapPixelToRectilinear(self.handle, camera.into(), pixel.handle).into() }
+    }
+
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Provides the point in the image corresponding to a ray projecting"]
+    #[doc = " from the camera."]
+    #[doc = ""]
+    #[doc = " Given a ray projected from the camera in the specified direction, ``LeapRectilinearToPixel()``"]
+    #[doc = " corrects for camera distortion and returns the corresponding pixel"]
+    #[doc = " coordinates in the image."]
+    #[doc = ""]
+    #[doc = " The ray direction is specified in relationship to the camera. The first"]
+    #[doc = " vector element is the tangent of the \"horizontal\" view angle; the second"]
+    #[doc = " element is the tangent of the \"vertical\" view angle."]
+    #[doc = ""]
+    #[doc = " The ``LeapRectilinearToPixel()`` function returns pixel coordinates outside of the image bounds"]
+    #[doc = " if you project a ray toward a point for which there is no recorded data."]
+    #[doc = ""]
+    #[doc = " ``LeapRectilinearToPixel()`` is typically not fast enough for realtime distortion correction."]
+    #[doc = " For better performance, use a shader program executed on a GPU."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param rectilinear A Vector containing the ray direction."]
+    #[doc = " @returns A Vector containing the pixel coordinates [x, y, 1] (with z always 1)."]
+    #[doc = " @since 3.1.3"]
+    pub fn rectilinear_to_pixel(
+        &mut self,
+        camera: PerspectiveType,
+        rectilinear: &LeapVector,
+    ) -> LeapVector {
+        unsafe { LeapRectilinearToPixel(self.handle, camera.into(), rectilinear.handle).into() }
+    }
+
+    #[doc = " Returns an OpenCV-compatible camera matrix."]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param[out] dest A pointer to a single-precision float array of size 9"]
+    #[doc = " @since 3.2.1"]
+    pub fn camera_matrix(&mut self, camera: PerspectiveType, dest: &mut [f32; 9]) {
+        unsafe { LeapCameraMatrix(self.handle, camera.into(), dest.as_mut_ptr()) }
+    }
+
+    #[doc = " Returns an OpenCV-compatible lens distortion using the 8-parameter rational"]
+    #[doc = " model."]
+    #[doc = ""]
+    #[doc = " The order of the returned array is: [k1, k2, p1, p2, k3, k4, k5, k6]"]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param[out] dest A pointer to a single-precision float array of size 8."]
+    #[doc = " @since 3.2.1"]
+    pub fn distortion_coeffs(&mut self, camera: PerspectiveType, dest: &mut [f32; 8]) {
+        unsafe { LeapDistortionCoeffs(self.handle, camera.into(), dest.as_mut_ptr()) }
+    }
 }
 
 #[cfg(test)]
@@ -408,6 +486,22 @@ mod tests {
                 Some(&mut request_id),
             )
             .expect("Failed to save a config value");
+    }
+
+    /// Basebone test just going through otherwise untested unsafe code
+    #[test]
+    fn safety_sanity() {
+        let mut connection = initialize_connection();
+
+        let leap_vector = LeapVector::new(0.0, 0.0, 1.0);
+        connection.pixel_to_rectilinear(PerspectiveType::StereoLeft, &leap_vector);
+        connection.rectilinear_to_pixel(PerspectiveType::StereoRight, &leap_vector);
+
+        let mut camera_matrix = [0.0; 9];
+        connection.camera_matrix(PerspectiveType::StereoLeft, &mut camera_matrix);
+
+        let mut distortion_coeffs = [0.0; 8];
+        connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
     }
 
     #[test]
