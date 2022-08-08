@@ -140,10 +140,8 @@ mod tests {
         assert!(leap_get_now() > 0)
     }
 
-    /// Connect to the service and wait for the first events necessary for LeapC to be functional
-    pub fn initialize_connection() -> Connection {
-        let mut connection =
-            Connection::create(ConnectionConfig::default()).expect("Failed to connect");
+    pub fn initialize_connection_config(config: ConnectionConfig) -> Connection {
+        let mut connection = Connection::create(config).expect("Failed to connect");
         connection.open().expect("Failed to open the connection");
 
         connection.expect_event(
@@ -163,6 +161,16 @@ mod tests {
         );
 
         connection
+    }
+
+    pub fn initialize_connection_ex() -> Connection {
+        let config = ConnectionConfig::new(ConnectionConfigFlags::MULTI_DEVICE_AWARE, None);
+        initialize_connection_config(config)
+    }
+
+    /// Connect to the service and wait for the first events necessary for LeapC to be functional
+    pub fn initialize_connection() -> Connection {
+        initialize_connection_config(ConnectionConfig::default())
     }
 
     pub trait ConnectionTestExtensions {

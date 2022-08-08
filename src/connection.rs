@@ -446,6 +446,47 @@ impl Connection {
             Ok(mapping)
         }
     }
+
+    #[doc = " For a multi-device aware client, sets the device to use in the context of"]
+    #[doc = " non-\"Ex\" API functions which are logically device-specific but don't provide"]
+    #[doc = " a device parameter."]
+    #[doc = ""]
+    #[doc = " Automatically subscribes to the specified device (see LeapSubscribeEvents()),"]
+    #[doc = " and if \\p unsubscribeOthers is \\c true, then unsubscribes from all other devices"]
+    #[doc = " as well (see LeapUnsubscribeEvents())."]
+    #[doc = ""]
+    #[doc = " Affects future invocations of the following functions:"]
+    #[doc = "  - LeapCameraMatrix()"]
+    #[doc = "  - LeapDistortionCoeffs()"]
+    #[doc = "  - LeapGetFrameSize()"]
+    #[doc = "  - LeapInterpolateFrame()"]
+    #[doc = "  - LeapInterpolateFrameFromTime()"]
+    #[doc = "  - LeapPixelToRectilinear()"]
+    #[doc = "  - LeapRectilinearToPixel()"]
+    #[doc = ""]
+    #[doc = " It is not necessary to call this function from a client that does not claim"]
+    #[doc = " to be multi-device-aware (see ::eLeapConnectionConfig and"]
+    #[doc = " ::LeapCreateConnection)."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param unsubscribeOthers If \\c true, unsubscribe from all other devices."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    pub fn set_primary_device(
+        &mut self,
+        device: &Device,
+        unsubscribe_others: bool,
+    ) -> Result<(), Error> {
+        unsafe {
+            leap_try(LeapSetPrimaryDevice(
+                self.handle,
+                device.handle,
+                unsubscribe_others,
+            ))?;
+        }
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -620,5 +661,21 @@ mod tests {
             .set_pause(true)
             .expect_err("succeded to pause even though it was forbidden");
         assert_eq!(pause_err, Error::InvalidArgument);
+    }
+
+    #[test]
+    fn set_primary_device_test() {
+        let mut connection = initialize_connection_ex();
+
+        let first_device = connection
+            .get_device_list()
+            .unwrap()
+            .first()
+            .unwrap()
+            .open()
+            .unwrap();
+
+        connection.set_primary_device(&first_device, true).unwrap();
+        let _ = connection.get_frame_size(0);
     }
 }
