@@ -425,6 +425,27 @@ impl Connection {
     pub fn distortion_coeffs(&mut self, camera: PerspectiveType, dest: &mut [f32; 8]) {
         unsafe { LeapDistortionCoeffs(self.handle, camera.into(), dest.as_mut_ptr()) }
     }
+
+    pub fn get_point_mapping_size(&mut self) -> Result<u64, Error> {
+        let mut s = 0;
+        unsafe {
+            leap_try(LeapGetPointMappingSize(self.handle, &mut s))?;
+        }
+        Ok(s)
+    }
+
+    pub fn get_point_mapping(&mut self) -> Result<PointMapping, Error> {
+        let mut size = self.get_point_mapping_size()?;
+        unsafe {
+            let mut mapping = PointMapping::new_uninitialized(size);
+            leap_try(LeapGetPointMapping(
+                self.handle,
+                &mut mapping.handle.sized,
+                &mut size,
+            ))?;
+            Ok(mapping)
+        }
+    }
 }
 
 #[cfg(test)]
@@ -502,6 +523,15 @@ mod tests {
 
         let mut distortion_coeffs = [0.0; 8];
         connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
+    }
+
+    #[test]
+    #[ignore = "Call fails with NotAvailable"]
+    fn point_mapping() {
+        let mut connection = initialize_connection();
+        let point_mapping = connection.get_point_mapping().unwrap();
+        let _pid_vec = point_mapping.pids().to_vec();
+        let _points = point_mapping.points();
     }
 
     #[test]
