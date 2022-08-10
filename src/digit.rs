@@ -54,7 +54,7 @@ impl<'a> Digit<'a> {
     }
 
     #[doc = " Reports whether the finger is more or less straight. @since 3.0.0"]
-    pub fn is_extended(&self) -> u32 {
-        self.handle.is_extended
+    pub fn is_extended(&self) -> bool {
+        self.handle.is_extended == 1
     }
 }
