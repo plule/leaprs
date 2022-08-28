@@ -1,0 +1,36 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - sdk-redist-ref: gemini
+            cargo-features: --no-default-features --features gemini
+          - sdk-redist-ref: orion
+            cargo-features: --no-default-features
+    name: build
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: Swatinem/rust-cache@v1
+    - name: Build
+      run: cargo build ${{ matrix.cargo-features }}
+    #- name: Build Examples
+    #  run: cargo build ${{ matrix.cargo-features }} --examples
+    - name: Build Tests
+      run: cargo rustc ${{ matrix.cargo-features }} --tests -- --emit=obj
+    - name: Doc
+      run: cargo doc
+    - name: Style
+      run: cargo fmt -- --check
+    - name: Clippy
+      run: cargo clippy -- -D warnings
