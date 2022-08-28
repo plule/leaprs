@@ -1,6 +1,8 @@
 name: Pull Request
 
 on:
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -36,13 +38,14 @@ jobs:
       run: cargo clippy -- -D warnings
 
   dependabot:
-    name: 'Dependabot'
+    name: 'Dependabot automerge'
     needs: [build]
+    permissions:
+      pull-requests: write
+      contents: write
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}} # Detect that the PR author is dependabot
     steps:
-      - name: Enable auto-merge for Dependabot PRs
-        run: gh pr merge --auto --merge "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - uses: fastify/github-action-merge-dependabot@v3.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
