@@ -1,0 +1,48 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - sdk-redist-ref: gemini
+            cargo-features: --no-default-features --features gemini
+          - sdk-redist-ref: orion
+            cargo-features: --no-default-features
+    name: check
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: Swatinem/rust-cache@v1
+    - name: Check
+      run: cargo check ${{ matrix.cargo-features }}
+    - name: Check Examples
+      run: cargo check ${{ matrix.cargo-features }} --examples
+    - name: Check Tests
+      run: cargo check ${{ matrix.cargo-features }} --tests
+    - name: Doc
+      run: cargo doc
+    - name: Style
+      run: cargo fmt -- --check
+    - name: Clippy
+      run: cargo clippy -- -D warnings
+
+  dependabot:
+    name: 'Dependabot'
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}} # Detect that the PR author is dependabot
+    steps:
+      - name: Enable auto-merge for Dependabot PRs
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
