@@ -153,25 +153,6 @@ impl Connection {
         self.get_device_list_raw(&mut count)
     }
 
-    #[doc = " Returns the version of a specified part of the system."]
-    #[doc = ""]
-    #[doc = " If an invalid connection handle is provided only the version details of the client will be available."]
-    #[doc = ""]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @param versionPart The version part to return, this will reference one part of the system."]
-    #[doc = " @param[out] pVersion A pointer to a struct used to store the version number."]
-    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
-    #[doc = " @since 5.2.x"]
-    #[cfg(feature = "gemini")]
-    pub fn get_version(&mut self, part: VersionPart) -> Result<Version, Error> {
-        let mut version: LEAP_VERSION;
-        unsafe {
-            version = std::mem::zeroed();
-            leap_try(LeapGetVersion(self.handle, part.into(), &mut version))?;
-        }
-        Ok(version.into())
-    }
-
     #[doc = " Sets or clears one or more policy flags."]
     #[doc = ""]
     #[doc = " Changing policies is asynchronous. After you call this function, a subsequent"]
@@ -193,41 +174,6 @@ impl Connection {
         unsafe { leap_try(LeapSetPolicyFlags(self.handle, set.bits(), clear.bits())) }
     }
 
-    #[doc = " Sets or clears one or more policy flags for a particular device."]
-    #[doc = ""]
-    #[doc = " Changing policies is asynchronous. After you call this function, a subsequent"]
-    #[doc = " call to LeapPollConnection provides a LEAP_POLICY_EVENT containing the current"]
-    #[doc = " policies, reflecting any changes."]
-    #[doc = ""]
-    #[doc = " To get the current policies without changes, specify zero for both the set"]
-    #[doc = " and clear parameters. When ready, LeapPollConnection() provides a LEAP_POLICY_EVENT"]
-    #[doc = " containing the current settings."]
-    #[doc = ""]
-    #[doc = " The eLeapPolicyFlag enumeration defines the policy flags."]
-    #[doc = ""]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
-    #[doc = " @param set A bitwise combination of flags to be set. Set to 0 if not setting any flags."]
-    #[doc = " @param clear A bitwise combination of flags to be cleared. Set to 0 if not clearing any flags."]
-    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
-    #[doc = " @since 5.4.0"]
-    #[cfg(feature = "gemini")]
-    pub fn set_policy_flags_ex(
-        &mut self,
-        device: &Device,
-        set: PolicyFlags,
-        clear: PolicyFlags,
-    ) -> Result<(), Error> {
-        unsafe {
-            leap_try(LeapSetPolicyFlagsEx(
-                self.handle,
-                device.handle,
-                set.bits(),
-                clear.bits(),
-            ))
-        }
-    }
-
     #[doc = " Pauses the service"]
     #[doc = ""]
     #[doc = " Attempts to pause or unpause the service depending on the argument."]
@@ -244,85 +190,6 @@ impl Connection {
             leap_try(LeapSetPause(self.handle, pause))?;
         }
         Ok(())
-    }
-
-    #[doc = " \\ingroup Functions"]
-    #[doc = " Requests the currently set tracking mode."]
-    #[doc = ""]
-    #[doc = " Requesting the current tracking mode is asynchronous. After you call this function, a subsequent"]
-    #[doc = " call to LeapPollConnection provides a LEAP_TRACKING_MODE_EVENT containing the current"]
-    #[doc = " tracking mode, reflecting any changes."]
-    #[doc = ""]
-    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
-    #[doc = ""]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
-    #[doc = " @since 5.0.0"]
-    pub fn get_tracking_mode(&mut self) -> Result<(), Error> {
-        unsafe { leap_try(LeapGetTrackingMode(self.handle)) }
-    }
-
-    #[doc = " \\ingroup Functions"]
-    #[doc = " Requests the currently set tracking mode for a particular device."]
-    #[doc = ""]
-    #[doc = " Requesting the current tracking mode is asynchronous. After you call this function, a subsequent"]
-    #[doc = " call to LeapPollConnection provides a LEAP_TRACKING_MODE_EVENT containing the current"]
-    #[doc = " tracking mode, reflecting any changes."]
-    #[doc = ""]
-    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
-    #[doc = ""]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
-    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
-    #[doc = " @since 5.4.0"]
-    pub fn get_tracking_mode_ex(&mut self, device: &Device) -> Result<(), Error> {
-        unsafe { leap_try(LeapGetTrackingModeEx(self.handle, device.handle)) }
-    }
-
-    #[doc = " Requests a tracking mode."]
-    #[doc = ""]
-    #[doc = " Changing tracking modes is asynchronous. After you call this function, a subsequent"]
-    #[doc = " call to LeapPollConnection provides a LEAP_POLICY_EVENT containing the current"]
-    #[doc = " policies, reflecting any changes."]
-    #[doc = ""]
-    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
-    #[doc = "."]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @param mode The enum value specifying the requested tracking mode"]
-    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
-    #[doc = " @since 5.0.0"]
-    #[cfg(feature = "gemini")]
-    pub fn set_tracking_mode(&mut self, mode: TrackingMode) -> Result<(), Error> {
-        unsafe { leap_try(LeapSetTrackingMode(self.handle, mode.into())) }
-    }
-
-    #[doc = " \\ingroup Functions"]
-    #[doc = " Requests a tracking mode for a particular device."]
-    #[doc = ""]
-    #[doc = " Changing tracking modes is asynchronous. After you call this function, a subsequent"]
-    #[doc = " call to LeapPollConnection provides a LEAP_POLICY_EVENT containing the current"]
-    #[doc = " policies, reflecting any changes."]
-    #[doc = ""]
-    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
-    #[doc = ""]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
-    #[doc = " @param mode The enum value specifying the requested tracking mode."]
-    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
-    #[doc = " @since 5.4.0"]
-    #[cfg(feature = "gemini")]
-    pub fn set_tracking_mode_ex(
-        &mut self,
-        device: &Device,
-        mode: TrackingMode,
-    ) -> Result<(), Error> {
-        unsafe {
-            leap_try(LeapSetTrackingModeEx(
-                self.handle,
-                device.handle,
-                mode.into(),
-            ))
-        }
     }
 
     #[doc = "**Warning**: Does not appear to work."]
@@ -501,30 +368,6 @@ impl Connection {
         unsafe { LeapRectilinearToPixel(self.handle, camera.into(), rectilinear.handle).into() }
     }
 
-    #[doc = " Returns an OpenCV-compatible camera matrix."]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
-    #[doc = " @param[out] dest A pointer to a single-precision float array of size 9"]
-    #[doc = " @since 3.2.1"]
-    #[cfg(feature = "gemini")]
-    pub fn camera_matrix(&mut self, camera: PerspectiveType, dest: &mut [f32; 9]) {
-        unsafe { LeapCameraMatrix(self.handle, camera.into(), dest.as_mut_ptr()) }
-    }
-
-    #[doc = " Returns an OpenCV-compatible lens distortion using the 8-parameter rational"]
-    #[doc = " model."]
-    #[doc = ""]
-    #[doc = " The order of the returned array is: [k1, k2, p1, p2, k3, k4, k5, k6]"]
-    #[doc = ""]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
-    #[doc = " @param[out] dest A pointer to a single-precision float array of size 8."]
-    #[doc = " @since 3.2.1"]
-    #[cfg(feature = "gemini")]
-    pub fn distortion_coeffs(&mut self, camera: PerspectiveType, dest: &mut [f32; 8]) {
-        unsafe { LeapDistortionCoeffs(self.handle, camera.into(), dest.as_mut_ptr()) }
-    }
-
     pub fn get_point_mapping_size(&mut self) -> Result<u64, Error> {
         let mut s = 0;
         unsafe {
@@ -544,6 +387,160 @@ impl Connection {
             ))?;
             Ok(mapping)
         }
+    }
+}
+
+#[cfg(feature = "gemini")]
+impl Connection {
+    #[doc = " Returns the version of a specified part of the system."]
+    #[doc = ""]
+    #[doc = " If an invalid connection handle is provided only the version details of the client will be available."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param versionPart The version part to return, this will reference one part of the system."]
+    #[doc = " @param[out] pVersion A pointer to a struct used to store the version number."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.2.x"]
+    pub fn get_version(&mut self, part: VersionPart) -> Result<Version, Error> {
+        let mut version: LEAP_VERSION;
+        unsafe {
+            version = std::mem::zeroed();
+            leap_try(LeapGetVersion(self.handle, part.into(), &mut version))?;
+        }
+        Ok(version.into())
+    }
+
+    #[doc = " Sets or clears one or more policy flags for a particular device."]
+    #[doc = ""]
+    #[doc = " Changing policies is asynchronous. After you call this function, a subsequent"]
+    #[doc = " call to LeapPollConnection provides a LEAP_POLICY_EVENT containing the current"]
+    #[doc = " policies, reflecting any changes."]
+    #[doc = ""]
+    #[doc = " To get the current policies without changes, specify zero for both the set"]
+    #[doc = " and clear parameters. When ready, LeapPollConnection() provides a LEAP_POLICY_EVENT"]
+    #[doc = " containing the current settings."]
+    #[doc = ""]
+    #[doc = " The eLeapPolicyFlag enumeration defines the policy flags."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param set A bitwise combination of flags to be set. Set to 0 if not setting any flags."]
+    #[doc = " @param clear A bitwise combination of flags to be cleared. Set to 0 if not clearing any flags."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    pub fn set_policy_flags_ex(
+        &mut self,
+        device: &Device,
+        set: PolicyFlags,
+        clear: PolicyFlags,
+    ) -> Result<(), Error> {
+        unsafe {
+            leap_try(LeapSetPolicyFlagsEx(
+                self.handle,
+                device.handle,
+                set.bits(),
+                clear.bits(),
+            ))
+        }
+    }
+
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Requests the currently set tracking mode."]
+    #[doc = ""]
+    #[doc = " Requesting the current tracking mode is asynchronous. After you call this function, a subsequent"]
+    #[doc = " call to LeapPollConnection provides a LEAP_TRACKING_MODE_EVENT containing the current"]
+    #[doc = " tracking mode, reflecting any changes."]
+    #[doc = ""]
+    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.0.0"]
+    pub fn get_tracking_mode(&mut self) -> Result<(), Error> {
+        unsafe { leap_try(LeapGetTrackingMode(self.handle)) }
+    }
+
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Requests the currently set tracking mode for a particular device."]
+    #[doc = ""]
+    #[doc = " Requesting the current tracking mode is asynchronous. After you call this function, a subsequent"]
+    #[doc = " call to LeapPollConnection provides a LEAP_TRACKING_MODE_EVENT containing the current"]
+    #[doc = " tracking mode, reflecting any changes."]
+    #[doc = ""]
+    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    pub fn get_tracking_mode_ex(&mut self, device: &Device) -> Result<(), Error> {
+        unsafe { leap_try(LeapGetTrackingModeEx(self.handle, device.handle)) }
+    }
+
+    #[doc = " Requests a tracking mode."]
+    #[doc = ""]
+    #[doc = " Changing tracking modes is asynchronous. After you call this function, a subsequent"]
+    #[doc = " call to LeapPollConnection provides a LEAP_POLICY_EVENT containing the current"]
+    #[doc = " policies, reflecting any changes."]
+    #[doc = ""]
+    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
+    #[doc = "."]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param mode The enum value specifying the requested tracking mode"]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.0.0"]
+    pub fn set_tracking_mode(&mut self, mode: TrackingMode) -> Result<(), Error> {
+        unsafe { leap_try(LeapSetTrackingMode(self.handle, mode.into())) }
+    }
+
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Requests a tracking mode for a particular device."]
+    #[doc = ""]
+    #[doc = " Changing tracking modes is asynchronous. After you call this function, a subsequent"]
+    #[doc = " call to LeapPollConnection provides a LEAP_POLICY_EVENT containing the current"]
+    #[doc = " policies, reflecting any changes."]
+    #[doc = ""]
+    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param mode The enum value specifying the requested tracking mode."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    pub fn set_tracking_mode_ex(
+        &mut self,
+        device: &Device,
+        mode: TrackingMode,
+    ) -> Result<(), Error> {
+        unsafe {
+            leap_try(LeapSetTrackingModeEx(
+                self.handle,
+                device.handle,
+                mode.into(),
+            ))
+        }
+    }
+
+    #[doc = " Returns an OpenCV-compatible camera matrix."]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param[out] dest A pointer to a single-precision float array of size 9"]
+    #[doc = " @since 3.2.1"]
+    pub fn camera_matrix(&mut self, camera: PerspectiveType, dest: &mut [f32; 9]) {
+        unsafe { LeapCameraMatrix(self.handle, camera.into(), dest.as_mut_ptr()) }
+    }
+
+    #[doc = " Returns an OpenCV-compatible lens distortion using the 8-parameter rational"]
+    #[doc = " model."]
+    #[doc = ""]
+    #[doc = " The order of the returned array is: [k1, k2, p1, p2, k3, k4, k5, k6]"]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param[out] dest A pointer to a single-precision float array of size 8."]
+    #[doc = " @since 3.2.1"]
+    pub fn distortion_coeffs(&mut self, camera: PerspectiveType, dest: &mut [f32; 8]) {
+        unsafe { LeapDistortionCoeffs(self.handle, camera.into(), dest.as_mut_ptr()) }
     }
 
     #[doc = " For a multi-device aware client, sets the device to use in the context of"]
@@ -572,7 +569,6 @@ impl Connection {
     #[doc = " @param unsubscribeOthers If \\c true, unsubscribe from all other devices."]
     #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
     #[doc = " @since 5.4.0"]
-    #[cfg(feature = "gemini")]
     pub fn set_primary_device(
         &mut self,
         device: &Device,
@@ -605,22 +601,82 @@ mod tests {
         assert!(devices.len() > 0, "No devices, tests will not run.");
     }
 
-    #[test]
     #[cfg(feature = "gemini")]
-    fn get_version() {
-        let mut connection = initialize_connection();
-        connection
-            .get_version(VersionPart::ClientLibrary)
-            .expect("Failed to get client library version");
-        connection
-            .get_version(VersionPart::ClientProtocol)
-            .expect("Failed to get client protocol version");
-        connection
-            .get_version(VersionPart::ServerLibrary)
-            .expect("Failed to get server library version");
-        connection
-            .get_version(VersionPart::ServerProtocol)
-            .expect("Failed to get server protocol version");
+    mod gemini {
+        use crate::tests::*;
+        use crate::*;
+
+        #[test]
+        fn get_version() {
+            let mut connection = initialize_connection();
+            connection
+                .get_version(VersionPart::ClientLibrary)
+                .expect("Failed to get client library version");
+            connection
+                .get_version(VersionPart::ClientProtocol)
+                .expect("Failed to get client protocol version");
+            connection
+                .get_version(VersionPart::ServerLibrary)
+                .expect("Failed to get server library version");
+            connection
+                .get_version(VersionPart::ServerProtocol)
+                .expect("Failed to get server protocol version");
+        }
+
+        #[test]
+        fn set_primary_device_test() {
+            let (mut connection, first_device) = initialize_connection_ex();
+
+            connection.set_primary_device(&first_device, true).unwrap();
+            let _ = connection.get_frame_size(0);
+        }
+
+        #[test]
+        fn pause_resume() {
+            let (mut connection, first_device) = initialize_connection_ex();
+
+            connection
+                .set_policy_flags_ex(
+                    &first_device,
+                    PolicyFlags::ALLOW_PAUSE_RESUME,
+                    PolicyFlags::empty(),
+                )
+                .expect("Failed to allow pause");
+
+            connection
+                .wait_for(|e| match e {
+                    Event::Policy(_) => Some(()),
+                    _ => None,
+                })
+                .expect("Did not receive policy change");
+
+            connection.set_pause(true).expect("Failed to set pause");
+            connection.set_pause(false).expect("Failed to unset pause");
+
+            connection
+                .set_policy_flags_ex(
+                    &first_device,
+                    PolicyFlags::empty(),
+                    PolicyFlags::ALLOW_PAUSE_RESUME,
+                )
+                .expect("Failed to remove pause allow");
+
+            let pause_err = connection
+                .set_pause(true)
+                .expect_err("succeded to pause even though it was forbidden");
+            assert_eq!(pause_err, Error::InvalidArgument);
+        }
+
+        #[test]
+        fn safety_sanity() {
+            let mut connection = initialize_connection();
+
+            let mut camera_matrix = [0.0; 9];
+            connection.camera_matrix(PerspectiveType::StereoLeft, &mut camera_matrix);
+
+            let mut distortion_coeffs = [0.0; 8];
+            connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
+        }
     }
 
     #[test]
@@ -659,15 +715,6 @@ mod tests {
         let leap_vector = LeapVector::new(0.0, 0.0, 1.0);
         connection.pixel_to_rectilinear(PerspectiveType::StereoLeft, &leap_vector);
         connection.rectilinear_to_pixel(PerspectiveType::StereoRight, &leap_vector);
-
-        #[cfg(feature = "gemini")]
-        {
-            let mut camera_matrix = [0.0; 9];
-            connection.camera_matrix(PerspectiveType::StereoLeft, &mut camera_matrix);
-
-            let mut distortion_coeffs = [0.0; 8];
-            connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
-        }
     }
 
     #[test]
@@ -771,55 +818,5 @@ mod tests {
             .set_pause(true)
             .expect_err("succeded to pause even though it was forbidden");
         assert_eq!(pause_err, Error::InvalidArgument);
-    }
-
-    #[cfg(feature = "gemini")]
-    mod ex {
-        use crate::tests::*;
-        use crate::*;
-
-        #[test]
-        fn set_primary_device_test() {
-            let (mut connection, first_device) = initialize_connection_ex();
-
-            connection.set_primary_device(&first_device, true).unwrap();
-            let _ = connection.get_frame_size(0);
-        }
-
-        #[test]
-        fn pause_resume() {
-            let (mut connection, first_device) = initialize_connection_ex();
-
-            connection
-                .set_policy_flags_ex(
-                    &first_device,
-                    PolicyFlags::ALLOW_PAUSE_RESUME,
-                    PolicyFlags::empty(),
-                )
-                .expect("Failed to allow pause");
-
-            connection
-                .wait_for(|e| match e {
-                    Event::Policy(_) => Some(()),
-                    _ => None,
-                })
-                .expect("Did not receive policy change");
-
-            connection.set_pause(true).expect("Failed to set pause");
-            connection.set_pause(false).expect("Failed to unset pause");
-
-            connection
-                .set_policy_flags_ex(
-                    &first_device,
-                    PolicyFlags::empty(),
-                    PolicyFlags::ALLOW_PAUSE_RESUME,
-                )
-                .expect("Failed to remove pause allow");
-
-            let pause_err = connection
-                .set_pause(true)
-                .expect_err("succeded to pause even though it was forbidden");
-            assert_eq!(pause_err, Error::InvalidArgument);
-        }
     }
 }

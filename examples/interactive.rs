@@ -39,8 +39,9 @@ fn main() {
     // Set the tracking mode to unknown.
     #[cfg(feature = "gemini")]
     {
-        connection.set_tracking_mode(TrackingMode::Unknown)
-        .expect_err("Setting the tracking mode to unknown triggers an error, but also allow retrieving the current tracking mode.");
+        connection
+            .get_tracking_mode()
+            .expect("Failed to request for tracking mode");
 
         connection.wait_for(
             "Waiting for the tracking mode message...".to_string(),
