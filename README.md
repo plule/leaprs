@@ -16,7 +16,7 @@ works on Windows.
 
 **Warning**: This library is not complete and not fully tested. Moreover, it includes unsafe
 code to interact with the C API. It should be treated with caution in its
-current state. It has not yet been used in any actual application.
+current state.
 
 </pre></div>
 
@@ -32,9 +32,11 @@ such framework though.
 
 ### API Coverage
 
-The current coverage is partial. It includes everything needed to capture hand
-position in a single device setup. It misses multi-device management and most of
-the image manipulation methods. It also misses interpolation methods.
+The current coverage includes most of the necessary functions to interact with a
+Leap Motion device in a single or a multi device environment. The interpolation
+and distortion methods are not fully translated and not fully tested.
+
+The allocation API is not exposed.
 
 ## Installation
 
