@@ -312,28 +312,6 @@ impl Connection {
         }
     }
 
-    #[doc = " Returns an OpenCV-compatible camera matrix."]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
-    #[doc = " @param[out] dest A pointer to a single-precision float array of size 9"]
-    #[doc = " @since 3.2.1"]
-    pub fn camera_matrix(&mut self, camera: PerspectiveType, dest: &mut [f32; 9]) {
-        unsafe { LeapCameraMatrix(self.handle, camera.into(), dest.as_mut_ptr()) }
-    }
-
-    #[doc = " Returns an OpenCV-compatible lens distortion using the 8-parameter rational"]
-    #[doc = " model."]
-    #[doc = ""]
-    #[doc = " The order of the returned array is: [k1, k2, p1, p2, k3, k4, k5, k6]"]
-    #[doc = ""]
-    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
-    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
-    #[doc = " @param[out] dest A pointer to a single-precision float array of size 8."]
-    #[doc = " @since 3.2.1"]
-    pub fn distortion_coeffs(&mut self, camera: PerspectiveType, dest: &mut [f32; 8]) {
-        unsafe { LeapDistortionCoeffs(self.handle, camera.into(), dest.as_mut_ptr()) }
-    }
-
     #[doc = " Provides the corrected camera ray intercepting the specified point on the image."]
     #[doc = ""]
     #[doc = " Given a point on the image, ``LeapPixelToRectilinear()`` corrects for camera distortion"]
@@ -783,6 +761,28 @@ impl Connection {
             LeapDistortionCoeffsEx(self.handle, device.handle, camera.into(), dest.as_mut_ptr())
         }
     }
+
+    #[doc = " Returns an OpenCV-compatible camera matrix."]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param[out] dest A pointer to a single-precision float array of size 9"]
+    #[doc = " @since 3.2.1"] // Actually not present in orion LeapC
+    pub fn camera_matrix(&mut self, camera: PerspectiveType, dest: &mut [f32; 9]) {
+        unsafe { LeapCameraMatrix(self.handle, camera.into(), dest.as_mut_ptr()) }
+    }
+
+    #[doc = " Returns an OpenCV-compatible lens distortion using the 8-parameter rational"]
+    #[doc = " model."]
+    #[doc = ""]
+    #[doc = " The order of the returned array is: [k1, k2, p1, p2, k3, k4, k5, k6]"]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param[out] dest A pointer to a single-precision float array of size 8."]
+    #[doc = " @since 3.2.1"] // Actually not present in orion LeapC
+    pub fn distortion_coeffs(&mut self, camera: PerspectiveType, dest: &mut [f32; 8]) {
+        unsafe { LeapDistortionCoeffs(self.handle, camera.into(), dest.as_mut_ptr()) }
+    }
 }
 
 #[cfg(test)]
@@ -883,6 +883,12 @@ mod tests {
                 &mut distortion_coeffs,
             );
 
+            let mut camera_matrix = [0.0; 9];
+            connection.camera_matrix(PerspectiveType::StereoLeft, &mut camera_matrix);
+
+            let mut distortion_coeffs = [0.0; 8];
+            connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
+
             let leap_vector = LeapVector::new(0.0, 0.0, 1.0);
             connection.pixel_to_rectilinear_ex(&device, PerspectiveType::StereoLeft, &leap_vector);
             connection.rectilinear_to_pixel_ex(&device, PerspectiveType::StereoRight, &leap_vector);
@@ -961,12 +967,6 @@ mod tests {
     #[test]
     fn safety_sanity() {
         let mut connection = initialize_connection();
-
-        let mut camera_matrix = [0.0; 9];
-        connection.camera_matrix(PerspectiveType::StereoLeft, &mut camera_matrix);
-
-        let mut distortion_coeffs = [0.0; 8];
-        connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
 
         let leap_vector = LeapVector::new(0.0, 0.0, 1.0);
         connection.pixel_to_rectilinear(PerspectiveType::StereoLeft, &leap_vector);
