@@ -99,4 +99,57 @@ impl Device {
 
         Ok(DeviceInfo::new(info, serial))
     }
+
+    #[doc = " Get the transform to world coordinates from 3D Leap coordinates."]
+    #[doc = ""]
+    #[doc = " To get the transform, you must supply an array of 16 elements."]
+    #[doc = ""]
+    #[doc = " The function will return a an array representing a 4 x 4 matrix of the form:"]
+    #[doc = ""]
+    #[doc = " R, t"]
+    #[doc = " 0, 1"]
+    #[doc = ""]
+    #[doc = " where:"]
+    #[doc = " R is a 3 x 3 rotation matrix"]
+    #[doc = " t is a 3 x 1 translation vector"]
+    #[doc = ""]
+    #[doc = " Note that the matrix is in column major, e.g. transform[12] corresponds to the x coordinate of the"]
+    #[doc = " translation vector t."]
+    #[doc = ""]
+    #[doc = " A possible pipeline would be, for example:"]
+    #[doc = " 1) Get \"palm_pos\" the position of the center of the palm (as a 3x1 vector)"]
+    #[doc = " 2) Construct a 4x1 vector using the palm_position: palm_pos_4 = (palm_pos.x; palm_pos.y; palm_pos.z; 1.0f)"]
+    #[doc = " 3) Create a 4x4 matrix \"trans_mat\" as illustrated above using the returned transform"]
+    #[doc = " 4) Get the position of the center of the palm in world coordinates by multiplying trans_mat and palm_pos_4:"]
+    #[doc = "    center_world_4 = trans_mat * palm_pos_4"]
+    #[doc = ""]
+    #[doc = " This function returns eLeapRS_Unsupported in the case where this functionality is not yet supported."]
+    #[doc = ""]
+    #[doc = " @param hDevice A handle to the device to be queried."]
+    #[doc = " @param[out] transform A pointer to a single-precision float array of size 16, containing"]
+    #[doc = "  the coefficients of the 4x4 matrix in Column Major order."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    #[cfg(feature = "gemini")]
+    pub fn get_transform(&mut self, transform: &mut [f32; 16]) -> Result<(), Error> {
+        unsafe { leap_try(LeapGetDeviceTransform(self.handle, transform.as_mut_ptr())) }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::tests::*;
+
+    #[test]
+    #[cfg(feature = "gemini")]
+    fn get_device_transform() {
+        let mut connection = initialize_connection();
+        let devices = connection
+            .get_device_list()
+            .expect("Failed to list devices");
+        let device_info = devices.first().expect("No devices plugged for tests.");
+        let mut device = device_info.open().expect("Failed to open the device");
+        let mut transform = [0.0; 16];
+        device.get_transform(&mut transform).unwrap();
+    }
 }

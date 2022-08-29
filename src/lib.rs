@@ -172,7 +172,7 @@ mod tests {
             .unwrap()
             .open()
             .unwrap();
-        connection.set_primary_device(&first_device, true).unwrap();
+        connection.subscribe_events(&first_device).unwrap();
         (connection, first_device)
     }
 

@@ -584,6 +584,42 @@ impl Connection {
         Ok(())
     }
 
+    #[doc = " Subscribe to event messages based on device."]
+    #[doc = ""]
+    #[doc = " If events from multiple devices are being sent from a service, this function"]
+    #[doc = " allows the client to receive events from the specified device. Clients that"]
+    #[doc = " claim to be multi-device-aware (see ::eLeapConnectionConfig and"]
+    #[doc = " ::LeapCreateConnection) must subscribe to a device to receive various"]
+    #[doc = " device-specific events."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A handle to the device for which events are desired."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    pub fn subscribe_events(&mut self, device: &Device) -> Result<(), Error> {
+        unsafe {
+            leap_try(LeapSubscribeEvents(self.handle, device.handle))?;
+        }
+        Ok(())
+    }
+
+    #[doc = " Unsubscribe from event messages based on device."]
+    #[doc = ""]
+    #[doc = " If events from multiple devices are being sent from a service, this function"]
+    #[doc = " prevents receiving further events from the specified device that had"]
+    #[doc = " previously been enabled using a call to LeapSubscribeEvents()."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A handle to the device for which events are desired."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    pub fn unsubscribe_events(&mut self, device: &Device) -> Result<(), Error> {
+        unsafe {
+            leap_try(LeapUnsubscribeEvents(self.handle, device.handle))?;
+        }
+        Ok(())
+    }
+
     #[doc = " \\ingroup Functions"]
     #[doc = " Retrieves the number of bytes required to allocate an interpolated frame at the specified time"]
     #[doc = " for a particular device."]
