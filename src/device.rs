@@ -138,6 +138,7 @@ impl Device {
 
 #[cfg(test)]
 mod tests {
+    #[cfg(feature = "gemini")]
     use crate::tests::*;
 
     #[test]
