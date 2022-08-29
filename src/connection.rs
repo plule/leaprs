@@ -583,6 +583,170 @@ impl Connection {
         }
         Ok(())
     }
+
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Retrieves the number of bytes required to allocate an interpolated frame at the specified time"]
+    #[doc = " for a particular device."]
+    #[doc = ""]
+    #[doc = " Use this function to determine the size of the buffer to allocate when calling"]
+    #[doc = " LeapInterpolateFrameEx()."]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param timestamp The timestamp of the frame whose size is to be queried."]
+    #[doc = " @param[out] pncbEvent A pointer that receives the number of bytes required to store the specified frame."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    pub fn get_frame_size_ex(&mut self, device: &Device, timestamp: i64) -> Result<u64, Error> {
+        let mut result: u64 = 0;
+        unsafe {
+            leap_try(LeapGetFrameSizeEx(
+                self.handle,
+                device.handle,
+                timestamp,
+                &mut result,
+            ))?;
+        }
+        Ok(result)
+    }
+
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Retrieves the number of bytes required to allocate an interpolated frame at the specified time"]
+    #[doc = " for a particular device."]
+    #[doc = ""]
+    #[doc = " Use this function to determine the size of the buffer to allocate when calling"]
+    #[doc = " LeapInterpolateFrameEx()."]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param timestamp The timestamp of the frame whose size is to be queried."]
+    #[doc = " @param[out] pncbEvent A pointer that receives the number of bytes required to store the specified frame."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    pub fn interpolate_frame_ex(
+        &mut self,
+        device: &Device,
+        timestamp: i64,
+        requested_frame_size: u64,
+    ) -> Result<InterpolationTrackingEvent, Error> {
+        // LEAP_TRACKING_EVENT with more size to account for the dynamic frame data.
+        unsafe {
+            let mut event = InterpolationTrackingEvent::new_uninitialized(requested_frame_size);
+
+            leap_try(LeapInterpolateFrameEx(
+                self.handle,
+                device.handle,
+                timestamp,
+                &mut event.handle.sized,
+                event.handle.size() as u64,
+            ))?;
+            Ok(event)
+        }
+    }
+
+    #[doc = " Provides the corrected camera ray intercepting the specified point"]
+    #[doc = " on the image for a particular device."]
+    #[doc = ""]
+    #[doc = " Given a point on the image, ``LeapPixelToRectilinearEx()`` corrects for camera distortion"]
+    #[doc = " and returns the true direction from the camera to the source of that image point"]
+    #[doc = " within the Devices field of view."]
+    #[doc = ""]
+    #[doc = " This direction vector has an x and y component [x, y, 1], with the third element"]
+    #[doc = " always 1. Note that this vector uses the 2D camera coordinate system"]
+    #[doc = " where the x-axis parallels the longer (typically horizontal) dimension and"]
+    #[doc = " the y-axis parallels the shorter (vertical) dimension. The camera coordinate"]
+    #[doc = " system does not correlate to the 3D Ultraleap coordinate system."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param pixel A Vector containing the position of a pixel in the image."]
+    #[doc = " @returns A Vector containing the ray direction (the z-component of the vector is always 1)."]
+    #[doc = " @since 5.4.0"]
+    pub fn pixel_to_rectilinear_ex(
+        &mut self,
+        device: &Device,
+        camera: PerspectiveType,
+        pixel: &LeapVector,
+    ) -> LeapVector {
+        unsafe {
+            LeapPixelToRectilinearEx(self.handle, device.handle, camera.into(), pixel.handle).into()
+        }
+    }
+
+    #[doc = " Provides the point in the image corresponding to a ray projecting"]
+    #[doc = " from the camera for a particular device."]
+    #[doc = ""]
+    #[doc = " Given a ray projected from the camera in the specified direction, ``LeapRectilinearToPixelEx()``"]
+    #[doc = " corrects for camera distortion and returns the corresponding pixel"]
+    #[doc = " coordinates in the image."]
+    #[doc = ""]
+    #[doc = " The ray direction is specified in relationship to the camera. The first"]
+    #[doc = " vector element is the tangent of the \"horizontal\" view angle; the second"]
+    #[doc = " element is the tangent of the \"vertical\" view angle."]
+    #[doc = ""]
+    #[doc = " The ``LeapRectilinearToPixelEx()`` function returns pixel coordinates outside of the image bounds"]
+    #[doc = " if you project a ray toward a point for which there is no recorded data."]
+    #[doc = ""]
+    #[doc = " ``LeapRectilinearToPixelEx()`` is typically not fast enough for realtime distortion correction."]
+    #[doc = " For better performance, use a shader program executed on a GPU."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param rectilinear A Vector containing the ray direction."]
+    #[doc = " @returns A Vector containing the pixel coordinates [x, y, 1] (with z always 1)."]
+    #[doc = " @since 5.4.0"]
+    pub fn rectilinear_to_pixel_ex(
+        &mut self,
+        device: &Device,
+        camera: PerspectiveType,
+        rectilinear: &LeapVector,
+    ) -> LeapVector {
+        unsafe {
+            LeapRectilinearToPixelEx(
+                self.handle,
+                device.handle,
+                camera.into(),
+                rectilinear.handle,
+            )
+            .into()
+        }
+    }
+
+    #[doc = " Returns an OpenCV-compatible camera matrix for a particular device."]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param[out] dest A pointer to a single-precision float array of size 9"]
+    #[doc = " @since 5.4.0"]
+    pub fn camera_matrix_ex(
+        &mut self,
+        device: &Device,
+        camera: PerspectiveType,
+        dest: &mut [f32; 9],
+    ) {
+        unsafe { LeapCameraMatrixEx(self.handle, device.handle, camera.into(), dest.as_mut_ptr()) }
+    }
+
+    #[doc = " Returns an OpenCV-compatible lens distortion for a particular device, using"]
+    #[doc = " the 8-parameter rational model."]
+    #[doc = ""]
+    #[doc = " The order of the returned array is: [k1, k2, p1, p2, k3, k4, k5, k6]"]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param camera The camera to use, a member of the eLeapPerspectiveType enumeration"]
+    #[doc = " @param[out] dest A pointer to a single-precision float array of size 8."]
+    #[doc = " @since 5.4.0"]
+    pub fn distortion_coeffs_ex(
+        &mut self,
+        device: &Device,
+        camera: PerspectiveType,
+        dest: &mut [f32; 8],
+    ) {
+        unsafe {
+            LeapDistortionCoeffsEx(self.handle, device.handle, camera.into(), dest.as_mut_ptr())
+        }
+    }
 }
 
 #[cfg(test)]
@@ -603,6 +767,8 @@ mod tests {
 
     #[cfg(feature = "gemini")]
     mod gemini {
+        use std::time::{Duration, SystemTime};
+
         use crate::tests::*;
         use crate::*;
 
@@ -669,13 +835,61 @@ mod tests {
 
         #[test]
         fn safety_sanity() {
-            let mut connection = initialize_connection();
+            let (mut connection, device) = initialize_connection_ex();
 
             let mut camera_matrix = [0.0; 9];
-            connection.camera_matrix(PerspectiveType::StereoLeft, &mut camera_matrix);
+            connection.camera_matrix_ex(&device, PerspectiveType::StereoLeft, &mut camera_matrix);
 
             let mut distortion_coeffs = [0.0; 8];
-            connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
+            connection.distortion_coeffs_ex(
+                &device,
+                PerspectiveType::StereoRight,
+                &mut distortion_coeffs,
+            );
+
+            let leap_vector = LeapVector::new(0.0, 0.0, 1.0);
+            connection.pixel_to_rectilinear_ex(&device, PerspectiveType::StereoLeft, &leap_vector);
+            connection.rectilinear_to_pixel_ex(&device, PerspectiveType::StereoRight, &leap_vector);
+        }
+
+        #[test]
+        fn frame_interpolation() {
+            let start = SystemTime::now();
+
+            let (mut connection, device) = initialize_connection_ex();
+            let mut clock_synchronizer =
+                ClockRebaser::create().expect("Failed to create clock sync");
+
+            for _ in 0..10 {
+                // Note: If events are not polled, the frame interpolation fails with "is not seer"
+                connection
+                    .wait_for(|e| match e {
+                        Event::Tracking(_) => Some(()),
+                        _ => None,
+                    })
+                    .expect("no tracking data");
+                let cpu_time = SystemTime::now().duration_since(start).unwrap().as_micros() as i64;
+                clock_synchronizer
+                    .update_rebase(cpu_time, leap_get_now())
+                    .expect("Failed to update rebase");
+
+                std::thread::sleep(Duration::from_millis(10));
+
+                let cpu_time = SystemTime::now().duration_since(start).unwrap().as_micros() as i64;
+
+                let target_frame_time = clock_synchronizer
+                    .rebase_clock(cpu_time)
+                    .expect("Failed to rebase clock");
+
+                let requested_size = connection
+                    .get_frame_size_ex(&device, target_frame_time)
+                    .expect("Failed to get requested size");
+
+                let frame = connection
+                    .interpolate_frame_ex(&device, target_frame_time, requested_size)
+                    .expect("Failed to interpolate frame");
+                let _hands = frame.hands();
+            }
         }
     }
 
@@ -711,6 +925,12 @@ mod tests {
     #[test]
     fn safety_sanity() {
         let mut connection = initialize_connection();
+
+        let mut camera_matrix = [0.0; 9];
+        connection.camera_matrix(PerspectiveType::StereoLeft, &mut camera_matrix);
+
+        let mut distortion_coeffs = [0.0; 8];
+        connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
 
         let leap_vector = LeapVector::new(0.0, 0.0, 1.0);
         connection.pixel_to_rectilinear(PerspectiveType::StereoLeft, &leap_vector);
