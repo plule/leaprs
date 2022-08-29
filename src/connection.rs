@@ -193,6 +193,41 @@ impl Connection {
         unsafe { leap_try(LeapSetPolicyFlags(self.handle, set.bits(), clear.bits())) }
     }
 
+    #[doc = " Sets or clears one or more policy flags for a particular device."]
+    #[doc = ""]
+    #[doc = " Changing policies is asynchronous. After you call this function, a subsequent"]
+    #[doc = " call to LeapPollConnection provides a LEAP_POLICY_EVENT containing the current"]
+    #[doc = " policies, reflecting any changes."]
+    #[doc = ""]
+    #[doc = " To get the current policies without changes, specify zero for both the set"]
+    #[doc = " and clear parameters. When ready, LeapPollConnection() provides a LEAP_POLICY_EVENT"]
+    #[doc = " containing the current settings."]
+    #[doc = ""]
+    #[doc = " The eLeapPolicyFlag enumeration defines the policy flags."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param set A bitwise combination of flags to be set. Set to 0 if not setting any flags."]
+    #[doc = " @param clear A bitwise combination of flags to be cleared. Set to 0 if not clearing any flags."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    #[cfg(feature = "gemini")]
+    pub fn set_policy_flags_ex(
+        &mut self,
+        device: &Device,
+        set: PolicyFlags,
+        clear: PolicyFlags,
+    ) -> Result<(), Error> {
+        unsafe {
+            leap_try(LeapSetPolicyFlagsEx(
+                self.handle,
+                device.handle,
+                set.bits(),
+                clear.bits(),
+            ))
+        }
+    }
+
     #[doc = " Pauses the service"]
     #[doc = ""]
     #[doc = " Attempts to pause or unpause the service depending on the argument."]
@@ -211,6 +246,39 @@ impl Connection {
         Ok(())
     }
 
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Requests the currently set tracking mode."]
+    #[doc = ""]
+    #[doc = " Requesting the current tracking mode is asynchronous. After you call this function, a subsequent"]
+    #[doc = " call to LeapPollConnection provides a LEAP_TRACKING_MODE_EVENT containing the current"]
+    #[doc = " tracking mode, reflecting any changes."]
+    #[doc = ""]
+    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.0.0"]
+    pub fn get_tracking_mode(&mut self) -> Result<(), Error> {
+        unsafe { leap_try(LeapGetTrackingMode(self.handle)) }
+    }
+
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Requests the currently set tracking mode for a particular device."]
+    #[doc = ""]
+    #[doc = " Requesting the current tracking mode is asynchronous. After you call this function, a subsequent"]
+    #[doc = " call to LeapPollConnection provides a LEAP_TRACKING_MODE_EVENT containing the current"]
+    #[doc = " tracking mode, reflecting any changes."]
+    #[doc = ""]
+    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    pub fn get_tracking_mode_ex(&mut self, device: &Device) -> Result<(), Error> {
+        unsafe { leap_try(LeapGetTrackingModeEx(self.handle, device.handle)) }
+    }
+
     #[doc = " Requests a tracking mode."]
     #[doc = ""]
     #[doc = " Changing tracking modes is asynchronous. After you call this function, a subsequent"]
@@ -226,6 +294,35 @@ impl Connection {
     #[cfg(feature = "gemini")]
     pub fn set_tracking_mode(&mut self, mode: TrackingMode) -> Result<(), Error> {
         unsafe { leap_try(LeapSetTrackingMode(self.handle, mode.into())) }
+    }
+
+    #[doc = " \\ingroup Functions"]
+    #[doc = " Requests a tracking mode for a particular device."]
+    #[doc = ""]
+    #[doc = " Changing tracking modes is asynchronous. After you call this function, a subsequent"]
+    #[doc = " call to LeapPollConnection provides a LEAP_POLICY_EVENT containing the current"]
+    #[doc = " policies, reflecting any changes."]
+    #[doc = ""]
+    #[doc = " The eLeapTrackingMode enumeration defines the tracking mode."]
+    #[doc = ""]
+    #[doc = " @param hConnection The connection handle created by LeapCreateConnection()."]
+    #[doc = " @param hDevice A device handle returned by LeapOpenDevice()."]
+    #[doc = " @param mode The enum value specifying the requested tracking mode."]
+    #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
+    #[doc = " @since 5.4.0"]
+    #[cfg(feature = "gemini")]
+    pub fn set_tracking_mode_ex(
+        &mut self,
+        device: &Device,
+        mode: TrackingMode,
+    ) -> Result<(), Error> {
+        unsafe {
+            leap_try(LeapSetTrackingModeEx(
+                self.handle,
+                device.handle,
+                mode.into(),
+            ))
+        }
     }
 
     #[doc = "**Warning**: Does not appear to work."]
@@ -676,20 +773,53 @@ mod tests {
         assert_eq!(pause_err, Error::InvalidArgument);
     }
 
-    #[test]
     #[cfg(feature = "gemini")]
-    fn set_primary_device_test() {
-        let mut connection = initialize_connection_ex();
+    mod ex {
+        use crate::tests::*;
+        use crate::*;
 
-        let first_device = connection
-            .get_device_list()
-            .unwrap()
-            .first()
-            .unwrap()
-            .open()
-            .unwrap();
+        #[test]
+        fn set_primary_device_test() {
+            let (mut connection, first_device) = initialize_connection_ex();
 
-        connection.set_primary_device(&first_device, true).unwrap();
-        let _ = connection.get_frame_size(0);
+            connection.set_primary_device(&first_device, true).unwrap();
+            let _ = connection.get_frame_size(0);
+        }
+
+        #[test]
+        fn pause_resume() {
+            let (mut connection, first_device) = initialize_connection_ex();
+
+            connection
+                .set_policy_flags_ex(
+                    &first_device,
+                    PolicyFlags::ALLOW_PAUSE_RESUME,
+                    PolicyFlags::empty(),
+                )
+                .expect("Failed to allow pause");
+
+            connection
+                .wait_for(|e| match e {
+                    Event::Policy(_) => Some(()),
+                    _ => None,
+                })
+                .expect("Did not receive policy change");
+
+            connection.set_pause(true).expect("Failed to set pause");
+            connection.set_pause(false).expect("Failed to unset pause");
+
+            connection
+                .set_policy_flags_ex(
+                    &first_device,
+                    PolicyFlags::empty(),
+                    PolicyFlags::ALLOW_PAUSE_RESUME,
+                )
+                .expect("Failed to remove pause allow");
+
+            let pause_err = connection
+                .set_pause(true)
+                .expect_err("succeded to pause even though it was forbidden");
+            assert_eq!(pause_err, Error::InvalidArgument);
+        }
     }
 }

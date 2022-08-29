@@ -162,9 +162,18 @@ mod tests {
     }
 
     #[cfg(feature = "gemini")]
-    pub fn initialize_connection_ex() -> Connection {
+    pub fn initialize_connection_ex() -> (Connection, Device) {
         let config = ConnectionConfig::new(ConnectionConfigFlags::MULTI_DEVICE_AWARE, None);
-        initialize_connection_config(config)
+        let mut connection = initialize_connection_config(config);
+        let first_device = connection
+            .get_device_list()
+            .unwrap()
+            .first()
+            .unwrap()
+            .open()
+            .unwrap();
+        connection.set_primary_device(&first_device, true).unwrap();
+        (connection, first_device)
     }
 
     /// Connect to the service and wait for the first events necessary for LeapC to be functional

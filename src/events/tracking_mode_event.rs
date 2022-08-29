@@ -26,9 +26,24 @@ mod tests {
     #[test]
     fn get_tracking_mode() {
         let mut connection = initialize_connection();
-        connection
-            .set_tracking_mode(TrackingMode::Unknown)
-            .expect_err("Set tracking mode unknown did not create an error");
+        connection.get_tracking_mode().unwrap();
+
+        let mode = connection
+            .wait_for(|e| match e {
+                Event::TrackingMode(mode) => Some(mode.current_tracking_mode()),
+                _ => None,
+            })
+            .expect("Did not receive the tracking mode");
+
+        assert_ne!(mode, TrackingMode::Unknown);
+    }
+
+    #[test]
+    #[cfg(feature = "gemini")]
+    fn get_tracking_mode_ex() {
+        let (mut connection, device) = initialize_connection_ex();
+        connection.get_tracking_mode_ex(&device).unwrap();
+
         let mode = connection
             .wait_for(|e| match e {
                 Event::TrackingMode(mode) => Some(mode.current_tracking_mode()),
