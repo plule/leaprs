@@ -1,11 +1,17 @@
 use std::{env, path::PathBuf};
 
+#[cfg(windows)]
+const DEFAULT_LEAPSDK_LIB_PATH: &str = r"C:\Program Files\Ultraleap\LeapSDK\lib\x64";
+
+#[cfg(not(windows))]
+const DEFAULT_LEAPSDK_LIB_PATH: &str = r"/usr/share/doc/ultraleap-hand-tracking-service";
+
 fn main() {
     // Find Leap SDK
     println!(r"cargo:rerun-if-env-changed=LEAPSDK_LIB_PATH");
 
-    let leapsdk_path = env::var("LEAPSDK_LIB_PATH")
-        .unwrap_or_else(|_| r"C:\Program Files\Ultraleap\LeapSDK\lib\x64".to_string());
+    let leapsdk_path =
+        env::var("LEAPSDK_LIB_PATH").unwrap_or_else(|_| DEFAULT_LEAPSDK_LIB_PATH.to_string());
 
     let leapsdk_path = PathBuf::from(leapsdk_path);
 
@@ -18,6 +24,6 @@ fn main() {
 
         // Link to LeapC.lib
         println!(r"cargo:rustc-link-search={}", path_str);
-        println!(r"cargo:rustc-link-lib=static=LeapC");
+        println!(r"cargo:rustc-link-lib=LeapC");
     }
 }
