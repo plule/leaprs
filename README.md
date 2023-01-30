@@ -9,8 +9,8 @@ LeapRS is a safe wrapper for LeapC, the [Leap Motion C
 API](https://docs.ultraleap.com/tracking-api/). It uses the generated binding
 provided by [leap-sys](https://crates.io/crates/leap-sys).
 
-This is an API for accessing Leap Motion/Ultraleap hand tracking device. It only
-works on Windows.
+This is an API for accessing Leap Motion/Ultraleap hand tracking device. It
+works on Linux and Windows.
 
 <div class="example-wrap" style="display:inline-block"><pre class="compile_fail" style="white-space:normal;font:inherit;">
 
@@ -49,11 +49,8 @@ This library was created for the version named `Geminy` (5.6.1).
 
 If you install this software in a custom path, you need to define the
 environment variable `LEAPSDK_LIB_PATH` (default: `C:\Program
-Files\Ultraleap\LeapSDK\lib\x64`).
-
-The Ultraleap backend is only compatible with Windows, and so is LeapRS. Older
-versions of the software were multi-platform, so it could be possible to create
-a more compatible library, but it is not in the scope at the moment.
+Files\Ultraleap\LeapSDK\lib\x64` on Windows and
+`/usr/share/doc/ultraleap-hand-tracking-service` on Linux).
 
 ### Using with previous SDK versions
 
