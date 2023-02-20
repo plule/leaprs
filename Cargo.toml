@@ -1,6 +1,6 @@
 [package]
 name = "leaprs"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Pierre Lulé <pierre@lule.fr>"]
 description = "Safe wrapper for the LeapC Ultraleap (Leap Motion) hand tracking device API."
