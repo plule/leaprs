@@ -798,7 +798,7 @@ mod tests {
         let devices = initialize_connection()
             .get_device_list()
             .expect("Failed to list devices");
-        assert!(devices.len() > 0, "No devices, tests will not run.");
+        assert!(!devices.is_empty(), "No devices, tests will not run.");
     }
 
     #[cfg(feature = "gemini")]
@@ -956,7 +956,7 @@ mod tests {
             .expect("Failed to save a config value");
         connection
             .save_config_value(
-                config_key.clone(),
+                config_key,
                 CString::new("hello").unwrap().into(),
                 Some(&mut request_id),
             )
@@ -996,12 +996,10 @@ mod tests {
                 Event::ConfigResponse(c) => {
                     if c.request_id() != request_id {
                         None
+                    } else if let Variant::Boolean(robust_mode_enabled) = c.value() {
+                        Some(robust_mode_enabled)
                     } else {
-                        if let Variant::Boolean(robust_mode_enabled) = c.value() {
-                            Some(robust_mode_enabled)
-                        } else {
-                            panic!("Type mismatch for the configuration value.")
-                        }
+                        panic!("Type mismatch for the configuration value.")
                     }
                 }
                 _ => None,

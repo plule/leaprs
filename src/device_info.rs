@@ -80,7 +80,7 @@ mod tests {
         let device_info = device.get_info().expect("Failed to get device info");
         assert_ne!(device_info.pid(), DevicePID::Unknown);
         let serial = device_info.serial().expect("Failed to get serial");
-        assert!(serial.len() > 0);
+        assert!(!serial.is_empty());
         assert!(device_info.baseline() > 0);
         let _status = device_info.status();
         let _caps = device_info.caps();

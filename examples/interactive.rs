@@ -56,7 +56,7 @@ fn main() {
 
     connection.wait_for("Waiting for a hand...".to_string(), |e| match e {
         Event::Tracking(e) => {
-            if e.hands().len() > 0 {
+            if !e.hands().is_empty() {
                 Msg::Success("Got a hand".to_string())
             } else {
                 Msg::None
@@ -109,7 +109,7 @@ fn main() {
             let image_data = images[0].data();
             image::save_buffer("image.png", image_data, w, h, image::ColorType::L8)
                 .expect("failed to save buffer");
-            Msg::Success(format!("Saved image.png"))
+            Msg::Success("Saved image.png".to_string())
         }
         _ => Msg::None,
     });
