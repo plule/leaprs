@@ -36,7 +36,7 @@ impl<'a> EyeEvent<'a> {
     #[doc = " view of the sensor."]
     #[doc = " @since 4.1.0"]
     pub fn left_eye_estimated_error(&self) -> f32 {
-        self.handle.right_eye_estimated_error
+        self.handle.left_eye_estimated_error
     }
 
     #[doc = " An error estimate of the tracked right eye position. Higher values indicate"]
