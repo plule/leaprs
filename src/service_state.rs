@@ -2,6 +2,7 @@ use bitflags::bitflags;
 use leap_sys::*;
 
 bitflags! {
+    #[derive(Debug, PartialEq, Eq)]
     pub struct ServiceState: u32 {
         #[doc = " The service cannot receive frames fast enough from the underlying hardware."]
         #[doc = " @since 3.1.3"]
