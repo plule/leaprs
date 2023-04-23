@@ -17,7 +17,6 @@ impl<'a> LogEvents<'a> {
         let events;
         unsafe {
             events = (0..self.handle.nEvents)
-                .into_iter()
                 .map(|index| (&*self.handle.events.add(index as usize)).into());
         }
         events.collect()
