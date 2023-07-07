@@ -76,18 +76,11 @@ environment variable. For distribution, refer to the SDK licensing.
 ```rust
 use leaprs::*;
 
-let mut connection =
-    Connection::create(ConnectionConfig::default()).expect("Failed to connect");
-connection.open().expect("Failed to open the connection");
-connection.poll(1000).expect("First poll failed");
-
+let mut c = Connection::create(ConnectionConfig::default()).unwrap();
+c.open().unwrap();
 for _ in 0..10 {
-    match connection
-        .poll(1000)
-        .expect("Failed to poll for events.")
-        .event()
-    {
-        Event::Tracking(e) => println!("There are {} hand(s) in view", e.hands().len()),
+    match c.poll(1000).unwrap().event() {
+        Event::Tracking(e) => println!("{} hand(s)", e.hands().len()),
         _ => {}
     }
 }
