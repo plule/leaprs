@@ -12,6 +12,8 @@ provided by [leap-sys](https://crates.io/crates/leap-sys).
 This is an API for accessing Leap Motion/Ultraleap hand tracking device. It
 works on Linux and Windows.
 
+![leaprs](images/leaprs.png)
+
 <div class="example-wrap" style="display:inline-block"><pre class="compile_fail" style="white-space:normal;font:inherit;">
 
 **Warning**: This library is not complete and not fully tested. Moreover, it includes unsafe

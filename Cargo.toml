@@ -19,6 +19,7 @@ keywords = [
     "ultraleap",
     "hand",
 ]
+exclude = ["images/"]
 
 [features]
 default = ["gemini"]
