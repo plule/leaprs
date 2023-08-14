@@ -33,5 +33,5 @@ bitflags = "2"
 
 [dev-dependencies]
 throbber = "0.1"
-image = "0.24.5"
+image = "0.24.7"
 tempfile = "3.7.1"
