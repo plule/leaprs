@@ -13,7 +13,9 @@ fn main() {
     let leapsdk_path =
         env::var("LEAPSDK_LIB_PATH").unwrap_or_else(|_| DEFAULT_LEAPSDK_LIB_PATH.to_string());
 
-    let leapsdk_path = PathBuf::from(leapsdk_path);
+    let leapsdk_path = PathBuf::from(leapsdk_path)
+        .canonicalize()
+        .expect("Failed to canonicalize sdk path");
 
     if !leapsdk_path.is_dir() {
         println!("cargo:warning=Could not find LeapSDK at the location {}. Install it from https://developer.leapmotion.com/tracking-software-download or set its location with the environment variable LEAPSDK_LIB_PATH.", leapsdk_path.display());
@@ -23,7 +25,7 @@ fn main() {
             .unwrap_or_else(|| panic!("{} is not a valid path.", leapsdk_path.display()));
 
         // Link to LeapC.lib
-        println!(r"cargo:rustc-link-search={}", path_str);
         println!(r"cargo:rustc-link-lib=LeapC");
+        println!(r"cargo:rustc-link-search={}", path_str);
     }
 }

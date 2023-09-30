@@ -13,13 +13,9 @@ categories = [
     "computer-vision",
     "hardware-support",
 ]
-keywords = [
-    "leapc",
-    "leap",
-    "ultraleap",
-    "hand",
-]
+keywords = ["leapc", "leap", "ultraleap", "hand"]
 exclude = ["images/"]
+links = "LeapC"
 
 [features]
 default = ["gemini"]
