@@ -27,7 +27,7 @@ gemini = []
 
 [dependencies]
 leap-sys = "0.2"
-num_enum = "0.7.0"
+num_enum = "0.7.1"
 thiserror = "1"
 bitflags = "2"
 
