@@ -28,4 +28,8 @@ impl<'a> Palm<'a> {
     pub fn orientation(&self) -> Quaternion {
         self.handle.orientation.into()
     }
+
+    pub fn direction(&self) -> LeapVector {
+        self.handle.direction.into()
+    }
 }
