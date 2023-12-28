@@ -1,6 +1,6 @@
 [package]
 name = "leaprs"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 authors = ["Pierre Lulé <pierre@lule.fr>"]
 description = "Safe wrapper for the LeapC Ultraleap (Leap Motion) hand tracking device API."
@@ -13,12 +13,7 @@ categories = [
     "computer-vision",
     "hardware-support",
 ]
-keywords = [
-    "leapc",
-    "leap",
-    "ultraleap",
-    "hand",
-]
+keywords = ["leapc", "leap", "ultraleap", "hand"]
 exclude = ["images/"]
 
 [features]
