@@ -86,6 +86,12 @@ for _ in 0..10 {
 }
 ```
 
+## License
+
+Licensed under either of Apache License, Version 2.0 or MIT license at your option.
+
+This license only covers the `leaprs` wrapper, and not the underlying `LeapC` library.
+
 ## Implementation
 
 The enum safety is provided through [num_enum](https://docs.rs/num_enum/latest/num_enum/).
