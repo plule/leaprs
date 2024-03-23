@@ -1,19 +1,18 @@
+use derive_deref::Deref;
 use leap_sys::LEAP_CONNECTION_EVENT;
 
 use crate::ServiceState;
 
-crate::leap_ref_struct!(
-    #[doc = "  \\ingroup Structs"]
-    #[doc = " Received from LeapPollConnection() when a connection to the Ultraleap Tracking Service is established."]
-    #[doc = " @since 3.0.0"]
-    ConnectionEvent,
-    LEAP_CONNECTION_EVENT
-);
+#[doc = "  \\ingroup Structs"]
+#[doc = " Received from LeapPollConnection() when a connection to the Ultraleap Tracking Service is established."]
+#[doc = " @since 3.0.0"]
+#[derive(Deref)]
+pub struct ConnectionEvent<'a>(pub(crate) &'a LEAP_CONNECTION_EVENT);
 
 impl<'a> ConnectionEvent<'a> {
     #[doc = " A combination of eLeapServiceDisposition flags. @since 3.1.3"]
     pub fn flags(&self) -> ServiceState {
-        ServiceState::from_bits_truncate(self.handle.flags)
+        ServiceState::from_bits_truncate(self.flags)
     }
 }
 

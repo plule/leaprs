@@ -84,68 +84,14 @@ pub use variant::*;
 pub use version::*;
 pub use version_part::*;
 
+/// Reexport the leap_sys crate
+mod leap_sys {
+    pub use ::leap_sys::*;
+}
+
 pub fn leap_get_now() -> i64 {
     unsafe { LeapGetNow() }
 }
-
-/// Declare a leap struct wrapper that owns it.
-macro_rules! leap_struct {
-    (
-        $(#[$meta:meta])*
-        $struct_name:ident, $sys_name:ident
-    ) => {
-        $(#[$meta])*
-        pub struct $struct_name {
-            pub(crate) handle: $sys_name,
-        }
-
-        impl From<$sys_name> for $struct_name {
-            fn from(handle: $sys_name) -> Self {
-                Self { handle }
-            }
-        }
-
-        impl std::ops::Deref for $struct_name {
-            type Target = $sys_name;
-
-            fn deref(&self) -> &Self::Target {
-                &self.handle
-            }
-        }
-    };
-}
-
-pub(crate) use leap_struct;
-
-/// Declare a leap struct wrapper that does not own it.
-macro_rules! leap_ref_struct {
-    (
-        $(#[$meta:meta])*
-        $struct_name:ident, $sys_name:ident
-    ) => {
-        $(#[$meta])*
-        pub struct $struct_name<'a> {
-            #[allow(dead_code)]
-            pub(crate) handle: &'a $sys_name,
-        }
-
-        impl<'a> From<&'a $sys_name> for $struct_name<'a> {
-            fn from(handle: &'a $sys_name) -> Self {
-                Self { handle }
-            }
-        }
-
-        impl<'a> std::ops::Deref for $struct_name<'a> {
-            type Target = $sys_name;
-
-            fn deref(&self) -> &Self::Target {
-                self.handle
-            }
-        }
-    };
-}
-
-pub(crate) use leap_ref_struct;
 
 #[cfg(test)]
 mod tests {

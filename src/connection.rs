@@ -1,6 +1,6 @@
 use std::{ffi::CString, mem};
 
-use leap_sys::*;
+use ::leap_sys::*;
 
 use crate::*;
 
@@ -74,7 +74,7 @@ impl Connection {
             leap_try(LeapGetConnectionInfo(self.handle, &mut info))?;
         }
 
-        Ok(info.into())
+        Ok(ConnectionInfo(info))
     }
 
     #[doc = " Polls the connection for a new event."]
@@ -105,7 +105,7 @@ impl Connection {
             msg = mem::zeroed();
             leap_try(LeapPollConnection(self.handle, timeout, &mut msg))?;
         }
-        self.connection_message = Some(msg.into());
+        self.connection_message = Some(ConnectionMessage(msg));
 
         Ok(self.connection_message.as_ref().unwrap())
     }
@@ -141,7 +141,7 @@ impl Connection {
             // Truncate the null devices if less than asked were received.
             devices.truncate(*count as usize);
         }
-        Ok(devices.into_iter().map(|r| r.into()).collect())
+        Ok(devices.into_iter().map(DeviceRef).collect())
     }
 
     #[doc = " Retrieves a list of Ultraleap Tracking camera devices currently attached to the system."]
@@ -305,8 +305,8 @@ impl Connection {
             leap_try(LeapInterpolateFrame(
                 self.handle,
                 timestamp,
-                &mut event.handle.sized,
-                event.handle.size() as u64,
+                &mut event.0.sized,
+                event.0.size() as u64,
             ))?;
             Ok(event)
         }
@@ -334,7 +334,7 @@ impl Connection {
         camera: PerspectiveType,
         pixel: &LeapVector,
     ) -> LeapVector {
-        unsafe { LeapPixelToRectilinear(self.handle, camera.into(), pixel.handle).into() }
+        unsafe { LeapVector(LeapPixelToRectilinear(self.handle, camera.into(), pixel.0)) }
     }
 
     #[doc = " \\ingroup Functions"]
@@ -365,7 +365,13 @@ impl Connection {
         camera: PerspectiveType,
         rectilinear: &LeapVector,
     ) -> LeapVector {
-        unsafe { LeapRectilinearToPixel(self.handle, camera.into(), rectilinear.handle).into() }
+        unsafe {
+            LeapVector(LeapRectilinearToPixel(
+                self.handle,
+                camera.into(),
+                rectilinear.0,
+            ))
+        }
     }
 
     pub fn get_point_mapping_size(&mut self) -> Result<u64, Error> {
@@ -407,7 +413,7 @@ impl Connection {
             version = std::mem::zeroed();
             leap_try(LeapGetVersion(self.handle, part.into(), &mut version))?;
         }
-        Ok(version.into())
+        Ok(Version(version))
     }
 
     #[doc = " Sets or clears one or more policy flags for a particular device."]
@@ -649,8 +655,8 @@ impl Connection {
                 self.handle,
                 device.handle,
                 timestamp,
-                &mut event.handle.sized,
-                event.handle.size() as u64,
+                &mut event.0.sized,
+                event.0.size() as u64,
             ))?;
             Ok(event)
         }
@@ -682,7 +688,12 @@ impl Connection {
         pixel: &LeapVector,
     ) -> LeapVector {
         unsafe {
-            LeapPixelToRectilinearEx(self.handle, device.handle, camera.into(), pixel.handle).into()
+            LeapVector(LeapPixelToRectilinearEx(
+                self.handle,
+                device.handle,
+                camera.into(),
+                pixel.0,
+            ))
         }
     }
 
@@ -716,13 +727,12 @@ impl Connection {
         rectilinear: &LeapVector,
     ) -> LeapVector {
         unsafe {
-            LeapRectilinearToPixelEx(
+            LeapVector(LeapRectilinearToPixelEx(
                 self.handle,
                 device.handle,
                 camera.into(),
-                rectilinear.handle,
-            )
-            .into()
+                rectilinear.0,
+            ))
         }
     }
 

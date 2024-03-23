@@ -105,62 +105,70 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
         match event_type {
             leap_sys::_eLeapEventType_eLeapEventType_None => Event::None,
             leap_sys::_eLeapEventType_eLeapEventType_Connection => {
-                Event::Connection(unsafe { &*event.connection_event }.into())
+                Event::Connection(ConnectionEvent(unsafe { &*event.connection_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_ConnectionLost => {
-                Event::ConnectionLost(unsafe { &*event.connection_lost_event }.into())
+                Event::ConnectionLost(ConnectionLostEvent(unsafe {
+                    &*event.connection_lost_event
+                }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Device => {
-                Event::Device(unsafe { &*event.device_event }.into())
+                Event::Device(DeviceEvent(unsafe { &*event.device_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceFailure => {
-                Event::DeviceFailure(unsafe { &*event.device_failure_event }.into())
+                Event::DeviceFailure(DeviceFailureEvent(unsafe { &*event.device_failure_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Policy => {
-                Event::Policy(unsafe { &*event.policy_event }.into())
+                Event::Policy(PolicyEvent(unsafe { &*event.policy_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Tracking => {
-                Event::Tracking(unsafe { &*event.tracking_event }.into())
+                Event::Tracking(TrackingEvent(unsafe { &*event.tracking_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_ImageRequestError => Event::ImageRequestError,
             leap_sys::_eLeapEventType_eLeapEventType_ImageComplete => Event::ImageComplete,
             leap_sys::_eLeapEventType_eLeapEventType_LogEvent => {
-                Event::LogEvent(unsafe { &*event.log_event }.into())
+                Event::LogEvent(LogEvent(unsafe { &*event.log_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceLost => Event::DeviceLost,
             leap_sys::_eLeapEventType_eLeapEventType_ConfigResponse => {
-                Event::ConfigResponse(unsafe { &*event.config_response_event }.into())
+                Event::ConfigResponse(ConfigResponseEvent(unsafe {
+                    &*event.config_response_event
+                }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_ConfigChange => {
-                Event::ConfigChange(unsafe { &*event.config_change_event }.into())
+                Event::ConfigChange(ConfigChangeEvent(unsafe { &*event.config_change_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceStatusChange => {
-                Event::DeviceStatusChange(unsafe { &*event.device_status_change_event }.into())
+                Event::DeviceStatusChange(DeviceStatusChangeEvent(unsafe {
+                    &*event.device_status_change_event
+                }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_DroppedFrame => {
-                Event::DroppedFrame(unsafe { &*event.dropped_frame_event }.into())
+                Event::DroppedFrame(DroppedFrameEvent(unsafe { &*event.dropped_frame_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Image => {
-                Event::Image(unsafe { &*event.image_event }.into())
+                Event::Image(ImageEvent(unsafe { &*event.image_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_PointMappingChange => {
-                Event::PointMappingChange(unsafe { &*event.point_mapping_change_event }.into())
+                Event::PointMappingChange(PointMappingChangeEvent(unsafe {
+                    &*event.point_mapping_change_event
+                }))
             }
             #[cfg(feature = "gemini")]
             leap_sys::_eLeapEventType_eLeapEventType_TrackingMode => {
-                Event::TrackingMode(unsafe { &*event.tracking_mode_event }.into())
+                Event::TrackingMode(TrackingModeEvent(unsafe { &*event.tracking_mode_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_LogEvents => {
-                Event::LogEvents(unsafe { &*event.log_events }.into())
+                Event::LogEvents(LogEvents(unsafe { &*event.log_events }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_HeadPose => {
-                Event::HeadPose(unsafe { &*event.head_pose_event }.into())
+                Event::HeadPose(HeadPoseEvent(unsafe { &*event.head_pose_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Eyes => {
-                Event::Eyes(unsafe { &*event.eye_event }.into())
+                Event::Eyes(EyeEvent(unsafe { &*event.eye_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_IMU => {
-                Event::IMU(unsafe { &*event.imu_event }.into())
+                Event::IMU(ImuEvent(unsafe { &*event.imu_event }))
             }
             event_code => Event::Unknown(event_code),
         }
