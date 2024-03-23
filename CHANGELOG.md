@@ -8,9 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ### Added
 
+- All the wrapper structures now implement `Deref` of the wrapped `leap-sys` structures
+
 ### Changed
 
 ### Removed
+
+- **Breaking** All the trivial accessor functions were removed, in favour of the `Deref` trait.
 
 ### Fixed
 
