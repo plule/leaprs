@@ -79,9 +79,11 @@ use leaprs::*;
 let mut c = Connection::create(ConnectionConfig::default()).unwrap();
 c.open().unwrap();
 for _ in 0..10 {
-    match c.poll(1000).unwrap().event() {
-        Event::Tracking(e) => println!("{} hand(s)", e.hands().len()),
-        _ => {}
+    if let Ok(msg) = c.poll(1000) {
+        match msg.event() {
+            Event::Tracking(e) => println!("{} hand(s)", e.hands().len()),
+            _ => {}   
+        }
     }
 }
 ```
