@@ -68,7 +68,7 @@ fn main() {
     connection.wait_for("Close the hand".to_string(), |e| match e {
         Event::Tracking(e) => {
             if let Some(hand) = e.hands().first() {
-                let grab_strength = hand.grab_strength();
+                let grab_strength = hand.grab_strength;
                 if grab_strength >= 1.0 {
                     Msg::Success("The hand is closed".to_string())
                 } else {
@@ -84,7 +84,7 @@ fn main() {
     connection.wait_for("Open the hand".to_string(), |e| match e {
         Event::Tracking(e) => {
             if let Some(hand) = e.hands().first() {
-                let ungrab_strength = 1.0 - hand.grab_strength();
+                let ungrab_strength = 1.0 - hand.grab_strength;
                 if ungrab_strength >= 0.999 {
                     Msg::Success("The hand is opened".to_string())
                 } else {
@@ -103,8 +103,8 @@ fn main() {
 
     connection.wait_for("Reading image".to_string(), |e| match e {
         Event::Image(e) => {
-            let w = e.images()[0].properties().width();
-            let h = e.images()[0].properties().height();
+            let w = e.images()[0].properties().width;
+            let h = e.images()[0].properties().height;
             let images = e.images();
             let image_data = images[0].data();
             image::save_buffer("image.png", image_data, w, h, image::ColorType::L8)

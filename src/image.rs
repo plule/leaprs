@@ -15,22 +15,6 @@ impl<'a> Image<'a> {
         (&self.handle.properties).into()
     }
 
-    #[doc = " A version number for the distortion matrix. When the distortion matrix"]
-    #[doc = " changes, this number is updated. This number is guaranteed not to repeat"]
-    #[doc = " for the lifetime of the connection. This version number is also guaranteed"]
-    #[doc = " to be distinct for each perspective of an image."]
-    #[doc = ""]
-    #[doc = " This value is guaranteed to be nonzero if it is valid."]
-    #[doc = ""]
-    #[doc = " The distortion matrix only changes when the streaming device changes or when the"]
-    #[doc = " device orientation flips -- inverting the image and the distortion grid."]
-    #[doc = " Since building a matrix to undistort an image can be a time-consuming task,"]
-    #[doc = " you can optimize the process by only rebuilding this matrix (or whatever"]
-    #[doc = " data type you use to correct image distortion) when the grid actually changes."]
-    pub fn matrix_version(&self) -> u64 {
-        self.handle.matrix_version
-    }
-
     #[doc = " Pointers to the camera's distortion matrix."]
     pub fn distorion_matrix(&self) -> DistortionMatrix {
         let distortion_matrix;

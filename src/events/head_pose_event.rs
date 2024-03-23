@@ -5,12 +5,6 @@ use crate::{LeapVector, Quaternion};
 crate::leap_ref_struct!(HeadPoseEvent, LEAP_HEAD_POSE_EVENT);
 
 impl<'a> HeadPoseEvent<'a> {
-    #[doc = " The timestamp for this image, in microseconds, referenced against LeapGetNow()."]
-    #[doc = " @since 4.1.0"]
-    pub fn timestamp(&self) -> i64 {
-        self.handle.timestamp
-    }
-
     #[doc = " The position and orientation of the user's head. Positional tracking must be enabled."]
     #[doc = " @since 4.1.0"]
     pub fn head_position(&self) -> LeapVector {

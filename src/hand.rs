@@ -37,42 +37,6 @@ impl<'a> Hand<'a> {
         }
     }
 
-    #[doc = " How confident we are with a given hand pose. Not currently used (always 1.0)."]
-    #[doc = " @since 3.0.0"]
-    pub fn confidence(&self) -> f32 {
-        self.handle.confidence
-    }
-
-    #[doc = " The total amount of time this hand has been tracked, in microseconds."]
-    #[doc = " @since 3.0.0"]
-    pub fn visible_time(&self) -> u64 {
-        self.handle.visible_time
-    }
-
-    #[doc = " The distance between index finger and thumb. @since 3.0.0"]
-    pub fn pinch_distance(&self) -> f32 {
-        self.handle.pinch_distance
-    }
-
-    #[doc = " The average angle of fingers to palm. @since 3.0.0"]
-    pub fn grab_angle(&self) -> f32 {
-        self.handle.grab_angle
-    }
-
-    #[doc = " The normalized estimate of the pinch pose."]
-    #[doc = " Zero is not pinching; one is fully pinched."]
-    #[doc = " @since 3.0.0"]
-    pub fn pinch_strength(&self) -> f32 {
-        self.handle.pinch_strength
-    }
-
-    #[doc = " The normalized estimate of the grab hand pose."]
-    #[doc = " Zero is not grabbing; one is fully grabbing."]
-    #[doc = " @since 3.0.0"]
-    pub fn grab_strength(&self) -> f32 {
-        self.handle.grab_strength
-    }
-
     #[doc = " Additional information associated with the palm. @since 3.0.0"]
     pub fn palm(&self) -> Palm {
         (&self.handle.palm).into()
@@ -158,7 +122,7 @@ mod tests {
                         ];
 
                         for bone in bones_by_array.iter().chain(bones_by_name.iter()) {
-                            assert!(bone.width() > 0.0);
+                            assert!(bone.width > 0.0);
                         }
                     }
                     Some(())

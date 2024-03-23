@@ -14,11 +14,6 @@ crate::leap_ref_struct!(
 );
 
 impl<'a> ConfigResponseEvent<'a> {
-    #[doc = " An identifier for correlating the request and response. @since 3.0.0"]
-    pub fn request_id(&self) -> u32 {
-        self.handle.requestID
-    }
-
     #[doc = " The configuration value retrieved from the service. Do not free any memory pointed to by"]
     #[doc = " this member. The value held is only valid until the next call to LeapPollConnection()."]
     #[doc = " @since 3.0.0"]

@@ -994,7 +994,7 @@ mod tests {
         connection
             .wait_for(|e| match e {
                 Event::ConfigResponse(c) => {
-                    if c.request_id() != request_id {
+                    if c.requestID != request_id {
                         None
                     } else if let Variant::Boolean(robust_mode_enabled) = c.value() {
                         Some(robust_mode_enabled)

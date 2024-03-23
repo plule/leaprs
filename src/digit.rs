@@ -11,11 +11,6 @@ crate::leap_ref_struct!(
 );
 
 impl<'a> Digit<'a> {
-    #[doc = " The Leap identifier of this finger. @since 3.0.0"]
-    pub fn finger_id(&self) -> i32 {
-        self.handle.finger_id
-    }
-
     #[doc = " All the bones of a digit as an iterable collection. @since 3.0.0"]
     pub fn bones(&self) -> [Bone; 4] {
         let bones;

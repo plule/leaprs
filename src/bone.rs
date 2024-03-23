@@ -22,11 +22,6 @@ impl<'a> Bone<'a> {
         self.handle.next_joint.into()
     }
 
-    #[doc = " The average width of the flesh around the bone in millimeters. @since 3.0.0"]
-    pub fn width(&self) -> f32 {
-        self.handle.width
-    }
-
     #[doc = " Rotation in world space from the forward direction."]
     #[doc = " Convert the quaternion to a matrix to derive the basis vectors."]
     #[doc = " @since 3.1.2"]

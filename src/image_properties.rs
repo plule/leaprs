@@ -19,19 +19,4 @@ impl<'a> ImageProperties<'a> {
     pub fn image_format(&self) -> ImageFormat {
         self.handle.format.into()
     }
-
-    #[doc = " The number of bytes per image pixel. @since 3.0.0"]
-    pub fn bpp(&self) -> u32 {
-        self.handle.bpp
-    }
-
-    #[doc = " The number of horizontal pixels in the image. @since 3.0.0"]
-    pub fn width(&self) -> u32 {
-        self.handle.width
-    }
-
-    #[doc = " The number of rows of pixels in the image. @since 3.0.0"]
-    pub fn height(&self) -> u32 {
-        self.handle.height
-    }
 }

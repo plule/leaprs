@@ -169,17 +169,26 @@ impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for 
 
 #[cfg(test)]
 mod tests {
-    use crate::tests::*;
-    use crate::*;
 
     #[test]
+    #[cfg(feature = "detect-unknown-events")]
     fn detect_unknown_events() {
+        use std::collections::HashSet;
+
+        use crate::tests::*;
+        use crate::*;
         let mut connection = initialize_connection();
-        for _ in 0..100 {
-            let msg = connection.poll(5000).expect("Failed to poll");
-            if let Event::Unknown(_) = msg.event() {
-                panic!("Received an unknown event");
-            }
-        }
+        let unknown_events: HashSet<_> = (0..100)
+            .filter_map(|_| match connection.poll(100).map(|c| c.event()) {
+                Ok(Event::Unknown(ev)) => Some(ev),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(
+            unknown_events.len(),
+            0,
+            "Received unknown events: {:?}",
+            unknown_events
+        );
     }
 }

@@ -45,10 +45,10 @@ mod tests {
                 Event::Image(e) => {
                     let right_image = &e.images()[1];
                     let data = right_image.data();
-                    let width = right_image.properties().width();
-                    let height = right_image.properties().height();
+                    let width = right_image.properties().width;
+                    let height = right_image.properties().height;
                     let _distortion_matrix = right_image.distorion_matrix();
-                    Some((width, height, data.to_vec(), e.info().frame_id()))
+                    Some((width, height, data.to_vec(), e.info().frame_id))
                 }
                 _ => None,
             })

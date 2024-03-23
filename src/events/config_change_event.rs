@@ -12,15 +12,3 @@ crate::leap_ref_struct!(
     ConfigChangeEvent,
     LEAP_CONFIG_CHANGE_EVENT
 );
-
-impl<'a> ConfigChangeEvent<'a> {
-    #[doc = " An identifier for correlating the request and response. @since 3.0.0"]
-    pub fn request_id(&self) -> u32 {
-        self.handle.requestID
-    }
-
-    #[doc = " The result of the change operation: true on success; false on failure. @since 3.0.0"]
-    pub fn status(&self) -> bool {
-        self.handle.status
-    }
-}

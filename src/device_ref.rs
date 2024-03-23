@@ -26,9 +26,4 @@ impl DeviceRef {
     pub fn open(&self) -> Result<Device, crate::Error> {
         Device::open(self.handle)
     }
-
-    #[doc = " a generic identifier. @since 3.0.0"]
-    pub fn id(&self) -> u32 {
-        self.handle.id
-    }
 }

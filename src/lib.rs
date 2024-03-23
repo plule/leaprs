@@ -104,6 +104,14 @@ macro_rules! leap_struct {
                 Self { handle }
             }
         }
+
+        impl std::ops::Deref for $struct_name {
+            type Target = $sys_name;
+
+            fn deref(&self) -> &Self::Target {
+                &self.handle
+            }
+        }
     };
 }
 
@@ -124,6 +132,14 @@ macro_rules! leap_ref_struct {
         impl<'a> From<&'a $sys_name> for $struct_name<'a> {
             fn from(handle: &'a $sys_name) -> Self {
                 Self { handle }
+            }
+        }
+
+        impl<'a> std::ops::Deref for $struct_name<'a> {
+            type Target = $sys_name;
+
+            fn deref(&self) -> &Self::Target {
+                self.handle
             }
         }
     };

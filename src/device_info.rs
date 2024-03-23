@@ -1,6 +1,6 @@
 use leap_sys::LEAP_DEVICE_INFO;
 use num_enum::FromPrimitive;
-use std::ffi::CStr;
+use std::{ffi::CStr, ops::Deref};
 
 use crate::{Capabilities, DevicePID, DeviceStatus};
 
@@ -33,34 +33,18 @@ impl DeviceInfo {
         DevicePID::from_primitive(self.handle.pid)
     }
 
-    #[doc = " The device baseline, in micrometers."]
-    #[doc = ""]
-    #[doc = " The baseline is defined as the distance between the center axis of each lens in a stereo camera"]
-    #[doc = " system. For other camera systems, this value is set to zero."]
-    #[doc = " @since 3.0.0"]
-    pub fn baseline(&self) -> u32 {
-        self.handle.baseline
-    }
-
     #[doc = " A pointer to the null-terminated device serial number string. @since 3.0.0"]
     pub fn serial(&self) -> Option<&str> {
         let serial = unsafe { CStr::from_ptr(self.handle.serial) };
         serial.to_str().ok()
     }
+}
 
-    #[doc = " The horizontal field of view of this device in radians. @since 3.0.0"]
-    pub fn h_fov(&self) -> f32 {
-        self.handle.h_fov
-    }
+impl Deref for DeviceInfo {
+    type Target = LEAP_DEVICE_INFO;
 
-    #[doc = " The vertical field of view of this device in radians. @since 3.0.0"]
-    pub fn v_fov(&self) -> f32 {
-        self.handle.v_fov
-    }
-
-    #[doc = " The maximum range for this device, in micrometers. @since 3.0.0"]
-    pub fn range(&self) -> u32 {
-        self.handle.range
+    fn deref(&self) -> &Self::Target {
+        &self.handle
     }
 }
 
@@ -81,7 +65,6 @@ mod tests {
         assert_ne!(device_info.pid(), DevicePID::Unknown);
         let serial = device_info.serial().expect("Failed to get serial");
         assert!(!serial.is_empty());
-        assert!(device_info.baseline() > 0);
         let _status = device_info.status();
         let _caps = device_info.caps();
     }
