@@ -1,16 +1,21 @@
+use derive_deref::Deref;
 use leap_sys::LEAP_CONNECTION_INFO;
 
 use crate::ConnectionStatus;
 
-crate::leap_struct!(ConnectionInfo, LEAP_CONNECTION_INFO);
+#[doc = " \\ingroup Structs"]
+#[doc = " Information about a connection."]
+#[doc = ""]
+#[doc = " Call LeapCreateConnection() to generate the handle for the connection;"]
+#[doc = " call LeapOpenConnection() to establish the connection; then call"]
+#[doc = " LeapGetConnectionInfo(), which creates this struct, to check the connection status."]
+#[doc = " @since 3.0.0"]
+#[derive(Deref)]
+pub struct ConnectionInfo(pub(crate) LEAP_CONNECTION_INFO);
 
 impl ConnectionInfo {
-    pub fn size(&self) -> u32 {
-        self.handle.size
-    }
-
     pub fn status(&self) -> ConnectionStatus {
-        self.handle.status.into()
+        self.status.into()
     }
 }
 

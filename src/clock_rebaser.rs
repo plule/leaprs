@@ -1,3 +1,4 @@
+use derive_deref::Deref;
 use leap_sys::{
     LeapCreateClockRebaser, LeapDestroyClockRebaser, LeapRebaseClock, LeapUpdateRebase,
     LEAP_CLOCK_REBASER,
@@ -5,18 +6,16 @@ use leap_sys::{
 
 use crate::{leap_try, Error};
 
-crate::leap_struct!(
-    #[doc = " \\ingroup Structs"]
-    #[doc = " \\struct LEAP_CLOCK_REBASER"]
-    #[doc = " An opaque clock rebase state structure. @since 3.1.2"]
-    ClockRebaser,
-    LEAP_CLOCK_REBASER
-);
+#[doc = " \\ingroup Structs"]
+#[doc = " \\struct LEAP_CLOCK_REBASER"]
+#[doc = " An opaque clock rebase state structure. @since 3.1.2"]
+#[derive(Deref)]
+pub struct ClockRebaser(pub(crate) LEAP_CLOCK_REBASER);
 
 impl Drop for ClockRebaser {
     fn drop(&mut self) {
         unsafe {
-            LeapDestroyClockRebaser(self.handle);
+            LeapDestroyClockRebaser(self.0);
         }
     }
 }
@@ -34,7 +33,7 @@ impl ClockRebaser {
         unsafe {
             let mut handle: LEAP_CLOCK_REBASER = std::mem::zeroed();
             leap_try(LeapCreateClockRebaser(&mut handle))?;
-            Ok(Self { handle })
+            Ok(Self(handle))
         }
     }
 
@@ -56,7 +55,7 @@ impl ClockRebaser {
     #[doc = " @since 3.1.2"]
     pub fn update_rebase(&mut self, user_clock: i64, leap_clock: i64) -> Result<(), Error> {
         unsafe {
-            leap_try(LeapUpdateRebase(self.handle, user_clock, leap_clock))?;
+            leap_try(LeapUpdateRebase(self.0, user_clock, leap_clock))?;
         }
         Ok(())
     }
@@ -75,7 +74,7 @@ impl ClockRebaser {
     pub fn rebase_clock(&mut self, user_clock: i64) -> Result<i64, Error> {
         let mut leap_clock: i64 = 0;
         unsafe {
-            leap_try(LeapRebaseClock(self.handle, user_clock, &mut leap_clock))?;
+            leap_try(LeapRebaseClock(self.0, user_clock, &mut leap_clock))?;
         }
         Ok(leap_clock)
     }
