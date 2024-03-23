@@ -32,7 +32,7 @@ impl PointMapping {
     pub fn points(&self) -> Vec<LeapVector> {
         unsafe {
             (0..self.handle.sized.nPoints as isize)
-                .map(|i| LeapVector(*self.handle.sized.pPoints.offset(i)))
+                .map(|i| LeapVector::from(&*self.handle.sized.pPoints.offset(i)))
                 .collect()
         }
     }

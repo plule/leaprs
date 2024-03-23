@@ -329,12 +329,12 @@ impl Connection {
     #[doc = " @param pixel A Vector containing the position of a pixel in the image."]
     #[doc = " @returns A Vector containing the ray direction (the z-component of the vector is always 1)."]
     #[doc = " @since 3.1.3"]
-    pub fn pixel_to_rectilinear(
-        &mut self,
-        camera: PerspectiveType,
-        pixel: &LeapVector,
-    ) -> LeapVector {
-        unsafe { LeapVector(LeapPixelToRectilinear(self.handle, camera.into(), pixel.0)) }
+    pub fn pixel_to_rectilinear(&mut self, camera: PerspectiveType, pixel: [f32; 3]) -> [f32; 3] {
+        unsafe {
+            let leap_vector =
+                LeapPixelToRectilinear(self.handle, camera.into(), build_leap_vector(pixel));
+            leap_vector.__bindgen_anon_1.v
+        }
     }
 
     #[doc = " \\ingroup Functions"]
@@ -363,13 +363,13 @@ impl Connection {
     pub fn rectilinear_to_pixel(
         &mut self,
         camera: PerspectiveType,
-        rectilinear: &LeapVector,
-    ) -> LeapVector {
+        rectilinear: [f32; 3],
+    ) -> [f32; 3] {
         unsafe {
-            LeapVector(LeapRectilinearToPixel(
+            leap_vector_to_array(LeapRectilinearToPixel(
                 self.handle,
                 camera.into(),
-                rectilinear.0,
+                build_leap_vector(rectilinear),
             ))
         }
     }
@@ -685,14 +685,14 @@ impl Connection {
         &mut self,
         device: &Device,
         camera: PerspectiveType,
-        pixel: &LeapVector,
-    ) -> LeapVector {
+        pixel: [f32; 3],
+    ) -> [f32; 3] {
         unsafe {
-            LeapVector(LeapPixelToRectilinearEx(
+            leap_vector_to_array(LeapPixelToRectilinearEx(
                 self.handle,
                 device.handle,
                 camera.into(),
-                pixel.0,
+                build_leap_vector(pixel),
             ))
         }
     }
@@ -724,14 +724,14 @@ impl Connection {
         &mut self,
         device: &Device,
         camera: PerspectiveType,
-        rectilinear: &LeapVector,
-    ) -> LeapVector {
+        rectilinear: [f32; 3],
+    ) -> [f32; 3] {
         unsafe {
-            LeapVector(LeapRectilinearToPixelEx(
+            leap_vector_to_array(LeapRectilinearToPixelEx(
                 self.handle,
                 device.handle,
                 camera.into(),
-                rectilinear.0,
+                build_leap_vector(rectilinear),
             ))
         }
     }
@@ -899,9 +899,9 @@ mod tests {
             let mut distortion_coeffs = [0.0; 8];
             connection.distortion_coeffs(PerspectiveType::StereoRight, &mut distortion_coeffs);
 
-            let leap_vector = LeapVector::new(0.0, 0.0, 1.0);
-            connection.pixel_to_rectilinear_ex(&device, PerspectiveType::StereoLeft, &leap_vector);
-            connection.rectilinear_to_pixel_ex(&device, PerspectiveType::StereoRight, &leap_vector);
+            let leap_vector = [0.0, 0.0, 1.0];
+            connection.pixel_to_rectilinear_ex(&device, PerspectiveType::StereoLeft, leap_vector);
+            connection.rectilinear_to_pixel_ex(&device, PerspectiveType::StereoRight, leap_vector);
         }
 
         #[test]
@@ -978,9 +978,9 @@ mod tests {
     fn safety_sanity() {
         let mut connection = initialize_connection();
 
-        let leap_vector = LeapVector::new(0.0, 0.0, 1.0);
-        connection.pixel_to_rectilinear(PerspectiveType::StereoLeft, &leap_vector);
-        connection.rectilinear_to_pixel(PerspectiveType::StereoRight, &leap_vector);
+        let leap_vector = [0.0, 0.0, 1.0];
+        connection.pixel_to_rectilinear(PerspectiveType::StereoLeft, leap_vector);
+        connection.rectilinear_to_pixel(PerspectiveType::StereoRight, leap_vector);
     }
 
     #[test]

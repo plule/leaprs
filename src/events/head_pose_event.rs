@@ -10,20 +10,20 @@ impl<'a> HeadPoseEvent<'a> {
     #[doc = " The position and orientation of the user's head. Positional tracking must be enabled."]
     #[doc = " @since 4.1.0"]
     pub fn head_position(&self) -> LeapVector {
-        LeapVector(self.head_position)
+        LeapVector::from(&self.head_position)
     }
 
     pub fn head_orientation(&self) -> Quaternion {
-        Quaternion(self.head_orientation)
+        Quaternion::from(&self.head_orientation)
     }
 
     #[doc = " The linear and angular velocity of the user's head. Positional tracking must be enabled."]
     #[doc = " @since 4.1.0"]
     pub fn head_linear_velocity(&self) -> LeapVector {
-        LeapVector(self.head_linear_velocity)
+        LeapVector::from(&self.head_linear_velocity)
     }
 
     pub fn head_angular_velocity(&self) -> LeapVector {
-        LeapVector(self.head_angular_velocity)
+        LeapVector::from(&self.head_angular_velocity)
     }
 }

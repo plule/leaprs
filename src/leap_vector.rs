@@ -1,35 +1,27 @@
 use derive_deref::Deref;
-use leap_sys::LEAP_VECTOR;
+
+use leap_sys::{_LEAP_VECTOR__bindgen_ty_1__bindgen_ty_1, LEAP_VECTOR};
 
 #[doc = " A three element, floating-point vector."]
 #[doc = " @since 3.0.0"]
 #[derive(Deref)]
-pub struct LeapVector(pub(crate) LEAP_VECTOR);
+pub struct LeapVector<'a>(pub(crate) &'a _LEAP_VECTOR__bindgen_ty_1__bindgen_ty_1);
 
-impl LeapVector {
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
-        Self(LEAP_VECTOR {
-            __bindgen_anon_1: { leap_sys::_LEAP_VECTOR__bindgen_ty_1 { v: [x, y, z] } },
-        })
+impl<'a> From<&'a LEAP_VECTOR> for LeapVector<'a> {
+    fn from(vector: &'a LEAP_VECTOR) -> Self {
+        Self(unsafe { &vector.__bindgen_anon_1.__bindgen_anon_1 })
     }
+}
 
-    #[doc = " The vector as an array. @since 3.0.0"]
-    pub fn array(&self) -> [f32; 3] {
-        unsafe { self.__bindgen_anon_1.v }
+/// Build a native [LEAP_VECTOR].
+/// Useful for method taking an owned [LEAP_VECTOR] as argument.
+pub fn build_leap_vector(v: [f32; 3]) -> LEAP_VECTOR {
+    LEAP_VECTOR {
+        __bindgen_anon_1: { leap_sys::_LEAP_VECTOR__bindgen_ty_1 { v } },
     }
+}
 
-    #[doc = " The x spatial coordinate. @since 3.0.0"]
-    pub fn x(&self) -> f32 {
-        unsafe { self.__bindgen_anon_1.__bindgen_anon_1.x }
-    }
-
-    #[doc = " The y spatial coordinate. @since 3.0.0"]
-    pub fn y(&self) -> f32 {
-        unsafe { self.__bindgen_anon_1.__bindgen_anon_1.y }
-    }
-
-    #[doc = " The z spatial coordinate. @since 3.0.0"]
-    pub fn z(&self) -> f32 {
-        unsafe { self.__bindgen_anon_1.__bindgen_anon_1.z }
-    }
+/// Convert a [LEAP_VECTOR] to an array.
+pub fn leap_vector_to_array(v: LEAP_VECTOR) -> [f32; 3] {
+    unsafe { v.__bindgen_anon_1.v }
 }

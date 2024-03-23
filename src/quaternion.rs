@@ -1,33 +1,12 @@
 use derive_deref::Deref;
-use leap_sys::LEAP_QUATERNION;
+use leap_sys::{_LEAP_QUATERNION__bindgen_ty_1__bindgen_ty_1, LEAP_QUATERNION};
 
 #[doc = " A four element, floating point quaternion. @since 3.1.2"]
 #[derive(Deref)]
-pub struct Quaternion(pub(crate) LEAP_QUATERNION);
+pub struct Quaternion<'a>(pub(crate) &'a _LEAP_QUATERNION__bindgen_ty_1__bindgen_ty_1);
 
-impl Quaternion {
-    #[doc = " The quaternion as an array. @since 3.1.3"]
-    pub fn array(&self) -> [f32; 4] {
-        unsafe { self.__bindgen_anon_1.v }
-    }
-
-    #[doc = " The x coefficient of the vector portion of the quaternion. @since 3.1.2"]
-    pub fn x(&self) -> f32 {
-        unsafe { self.__bindgen_anon_1.__bindgen_anon_1.x }
-    }
-
-    #[doc = " The y coefficient of the vector portion of the quaternion. @since 3.1.2"]
-    pub fn y(&self) -> f32 {
-        unsafe { self.__bindgen_anon_1.__bindgen_anon_1.y }
-    }
-
-    #[doc = " The z coefficient of the vector portion of the quaternion. @since 3.1.2"]
-    pub fn z(&self) -> f32 {
-        unsafe { self.__bindgen_anon_1.__bindgen_anon_1.z }
-    }
-
-    #[doc = " The scalar portion of the quaternion. @since 3.1.2"]
-    pub fn w(&self) -> f32 {
-        unsafe { self.__bindgen_anon_1.__bindgen_anon_1.w }
+impl<'a> From<&'a LEAP_QUATERNION> for Quaternion<'a> {
+    fn from(quaternion: &'a LEAP_QUATERNION) -> Self {
+        Self(unsafe { &quaternion.__bindgen_anon_1.__bindgen_anon_1 })
     }
 }
