@@ -10,3 +10,33 @@ impl<'a> From<&'a LEAP_QUATERNION> for Quaternion<'a> {
         Self(unsafe { &quaternion.__bindgen_anon_1.__bindgen_anon_1 })
     }
 }
+
+impl<'a> Quaternion<'a> {
+    /// Convert to a [glam::Quat]
+    #[cfg(feature = "glam")]
+    pub fn into_glam(&self) -> glam::Quat {
+        glam::Quat::from_xyzw(self.x, self.y, self.z, self.w)
+    }
+
+    /// Convert to a [nalgebra::UnitQuaternion]
+    #[cfg(feature = "nalgebra")]
+    pub fn to_nalgebra(&self) -> nalgebra::UnitQuaternion<f32> {
+        nalgebra::UnitQuaternion::new_unchecked(nalgebra::Quaternion::new(
+            self.w, self.x, self.y, self.z,
+        ))
+    }
+}
+
+#[cfg(feature = "glam")]
+impl From<Quaternion<'_>> for glam::Quat {
+    fn from(q: Quaternion) -> glam::Quat {
+        q.into_glam()
+    }
+}
+
+#[cfg(feature = "nalgebra")]
+impl From<Quaternion<'_>> for nalgebra::UnitQuaternion<f32> {
+    fn from(q: Quaternion) -> nalgebra::UnitQuaternion<f32> {
+        q.to_nalgebra()
+    }
+}

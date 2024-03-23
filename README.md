@@ -88,6 +88,63 @@ for _ in 0..10 {
 }
 ```
 
+## `glam` and `nalgebra` Integration
+
+`leaprs` includes opt-in `glam` and `nalgebra` integrations.
+
+They are two popular linear algebra library. Both are commonly used, and these features can help integrating with ecosystem using these crates.
+`glam` is used by `Bevy`, and `nalgebra` is used by `Fyrox`.
+
+### glam
+
+`cargo build --features glam`
+
+```rust
+use leaprs::*;
+use glam::{Vec3, Quat};
+
+let mut c = Connection::create(ConnectionConfig::default()).unwrap();
+c.open().unwrap();
+for _ in 0..10 {
+    if let Ok(msg) = c.poll(1000) {
+        match msg.event() {
+            Event::Tracking(e) => {
+                for hand in e.hands() {
+                    let position: Vec3 = hand.palm().position().into();
+                    let orientation: Quat = hand.palm().orientation().into();
+                }
+            },
+            _ => {}
+        }
+    }
+}
+```
+
+### nalgebra
+
+`cargo build --features nalgebra`
+
+```rust
+use leaprs::*;
+use nalgebra::{Vector3, UnitQuaternion};
+
+let mut c = Connection::create(ConnectionConfig::default()).unwrap();
+c.open().unwrap();
+for _ in 0..10 {
+    if let Ok(msg) = c.poll(1000) {
+        match msg.event() {
+            Event::Tracking(e) => {
+                for hand in e.hands() {
+                    let position: Vector3<f32> = hand.palm().position().into();
+                    let orientation: UnitQuaternion<f32> = hand.palm().orientation().into();
+                }
+            },
+            _ => {}
+        }
+    }
+}
+```
+
 ## License
 
 Licensed under either of Apache License, Version 2.0 or MIT license at your option.
