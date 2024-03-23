@@ -19,6 +19,8 @@ exclude = ["images/"]
 [features]
 default = ["gemini"]
 gemini = []
+glam = ["dep:glam"]
+nalgebra = ["dep:nalgebra"]
 
 [dependencies]
 leap-sys = "0.2"
@@ -26,8 +28,13 @@ num_enum = "0.7.2"
 thiserror = "1"
 bitflags = "2"
 derive_deref = "1.1.1"
+glam = { version = "0.26", optional = true }
+nalgebra = { version = "0.32", optional = true }
 
 [dev-dependencies]
 throbber = "0.1"
 image = "0.25.0"
 tempfile = "3.10.1"
+
+[package.metadata.docs.rs]
+features = ["glam", "nalgebra"]

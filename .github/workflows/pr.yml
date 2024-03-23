@@ -15,9 +15,9 @@ jobs:
       matrix:
         include:
           - sdk-redist-ref: gemini
-            cargo-features: --no-default-features --features gemini
+            cargo-features: --no-default-features --features nalgebra --features glam --features gemini
           - sdk-redist-ref: orion
-            cargo-features: --no-default-features
+            cargo-features: --no-default-features --features nalgebra --features glam
     name: check
     runs-on: windows-latest
 
@@ -31,7 +31,7 @@ jobs:
     - name: Check Tests
       run: cargo check ${{ matrix.cargo-features }} --tests
     - name: Doc
-      run: cargo doc
+      run: cargo doc --features nalgebra --features glam
     - name: Style
       run: cargo fmt -- --check
     - name: Clippy

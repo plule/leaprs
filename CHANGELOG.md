@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 ### Added
 
 - All the wrapper structures now implement `Deref` of the wrapped `leap-sys` structures
+- The opt-in features `glam` and `nalgebra` add conversion method for vectors and quaternions to these libraries.
 
 ### Changed
 
