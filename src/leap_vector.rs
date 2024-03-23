@@ -4,15 +4,15 @@ use leap_sys::{_LEAP_VECTOR__bindgen_ty_1, _LEAP_VECTOR__bindgen_ty_1__bindgen_t
 
 #[doc = " A three element, floating-point vector."]
 #[doc = " @since 3.0.0"]
-pub struct LeapVector<'a>(pub(crate) &'a _LEAP_VECTOR__bindgen_ty_1);
+pub struct LeapVectorRef<'a>(pub(crate) &'a _LEAP_VECTOR__bindgen_ty_1);
 
-impl<'a> From<&'a LEAP_VECTOR> for LeapVector<'a> {
+impl<'a> From<&'a LEAP_VECTOR> for LeapVectorRef<'a> {
     fn from(vector: &'a LEAP_VECTOR) -> Self {
         Self(&vector.__bindgen_anon_1)
     }
 }
 
-impl<'a> LeapVector<'a> {
+impl<'a> LeapVectorRef<'a> {
     pub fn array(&self) -> [f32; 3] {
         unsafe { self.0.v }
     }
@@ -30,7 +30,7 @@ impl<'a> LeapVector<'a> {
     }
 }
 
-impl<'a> Deref for LeapVector<'a> {
+impl<'a> Deref for LeapVectorRef<'a> {
     type Target = _LEAP_VECTOR__bindgen_ty_1__bindgen_ty_1;
 
     fn deref(&self) -> &Self::Target {
@@ -39,15 +39,15 @@ impl<'a> Deref for LeapVector<'a> {
 }
 
 #[cfg(feature = "glam")]
-impl From<LeapVector<'_>> for glam::Vec3 {
-    fn from(v: LeapVector) -> glam::Vec3 {
+impl From<LeapVectorRef<'_>> for glam::Vec3 {
+    fn from(v: LeapVectorRef) -> glam::Vec3 {
         v.into_glam()
     }
 }
 
 #[cfg(feature = "nalgebra")]
-impl From<LeapVector<'_>> for nalgebra::Vector3<f32> {
-    fn from(v: LeapVector) -> nalgebra::Vector3<f32> {
+impl From<LeapVectorRef<'_>> for nalgebra::Vector3<f32> {
+    fn from(v: LeapVectorRef) -> nalgebra::Vector3<f32> {
         v.into_nalgebra()
     }
 }

@@ -12,7 +12,7 @@ use leap_sys::LEAP_DISTORTION_MATRIX;
 #[doc = " Current devices use a 64x64 point distortion grid."]
 #[doc = " @since 3.0.0"]
 #[derive(Deref)]
-pub struct DistortionMatrix<'a>(pub(crate) &'a LEAP_DISTORTION_MATRIX);
+pub struct DistortionMatrixRef<'a>(pub(crate) &'a LEAP_DISTORTION_MATRIX);
 
 #[doc = " A point in the distortion grid. @since 3.0.0"]
 pub struct Point {
@@ -20,7 +20,7 @@ pub struct Point {
     pub y: f32,
 }
 
-impl<'a> DistortionMatrix<'a> {
+impl<'a> DistortionMatrixRef<'a> {
     #[doc = " A grid of 2D points. @since 3.0.0"]
     pub fn matrix(&self) -> [[Point; 64]; 64] {
         self.matrix.map(|v| v.map(|p| Point { x: p.x, y: p.y }))

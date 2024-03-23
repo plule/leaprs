@@ -108,14 +108,14 @@ mod tests {
 
         connection
             .wait_for(|e| match e {
-                Event::Connection(_) => Some(()),
+                EventRef::Connection(_) => Some(()),
                 _ => None,
             })
             .expect("Did not receive connection message");
 
         connection
             .wait_for(|e| match e {
-                Event::Device(_) => Some(()),
+                EventRef::Device(_) => Some(()),
                 _ => None,
             })
             .expect("Did not receive device connection");
@@ -146,13 +146,13 @@ mod tests {
     pub trait ConnectionTestExtensions {
         fn wait_for<F, T>(&mut self, condition: F) -> Result<T, &str>
         where
-            F: Fn(&Event) -> Option<T>;
+            F: Fn(&EventRef) -> Option<T>;
     }
 
     impl ConnectionTestExtensions for Connection {
         fn wait_for<F, T>(&mut self, condition: F) -> Result<T, &str>
         where
-            F: Fn(&Event) -> Option<T>,
+            F: Fn(&EventRef) -> Option<T>,
         {
             for _ in 0..200 {
                 if let Ok(event_message) = self.poll(100) {

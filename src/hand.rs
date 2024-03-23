@@ -1,7 +1,7 @@
 use derive_deref::Deref;
 use leap_sys::*;
 
-use crate::{Bone, Digit, Palm};
+use crate::{BoneRef, DigitRef, PalmRef};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = " The Hand chirality types."]
@@ -16,9 +16,9 @@ pub enum HandType {
 
 #[doc = " Describes a tracked hand. @since 3.0.0"]
 #[derive(Deref)]
-pub struct Hand<'a>(pub(crate) &'a LEAP_HAND);
+pub struct HandRef<'a>(pub(crate) &'a LEAP_HAND);
 
-impl<'a> Hand<'a> {
+impl<'a> HandRef<'a> {
     #[doc = " Identifies the chirality of this hand. @since 3.0.0"]
     pub fn hand_type(&self) -> HandType {
         match self.type_ {
@@ -29,55 +29,55 @@ impl<'a> Hand<'a> {
     }
 
     #[doc = " Additional information associated with the palm. @since 3.0.0"]
-    pub fn palm(&self) -> Palm {
-        Palm(&self.palm)
+    pub fn palm(&self) -> PalmRef {
+        PalmRef(&self.palm)
     }
 
     #[doc = " The arm to which this hand is attached."]
     #[doc = " An arm consists of a single LEAP_BONE struct."]
     #[doc = " @since 3.0.0"]
-    pub fn arm(&self) -> Bone {
-        Bone(&self.arm)
+    pub fn arm(&self) -> BoneRef {
+        BoneRef(&self.arm)
     }
 
     #[doc = " The fingers of the hand as an array. @since 3.0.0"]
-    pub fn digits(&self) -> [Digit; 5] {
+    pub fn digits(&self) -> [DigitRef; 5] {
         let digits;
         unsafe {
             digits = &self.__bindgen_anon_1.digits;
         }
         [
-            Digit(&digits[0]),
-            Digit(&digits[1]),
-            Digit(&digits[2]),
-            Digit(&digits[3]),
-            Digit(&digits[4]),
+            DigitRef(&digits[0]),
+            DigitRef(&digits[1]),
+            DigitRef(&digits[2]),
+            DigitRef(&digits[3]),
+            DigitRef(&digits[4]),
         ]
     }
 
     #[doc = " The thumb. @since 3.0.0"]
-    pub fn thumb(&self) -> Digit {
-        unsafe { Digit(&self.__bindgen_anon_1.__bindgen_anon_1.thumb) }
+    pub fn thumb(&self) -> DigitRef {
+        unsafe { DigitRef(&self.__bindgen_anon_1.__bindgen_anon_1.thumb) }
     }
 
     #[doc = " The index finger. @since 3.0.0"]
-    pub fn index(&self) -> Digit {
-        unsafe { Digit(&self.__bindgen_anon_1.__bindgen_anon_1.index) }
+    pub fn index(&self) -> DigitRef {
+        unsafe { DigitRef(&self.__bindgen_anon_1.__bindgen_anon_1.index) }
     }
 
     #[doc = " The middle finger. @since 3.0.0"]
-    pub fn middle(&self) -> Digit {
-        unsafe { Digit(&self.__bindgen_anon_1.__bindgen_anon_1.middle) }
+    pub fn middle(&self) -> DigitRef {
+        unsafe { DigitRef(&self.__bindgen_anon_1.__bindgen_anon_1.middle) }
     }
 
     #[doc = " The ring finger. @since 3.0.0"]
-    pub fn ring(&self) -> Digit {
-        unsafe { Digit(&self.__bindgen_anon_1.__bindgen_anon_1.ring) }
+    pub fn ring(&self) -> DigitRef {
+        unsafe { DigitRef(&self.__bindgen_anon_1.__bindgen_anon_1.ring) }
     }
 
     #[doc = " The pinky finger. @since 3.0.0"]
-    pub fn pinky(&self) -> Digit {
-        unsafe { Digit(&self.__bindgen_anon_1.__bindgen_anon_1.pinky) }
+    pub fn pinky(&self) -> DigitRef {
+        unsafe { DigitRef(&self.__bindgen_anon_1.__bindgen_anon_1.pinky) }
     }
 }
 
@@ -91,7 +91,7 @@ mod tests {
         let mut connection = initialize_connection();
         connection
             .wait_for(|e| match e {
-                Event::Tracking(e) => {
+                EventRef::Tracking(e) => {
                     let hands = e.hands();
                     if hands.is_empty() {
                         println!("Warning: Put hands in front of the sensor for this test.");

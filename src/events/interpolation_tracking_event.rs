@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::{sized_with_trailing_data::SizedWithTrailingData, FrameHeader, Hand};
+use crate::{sized_with_trailing_data::SizedWithTrailingData, FrameHeaderRef, HandRef};
 use leap_sys::LEAP_TRACKING_EVENT;
 
 pub struct InterpolationTrackingEvent(pub(crate) Box<SizedWithTrailingData<LEAP_TRACKING_EVENT>>);
@@ -18,18 +18,18 @@ impl InterpolationTrackingEvent {
     }
 
     #[doc = " A universal frame identification header. @since 3.0.0"]
-    pub fn info(&self) -> FrameHeader {
-        FrameHeader(&self.info)
+    pub fn info(&self) -> FrameHeaderRef {
+        FrameHeaderRef(&self.info)
     }
 
     #[doc = " A pointer to the array of hands tracked in this frame."]
     #[doc = " @since 3.0.0"]
-    pub fn hands(&self) -> Vec<Hand> {
+    pub fn hands(&self) -> Vec<HandRef> {
         let n_hand = self.nHands as isize;
         unsafe {
             (0..n_hand)
                 .map(|hand_index| &*self.pHands.offset(hand_index))
-                .map(Hand)
+                .map(HandRef)
                 .collect()
         }
     }

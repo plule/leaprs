@@ -10,9 +10,9 @@ use crate::{Device, DeviceStatus};
 #[doc = " open device."]
 #[doc = " @since 3.0.0"]
 #[derive(Deref)]
-pub struct DeviceFailureEvent<'a>(pub(crate) &'a LEAP_DEVICE_FAILURE_EVENT);
+pub struct DeviceFailureEventRef<'a>(pub(crate) &'a LEAP_DEVICE_FAILURE_EVENT);
 
-impl<'a> DeviceFailureEvent<'a> {
+impl<'a> DeviceFailureEventRef<'a> {
     #[doc = " The status of this failure event. @since 3.0.0"]
     pub fn status(&self) -> DeviceStatus {
         DeviceStatus::from_bits_truncate(self.status as u32)

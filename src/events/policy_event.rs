@@ -7,9 +7,9 @@ use crate::PolicyFlags;
 #[doc = " LeapPollConnection() creates this struct when the response becomes available."]
 #[doc = " @since 3.0.0"]
 #[derive(Deref)]
-pub struct PolicyEvent<'a>(pub(crate) &'a LEAP_POLICY_EVENT);
+pub struct PolicyEventRef<'a>(pub(crate) &'a LEAP_POLICY_EVENT);
 
-impl<'a> PolicyEvent<'a> {
+impl<'a> PolicyEventRef<'a> {
     #[doc = " A bitfield containing the policies effective at the"]
     #[doc = " time the policy event was processed. @since 3.0.0"]
     pub fn current_policy(&self) -> PolicyFlags {
@@ -29,7 +29,7 @@ mod tests {
             .expect("Failed to set policy");
         connection
             .wait_for(|e| match e {
-                Event::Policy(e) => {
+                EventRef::Policy(e) => {
                     if e.current_policy().contains(PolicyFlags::IMAGES) {
                         Some(())
                     } else {

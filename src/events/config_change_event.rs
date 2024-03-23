@@ -10,4 +10,4 @@ use leap_sys::LEAP_CONFIG_CHANGE_EVENT;
 #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
 #[doc = " @since 3.0.0"]
 #[derive(Deref)]
-pub struct ConfigChangeEvent<'a>(pub(crate) &'a LEAP_CONFIG_CHANGE_EVENT);
+pub struct ConfigChangeEventRef<'a>(pub(crate) &'a LEAP_CONFIG_CHANGE_EVENT);

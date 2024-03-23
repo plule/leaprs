@@ -6,7 +6,7 @@ fn main() {
     loop {
         if let Ok(msg) = c.poll(1000) {
             match msg.event() {
-                Event::Tracking(e) => println!("{} hand(s)", e.hands().len()),
+                EventRef::Tracking(e) => println!("{} hand(s)", e.hands().len()),
                 _ => {}
             }
         }

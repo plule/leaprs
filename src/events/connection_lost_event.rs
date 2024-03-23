@@ -9,6 +9,6 @@ use leap_sys::LEAP_CONNECTION_LOST_EVENT;
 #[doc = " receive this event."]
 #[doc = " @since 3.0.0"]
 #[derive(Deref)]
-pub struct ConnectionLostEvent<'a>(pub(crate) &'a LEAP_CONNECTION_LOST_EVENT);
+pub struct ConnectionLostEventRef<'a>(pub(crate) &'a LEAP_CONNECTION_LOST_EVENT);
 
 // No impl for now, only reserved fields.

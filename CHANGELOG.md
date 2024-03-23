@@ -15,10 +15,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 - Improved the examples to avoid common timeout unwrap()
 - The vectors and quaternion are not anymore copied
+- **Breaking** All the non-owning wrappers (most of them) are now named with `Ref` as a suffix.
+    `Hand` becomes `HandRef`, `Digit` becomes `DigitRef`, etc...
 
 ### Removed
 
-- **Breaking** All the trivial accessor functions were removed, in favour of the `Deref` trait.
+- **Breaking** All the trivial accessor functions were removed, in favour of the `Deref` trait
 
 ### Fixed
 
