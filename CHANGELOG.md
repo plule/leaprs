@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 ### Changed
 
 - Improved the examples to avoid common timeout unwrap()
+- The vectors and quaternion are not anymore copied
 
 ### Removed
 
