@@ -5,7 +5,7 @@ use crate::{DistortionMatrixRef, ImagePropertiesRef};
 
 #[doc = " An image associated with a frame of data."]
 #[doc = " @since 4.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct ImageRef<'a>(pub(crate) &'a LEAP_IMAGE);
 
 impl<'a> ImageRef<'a> {

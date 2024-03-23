@@ -3,7 +3,7 @@ use leap_sys::LEAP_DROPPED_FRAME_EVENT;
 
 use crate::DroppedFrameType;
 
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct DroppedFrameEventRef<'a>(pub(crate) &'a LEAP_DROPPED_FRAME_EVENT);
 
 impl<'a> DroppedFrameEventRef<'a> {

@@ -9,7 +9,7 @@ use leap_sys::LEAP_IMAGE_EVENT;
 #[doc = " the buffer containing the image data -- which was allocated using the allocator"]
 #[doc = " function passed to LeapC using the LeapSetAllocator."]
 #[doc = " @since 4.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct ImageEventRef<'a>(pub(crate) &'a LEAP_IMAGE_EVENT);
 
 impl<'a> ImageEventRef<'a> {

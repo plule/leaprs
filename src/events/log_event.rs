@@ -6,7 +6,7 @@ use leap_sys::LEAP_LOG_EVENT;
 use crate::LogSeverity;
 
 #[doc = " A system log message. @since 3.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct LogEventRef<'a>(pub(crate) &'a LEAP_LOG_EVENT);
 
 impl<'a> LogEventRef<'a> {

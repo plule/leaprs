@@ -6,7 +6,7 @@ use crate::ServiceState;
 #[doc = "  \\ingroup Structs"]
 #[doc = " Received from LeapPollConnection() when a connection to the Ultraleap Tracking Service is established."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct ConnectionEventRef<'a>(pub(crate) &'a LEAP_CONNECTION_EVENT);
 
 impl<'a> ConnectionEventRef<'a> {

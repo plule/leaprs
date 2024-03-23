@@ -3,7 +3,7 @@ use leap_sys::LEAP_EYE_EVENT;
 
 use crate::LeapVectorRef;
 
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct EyeEventRef<'a>(pub(crate) &'a LEAP_EYE_EVENT);
 
 impl<'a> EyeEventRef<'a> {

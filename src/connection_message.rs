@@ -6,7 +6,7 @@ use crate::event::EventRef;
 #[doc = " Defines a basic message from the LeapC message queue."]
 #[doc = " Set by calling LeapPollConnection()."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct ConnectionMessage(pub(crate) LEAP_CONNECTION_MESSAGE);
 
 impl ConnectionMessage {

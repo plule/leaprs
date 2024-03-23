@@ -3,7 +3,7 @@ use leap_sys::LEAP_IMU_EVENT;
 
 use crate::{ImuFlag, LeapVectorRef};
 
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct ImuEventRef<'a>(pub(crate) &'a LEAP_IMU_EVENT);
 
 impl<'a> ImuEventRef<'a> {

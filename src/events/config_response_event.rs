@@ -9,7 +9,7 @@ use crate::Variant;
 #[doc = " returns this event structure when the request has been processed. Use the requestID"]
 #[doc = " value to correlate the response to the originating request."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct ConfigResponseEventRef<'a>(pub(crate) &'a LEAP_CONFIG_RESPONSE_EVENT);
 
 impl<'a> ConfigResponseEventRef<'a> {

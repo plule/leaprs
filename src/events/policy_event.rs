@@ -6,7 +6,7 @@ use crate::PolicyFlags;
 #[doc = " The response from a request to get or set a policy."]
 #[doc = " LeapPollConnection() creates this struct when the response becomes available."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct PolicyEventRef<'a>(pub(crate) &'a LEAP_POLICY_EVENT);
 
 impl<'a> PolicyEventRef<'a> {

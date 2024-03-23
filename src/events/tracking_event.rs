@@ -6,7 +6,7 @@ use crate::{FrameHeaderRef, HandRef};
 #[doc = " A snapshot, or frame of data, containing the tracking data for a single moment in time."]
 #[doc = " The LEAP_FRAME struct is the container for all the tracking data."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct TrackingEventRef<'a>(pub(crate) &'a LEAP_TRACKING_EVENT);
 
 impl<'a> TrackingEventRef<'a> {

@@ -11,7 +11,7 @@ use leap_sys::LEAP_DISTORTION_MATRIX;
 #[doc = ""]
 #[doc = " Current devices use a 64x64 point distortion grid."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct DistortionMatrixRef<'a>(pub(crate) &'a LEAP_DISTORTION_MATRIX);
 
 #[doc = " A point in the distortion grid. @since 3.0.0"]
