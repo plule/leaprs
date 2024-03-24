@@ -6,10 +6,10 @@ use crate::ServiceState;
 #[doc = "  \\ingroup Structs"]
 #[doc = " Received from LeapPollConnection() when a connection to the Ultraleap Tracking Service is established."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
-pub struct ConnectionEvent<'a>(pub(crate) &'a LEAP_CONNECTION_EVENT);
+#[derive(Deref, Clone, Copy)]
+pub struct ConnectionEventRef<'a>(pub(crate) &'a LEAP_CONNECTION_EVENT);
 
-impl<'a> ConnectionEvent<'a> {
+impl<'a> ConnectionEventRef<'a> {
     #[doc = " A combination of eLeapServiceDisposition flags. @since 3.1.3"]
     pub fn flags(&self) -> ServiceState {
         ServiceState::from_bits_truncate(self.flags)
@@ -28,7 +28,7 @@ mod tests {
         connection.open().expect("Failed to open the connection");
         let _flags = connection
             .wait_for(|e| match e {
-                Event::Connection(e) => Some(e.flags()),
+                EventRef::Connection(e) => Some(e.flags()),
                 _ => None,
             })
             .expect("Did not receive a connection event.");

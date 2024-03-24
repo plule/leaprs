@@ -6,10 +6,10 @@ use crate::TrackingMode;
 #[doc = " The response from a request to get or set a policy."]
 #[doc = " LeapPollConnection() creates this struct when the response becomes available."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
-pub struct TrackingModeEvent<'a>(pub(crate) &'a LEAP_TRACKING_MODE_EVENT);
+#[derive(Deref, Clone, Copy)]
+pub struct TrackingModeEventRef<'a>(pub(crate) &'a LEAP_TRACKING_MODE_EVENT);
 
-impl<'a> TrackingModeEvent<'a> {
+impl<'a> TrackingModeEventRef<'a> {
     #[doc = " An enum specifying the tracking mode effective at the"]
     #[doc = " time the tracking mode event was processed. @since 5.0.0"]
     pub fn current_tracking_mode(&self) -> TrackingMode {
@@ -29,7 +29,7 @@ mod tests {
 
         let mode = connection
             .wait_for(|e| match e {
-                Event::TrackingMode(mode) => Some(mode.current_tracking_mode()),
+                EventRef::TrackingMode(mode) => Some(mode.current_tracking_mode()),
                 _ => None,
             })
             .expect("Did not receive the tracking mode");
@@ -45,7 +45,7 @@ mod tests {
 
         let mode = connection
             .wait_for(|e| match e {
-                Event::TrackingMode(mode) => Some(mode.current_tracking_mode()),
+                EventRef::TrackingMode(mode) => Some(mode.current_tracking_mode()),
                 _ => None,
             })
             .expect("Did not receive the tracking mode");

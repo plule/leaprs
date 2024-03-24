@@ -1,4 +1,4 @@
-use crate::{FrameHeader, Image};
+use crate::{FrameHeaderRef, ImageRef};
 use derive_deref::Deref;
 use leap_sys::LEAP_IMAGE_EVENT;
 
@@ -9,18 +9,18 @@ use leap_sys::LEAP_IMAGE_EVENT;
 #[doc = " the buffer containing the image data -- which was allocated using the allocator"]
 #[doc = " function passed to LeapC using the LeapSetAllocator."]
 #[doc = " @since 4.0.0"]
-#[derive(Deref)]
-pub struct ImageEvent<'a>(pub(crate) &'a LEAP_IMAGE_EVENT);
+#[derive(Deref, Clone, Copy)]
+pub struct ImageEventRef<'a>(pub(crate) &'a LEAP_IMAGE_EVENT);
 
-impl<'a> ImageEvent<'a> {
+impl<'a> ImageEventRef<'a> {
     #[doc = " The information header identifying the images tracking frame."]
-    pub fn info(&self) -> FrameHeader {
-        FrameHeader(&self.info)
+    pub fn info(&self) -> FrameHeaderRef {
+        FrameHeaderRef(&self.info)
     }
 
     #[doc = " The left and right images."]
-    pub fn images(&self) -> [Image; 2] {
-        [(Image(&self.image[0])), (Image(&self.image[1]))]
+    pub fn images(&self) -> [ImageRef; 2] {
+        [(ImageRef(&self.image[0])), (ImageRef(&self.image[1]))]
     }
 }
 
@@ -38,7 +38,7 @@ mod tests {
 
         let (width, height, data, _frame_id) = connection
             .wait_for(|e| match e {
-                Event::Image(e) => {
+                EventRef::Image(e) => {
                     let right_image = &e.images()[1];
                     let data = right_image.data();
                     let width = right_image.properties().width;

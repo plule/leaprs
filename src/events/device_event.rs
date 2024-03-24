@@ -9,10 +9,10 @@ use crate::{DeviceRef, DeviceStatus};
 #[doc = " device is detected. You can use the handle provided by the device filed to"]
 #[doc = " open a device so that you can access its properties."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
-pub struct DeviceEvent<'a>(pub(crate) &'a LEAP_DEVICE_EVENT);
+#[derive(Deref, Clone, Copy)]
+pub struct DeviceEventRef<'a>(pub(crate) &'a LEAP_DEVICE_EVENT);
 
-impl<'a> DeviceEvent<'a> {
+impl<'a> DeviceEventRef<'a> {
     #[doc = " The handle reference of to the newly attached device. @since 3.0.0"]
     pub fn device(&self) -> DeviceRef {
         DeviceRef(self.device)

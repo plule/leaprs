@@ -9,10 +9,10 @@ use crate::Variant;
 #[doc = " returns this event structure when the request has been processed. Use the requestID"]
 #[doc = " value to correlate the response to the originating request."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
-pub struct ConfigResponseEvent<'a>(pub(crate) &'a LEAP_CONFIG_RESPONSE_EVENT);
+#[derive(Deref, Clone, Copy)]
+pub struct ConfigResponseEventRef<'a>(pub(crate) &'a LEAP_CONFIG_RESPONSE_EVENT);
 
-impl<'a> ConfigResponseEvent<'a> {
+impl<'a> ConfigResponseEventRef<'a> {
     #[doc = " The configuration value retrieved from the service. Do not free any memory pointed to by"]
     #[doc = " this member. The value held is only valid until the next call to LeapPollConnection()."]
     #[doc = " @since 3.0.0"]

@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use leap_sys::LEAP_POINT_MAPPING;
 
-use crate::{sized_with_trailing_data::SizedWithTrailingData, LeapVector};
+use crate::{sized_with_trailing_data::SizedWithTrailingData, LeapVectorRef};
 
 pub struct PointMapping {
     /// Store a boxed dynamic sized event
@@ -29,10 +29,10 @@ impl PointMapping {
     }
 
     #[doc = " The 3D points being mapped. @since 4.0.0"]
-    pub fn points(&self) -> Vec<LeapVector> {
+    pub fn points(&self) -> Vec<LeapVectorRef> {
         unsafe {
             (0..self.handle.sized.nPoints as isize)
-                .map(|i| LeapVector::from(&*self.handle.sized.pPoints.offset(i)))
+                .map(|i| LeapVectorRef::from(&*self.handle.sized.pPoints.offset(i)))
                 .collect()
         }
     }

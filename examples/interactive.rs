@@ -9,7 +9,7 @@ fn main() {
     connection.open().expect("Failed to open the connection");
 
     connection.wait_for("Connecting to the service...".to_string(), |e| match e {
-        Event::Connection(e) => {
+        EventRef::Connection(e) => {
             let flags = e.flags();
             Msg::Success(format!("Connected. Service state: {:?}", flags))
         }
@@ -17,7 +17,7 @@ fn main() {
     });
 
     connection.wait_for("Waiting for a device...".to_string(), |e| match e {
-        Event::Device(e) => {
+        EventRef::Device(e) => {
             let device_info = e
                 .device()
                 .open()
@@ -46,7 +46,7 @@ fn main() {
         connection.wait_for(
             "Waiting for the tracking mode message...".to_string(),
             |e| match e {
-                Event::TrackingMode(e) => {
+                EventRef::TrackingMode(e) => {
                     Msg::Success(format!("Tracking mode: {:#?}", e.current_tracking_mode()))
                 }
                 _ => Msg::None,
@@ -55,7 +55,7 @@ fn main() {
     }
 
     connection.wait_for("Waiting for a hand...".to_string(), |e| match e {
-        Event::Tracking(e) => {
+        EventRef::Tracking(e) => {
             if !e.hands().is_empty() {
                 Msg::Success("Got a hand".to_string())
             } else {
@@ -66,7 +66,7 @@ fn main() {
     });
 
     connection.wait_for("Close the hand".to_string(), |e| match e {
-        Event::Tracking(e) => {
+        EventRef::Tracking(e) => {
             if let Some(hand) = e.hands().first() {
                 let grab_strength = hand.grab_strength;
                 if grab_strength >= 1.0 {
@@ -82,7 +82,7 @@ fn main() {
     });
 
     connection.wait_for("Open the hand".to_string(), |e| match e {
-        Event::Tracking(e) => {
+        EventRef::Tracking(e) => {
             if let Some(hand) = e.hands().first() {
                 let ungrab_strength = 1.0 - hand.grab_strength;
                 if ungrab_strength >= 0.999 {
@@ -102,7 +102,7 @@ fn main() {
         .expect("Failed to set policy flags");
 
     connection.wait_for("Reading image".to_string(), |e| match e {
-        Event::Image(e) => {
+        EventRef::Image(e) => {
             let w = e.images()[0].properties().width;
             let h = e.images()[0].properties().height;
             let images = e.images();
@@ -130,13 +130,13 @@ pub enum Msg {
 trait WaitFor {
     fn wait_for<F>(&mut self, message: String, condition: F)
     where
-        F: Fn(&Event) -> Msg;
+        F: Fn(&EventRef) -> Msg;
 }
 
 impl WaitFor for Connection {
     fn wait_for<F>(&mut self, message: String, condition: F)
     where
-        F: Fn(&Event) -> Msg,
+        F: Fn(&EventRef) -> Msg,
     {
         let mut throbber = Throbber::new().interval(Duration::from_millis(100));
 

@@ -3,15 +3,15 @@ use leap_sys::{
 };
 
 #[doc = " A four element, floating point quaternion. @since 3.1.2"]
-pub struct Quaternion<'a>(pub(crate) &'a _LEAP_QUATERNION__bindgen_ty_1);
+pub struct QuaternionRef<'a>(pub(crate) &'a _LEAP_QUATERNION__bindgen_ty_1);
 
-impl<'a> From<&'a LEAP_QUATERNION> for Quaternion<'a> {
+impl<'a> From<&'a LEAP_QUATERNION> for QuaternionRef<'a> {
     fn from(quaternion: &'a LEAP_QUATERNION) -> Self {
         Self(&quaternion.__bindgen_anon_1)
     }
 }
 
-impl<'a> Quaternion<'a> {
+impl<'a> QuaternionRef<'a> {
     pub fn array(&self) -> [f32; 4] {
         unsafe { self.0.v }
     }
@@ -31,7 +31,7 @@ impl<'a> Quaternion<'a> {
     }
 }
 
-impl<'a> core::ops::Deref for Quaternion<'a> {
+impl<'a> core::ops::Deref for QuaternionRef<'a> {
     type Target = _LEAP_QUATERNION__bindgen_ty_1__bindgen_ty_1;
 
     fn deref(&self) -> &Self::Target {
@@ -40,15 +40,15 @@ impl<'a> core::ops::Deref for Quaternion<'a> {
 }
 
 #[cfg(feature = "glam")]
-impl From<Quaternion<'_>> for glam::Quat {
-    fn from(q: Quaternion) -> glam::Quat {
+impl From<QuaternionRef<'_>> for glam::Quat {
+    fn from(q: QuaternionRef) -> glam::Quat {
         q.into_glam()
     }
 }
 
 #[cfg(feature = "nalgebra")]
-impl From<Quaternion<'_>> for nalgebra::UnitQuaternion<f32> {
-    fn from(q: Quaternion) -> nalgebra::UnitQuaternion<f32> {
+impl From<QuaternionRef<'_>> for nalgebra::UnitQuaternion<f32> {
+    fn from(q: QuaternionRef) -> nalgebra::UnitQuaternion<f32> {
         q.into_nalgebra()
     }
 }

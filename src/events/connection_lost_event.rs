@@ -8,7 +8,7 @@ use leap_sys::LEAP_CONNECTION_LOST_EVENT;
 #[doc = " this event. Otherwise, it can take up to 5 seconds of polling the connection to"]
 #[doc = " receive this event."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
-pub struct ConnectionLostEvent<'a>(pub(crate) &'a LEAP_CONNECTION_LOST_EVENT);
+#[derive(Deref, Clone, Copy)]
+pub struct ConnectionLostEventRef<'a>(pub(crate) &'a LEAP_CONNECTION_LOST_EVENT);
 
 // No impl for now, only reserved fields.

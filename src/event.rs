@@ -2,37 +2,37 @@ use crate::events::*;
 use leap_sys::*;
 
 #[doc = " The types of event messages resulting from calling LeapPollConnection()."]
-pub enum Event<'a> {
+pub enum EventRef<'a> {
     #[doc = " No event has occurred within the timeout period specified when calling LeapPollConnection()."]
     #[doc = " @since 3.0.0"]
     None,
     #[doc = " A connection to the Ultraleap Tracking Service has been established."]
     #[doc = " @since 3.0.0"]
-    Connection(ConnectionEvent<'a>),
+    Connection(ConnectionEventRef<'a>),
     #[doc = " The connection to the Ultraleap Tracking Service has been lost."]
     #[doc = " @since 3.0.0"]
-    ConnectionLost(ConnectionLostEvent<'a>),
+    ConnectionLost(ConnectionLostEventRef<'a>),
     #[doc = " A device has been detected or plugged-in."]
     #[doc = " A device event is dispatched after a connection is established for any"]
     #[doc = " devices already plugged in. (The system currently only supports one"]
     #[doc = " streaming device at a time.)"]
     #[doc = " @since 3.0.0"]
-    Device(DeviceEvent<'a>),
+    Device(DeviceEventRef<'a>),
     #[doc = " A device has failed."]
     #[doc = " Device failure could be caused by hardware failure, USB controller issues, or"]
     #[doc = " other system instability. Note that unplugging a device generates an"]
     #[doc = " eLeapEventType_DeviceLost event message, not a failure message."]
     #[doc = " @since 3.0.0"]
-    DeviceFailure(DeviceFailureEvent<'a>),
+    DeviceFailure(DeviceFailureEventRef<'a>),
     #[doc = " A policy change has occurred."]
     #[doc = " This can be due to setting a policy with LeapSetPolicyFlags() or due to changing"]
     #[doc = " or policy-related config settings, including images_mode."]
     #[doc = " (A user can also change these policies using the Ultraleap Tracking Control Panel.)"]
     #[doc = " @since 3.0.0"]
-    Policy(PolicyEvent<'a>),
+    Policy(PolicyEventRef<'a>),
     #[doc = " A tracking frame. The message contains the tracking data for the frame."]
     #[doc = " @since 3.0.0"]
-    Tracking(TrackingEvent<'a>),
+    Tracking(TrackingEventRef<'a>),
     #[doc = " The request for an image has failed."]
     #[doc = " The message contains information about the failure. The client application"]
     #[doc = " will not receive the requested image set."]
@@ -44,7 +44,7 @@ pub enum Event<'a> {
     #[doc = " @since 3.0.0"]
     ImageComplete,
     #[doc = " A system message. @since 3.0.0"]
-    LogEvent(LogEvent<'a>),
+    LogEvent(LogEventRef<'a>),
     #[doc = " The device connection has been lost."]
     #[doc = ""]
     #[doc = " This event is generally asserted when the device has been detached from the system, when the"]
@@ -57,120 +57,124 @@ pub enum Event<'a> {
     #[doc = " The asynchronous response to a call to LeapRequestConfigValue()."]
     #[doc = " Contains the value of requested configuration item."]
     #[doc = " @since 3.0.0"]
-    ConfigResponse(ConfigResponseEvent<'a>),
+    ConfigResponse(ConfigResponseEventRef<'a>),
     #[doc = " The asynchronous response to a call to LeapSaveConfigValue()."]
     #[doc = " Reports whether the change succeeded or failed."]
     #[doc = " @since 3.0.0"]
-    ConfigChange(ConfigChangeEvent<'a>),
+    ConfigChange(ConfigChangeEventRef<'a>),
     #[doc = " Notification that a status change has been detected on an attached device"]
     #[doc = ""]
     #[doc = " @since 3.1.3"]
-    DeviceStatusChange(DeviceStatusChangeEvent<'a>),
+    DeviceStatusChange(DeviceStatusChangeEventRef<'a>),
     #[doc = " Notification that a status change has been detected on an attached device"]
     #[doc = ""]
     #[doc = " @since 3.1.3"]
-    DroppedFrame(DroppedFrameEvent<'a>),
+    DroppedFrame(DroppedFrameEventRef<'a>),
     #[doc = " Notification that an unrequested stereo image pair is available"]
     #[doc = ""]
     #[doc = " @since 4.0.0"]
-    Image(ImageEvent<'a>),
+    Image(ImageEventRef<'a>),
     #[doc = " Notification that point mapping has changed"]
     #[doc = ""]
     #[doc = " @since 4.0.0"]
-    PointMappingChange(PointMappingChangeEvent<'a>),
+    PointMappingChange(PointMappingChangeEventRef<'a>),
     #[doc = " A tracking mode change has occurred."]
     #[doc = " This can be due to changing the hmd or screentop policy with LeapSetPolicyFlags()."]
     #[doc = " or setting the tracking mode using LeapSetTrackingMode()."]
     #[doc = " @since 5.0.0"]
     #[cfg(feature = "gemini")]
-    TrackingMode(crate::TrackingModeEvent<'a>),
+    TrackingMode(crate::TrackingModeEventRef<'a>),
     #[doc = " An array of system messages. @since 4.0.0"]
-    LogEvents(LogEvents<'a>),
+    LogEvents(LogEventsRef<'a>),
     #[doc = " A head pose. The message contains the timestamped head position and orientation."]
     #[doc = " @since 4.1.0"]
-    HeadPose(HeadPoseEvent<'a>),
+    HeadPose(HeadPoseEventRef<'a>),
     #[doc = " Tracked eye positions. @since 4.1.0"]
-    Eyes(EyeEvent<'a>),
+    Eyes(EyeEventRef<'a>),
     #[doc = " An IMU reading. @since 4.1.0"]
-    IMU(ImuEvent<'a>),
+    IMU(ImuEventRef<'a>),
 
     Unknown(eLeapEventType),
 }
 
-impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for Event<'a> {
+impl<'a> From<(eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1)> for EventRef<'a> {
     fn from(
         (event_type, event): (eLeapEventType, &'a _LEAP_CONNECTION_MESSAGE__bindgen_ty_1),
     ) -> Self {
         // Combine the event type and the corresponding union to get a strongly typed enum
         match event_type {
-            leap_sys::_eLeapEventType_eLeapEventType_None => Event::None,
+            leap_sys::_eLeapEventType_eLeapEventType_None => EventRef::None,
             leap_sys::_eLeapEventType_eLeapEventType_Connection => {
-                Event::Connection(ConnectionEvent(unsafe { &*event.connection_event }))
+                EventRef::Connection(ConnectionEventRef(unsafe { &*event.connection_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_ConnectionLost => {
-                Event::ConnectionLost(ConnectionLostEvent(unsafe {
+                EventRef::ConnectionLost(ConnectionLostEventRef(unsafe {
                     &*event.connection_lost_event
                 }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Device => {
-                Event::Device(DeviceEvent(unsafe { &*event.device_event }))
+                EventRef::Device(DeviceEventRef(unsafe { &*event.device_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceFailure => {
-                Event::DeviceFailure(DeviceFailureEvent(unsafe { &*event.device_failure_event }))
+                EventRef::DeviceFailure(DeviceFailureEventRef(unsafe {
+                    &*event.device_failure_event
+                }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Policy => {
-                Event::Policy(PolicyEvent(unsafe { &*event.policy_event }))
+                EventRef::Policy(PolicyEventRef(unsafe { &*event.policy_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Tracking => {
-                Event::Tracking(TrackingEvent(unsafe { &*event.tracking_event }))
+                EventRef::Tracking(TrackingEventRef(unsafe { &*event.tracking_event }))
             }
-            leap_sys::_eLeapEventType_eLeapEventType_ImageRequestError => Event::ImageRequestError,
-            leap_sys::_eLeapEventType_eLeapEventType_ImageComplete => Event::ImageComplete,
+            leap_sys::_eLeapEventType_eLeapEventType_ImageRequestError => {
+                EventRef::ImageRequestError
+            }
+            leap_sys::_eLeapEventType_eLeapEventType_ImageComplete => EventRef::ImageComplete,
             leap_sys::_eLeapEventType_eLeapEventType_LogEvent => {
-                Event::LogEvent(LogEvent(unsafe { &*event.log_event }))
+                EventRef::LogEvent(LogEventRef(unsafe { &*event.log_event }))
             }
-            leap_sys::_eLeapEventType_eLeapEventType_DeviceLost => Event::DeviceLost,
+            leap_sys::_eLeapEventType_eLeapEventType_DeviceLost => EventRef::DeviceLost,
             leap_sys::_eLeapEventType_eLeapEventType_ConfigResponse => {
-                Event::ConfigResponse(ConfigResponseEvent(unsafe {
+                EventRef::ConfigResponse(ConfigResponseEventRef(unsafe {
                     &*event.config_response_event
                 }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_ConfigChange => {
-                Event::ConfigChange(ConfigChangeEvent(unsafe { &*event.config_change_event }))
+                EventRef::ConfigChange(ConfigChangeEventRef(unsafe { &*event.config_change_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_DeviceStatusChange => {
-                Event::DeviceStatusChange(DeviceStatusChangeEvent(unsafe {
+                EventRef::DeviceStatusChange(DeviceStatusChangeEventRef(unsafe {
                     &*event.device_status_change_event
                 }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_DroppedFrame => {
-                Event::DroppedFrame(DroppedFrameEvent(unsafe { &*event.dropped_frame_event }))
+                EventRef::DroppedFrame(DroppedFrameEventRef(unsafe { &*event.dropped_frame_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Image => {
-                Event::Image(ImageEvent(unsafe { &*event.image_event }))
+                EventRef::Image(ImageEventRef(unsafe { &*event.image_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_PointMappingChange => {
-                Event::PointMappingChange(PointMappingChangeEvent(unsafe {
+                EventRef::PointMappingChange(PointMappingChangeEventRef(unsafe {
                     &*event.point_mapping_change_event
                 }))
             }
             #[cfg(feature = "gemini")]
             leap_sys::_eLeapEventType_eLeapEventType_TrackingMode => {
-                Event::TrackingMode(TrackingModeEvent(unsafe { &*event.tracking_mode_event }))
+                EventRef::TrackingMode(TrackingModeEventRef(unsafe { &*event.tracking_mode_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_LogEvents => {
-                Event::LogEvents(LogEvents(unsafe { &*event.log_events }))
+                EventRef::LogEvents(LogEventsRef(unsafe { &*event.log_events }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_HeadPose => {
-                Event::HeadPose(HeadPoseEvent(unsafe { &*event.head_pose_event }))
+                EventRef::HeadPose(HeadPoseEventRef(unsafe { &*event.head_pose_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_Eyes => {
-                Event::Eyes(EyeEvent(unsafe { &*event.eye_event }))
+                EventRef::Eyes(EyeEventRef(unsafe { &*event.eye_event }))
             }
             leap_sys::_eLeapEventType_eLeapEventType_IMU => {
-                Event::IMU(ImuEvent(unsafe { &*event.imu_event }))
+                EventRef::IMU(ImuEventRef(unsafe { &*event.imu_event }))
             }
-            event_code => Event::Unknown(event_code),
+            event_code => EventRef::Unknown(event_code),
         }
     }
 }

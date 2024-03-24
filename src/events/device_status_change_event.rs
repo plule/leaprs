@@ -6,10 +6,10 @@ use crate::{DeviceRef, DeviceStatus};
 #[doc = " A notification that a device's status has changed. One of these messages is received by the client"]
 #[doc = " as soon as the service is connected, or when a new device is attached."]
 #[doc = " @since 3.1.3"]
-#[derive(Deref)]
-pub struct DeviceStatusChangeEvent<'a>(pub(crate) &'a LEAP_DEVICE_STATUS_CHANGE_EVENT);
+#[derive(Deref, Clone, Copy)]
+pub struct DeviceStatusChangeEventRef<'a>(pub(crate) &'a LEAP_DEVICE_STATUS_CHANGE_EVENT);
 
-impl<'a> DeviceStatusChangeEvent<'a> {
+impl<'a> DeviceStatusChangeEventRef<'a> {
     #[doc = " A reference to the device whose status has changed"]
     pub fn device(&self) -> DeviceRef {
         DeviceRef(self.device)

@@ -8,30 +8,30 @@ fn main() {
     loop {
         if let Ok(message) = connection.poll(1000) {
             match message.event() {
-                Event::None => println!("None"),
-                Event::Connection(_) => println!("Connection"),
-                Event::ConnectionLost(_) => println!("ConnectionLost"),
-                Event::Device(_) => println!("Device"),
-                Event::DeviceFailure(_) => println!("DeviceFailure"),
-                Event::Policy(_) => println!("Policy"),
-                Event::Tracking(_) => {} // spam
-                Event::ImageRequestError => println!("ImageRequestError"),
-                Event::ImageComplete => println!("ImageComplete"),
-                Event::LogEvent(_) => println!("Log"),
-                Event::DeviceLost => println!("DeviceLost"),
-                Event::ConfigResponse(_) => println!("ConfigResponse"),
-                Event::ConfigChange(_) => println!("ConfigChange"),
-                Event::DeviceStatusChange(_) => println!("DeviceStatusChange"),
-                Event::DroppedFrame(_) => println!("DroppedFrame"),
-                Event::Image(_) => println!("Image"),
-                Event::PointMappingChange(_) => println!("PointMappingChange"),
+                EventRef::None => println!("None"),
+                EventRef::Connection(_) => println!("Connection"),
+                EventRef::ConnectionLost(_) => println!("ConnectionLost"),
+                EventRef::Device(_) => println!("Device"),
+                EventRef::DeviceFailure(_) => println!("DeviceFailure"),
+                EventRef::Policy(_) => println!("Policy"),
+                EventRef::Tracking(_) => {} // spam
+                EventRef::ImageRequestError => println!("ImageRequestError"),
+                EventRef::ImageComplete => println!("ImageComplete"),
+                EventRef::LogEvent(_) => println!("Log"),
+                EventRef::DeviceLost => println!("DeviceLost"),
+                EventRef::ConfigResponse(_) => println!("ConfigResponse"),
+                EventRef::ConfigChange(_) => println!("ConfigChange"),
+                EventRef::DeviceStatusChange(_) => println!("DeviceStatusChange"),
+                EventRef::DroppedFrame(_) => println!("DroppedFrame"),
+                EventRef::Image(_) => println!("Image"),
+                EventRef::PointMappingChange(_) => println!("PointMappingChange"),
                 #[cfg(feature = "gemini")]
-                Event::TrackingMode(_) => println!("TrackingMode"),
-                Event::LogEvents(_) => println!("LogEvents"),
-                Event::HeadPose(_) => println!("HeadPose"),
-                Event::Eyes(_) => println!("Eyes"),
-                Event::IMU(_) => println!("IMU"),
-                Event::Unknown(_) => println!("Unknown"),
+                EventRef::TrackingMode(_) => println!("TrackingMode"),
+                EventRef::LogEvents(_) => println!("LogEvents"),
+                EventRef::HeadPose(_) => println!("HeadPose"),
+                EventRef::Eyes(_) => println!("Eyes"),
+                EventRef::IMU(_) => println!("IMU"),
+                EventRef::Unknown(_) => println!("Unknown"),
             }
         }
     }

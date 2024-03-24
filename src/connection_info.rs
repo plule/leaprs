@@ -10,7 +10,7 @@ use crate::ConnectionStatus;
 #[doc = " call LeapOpenConnection() to establish the connection; then call"]
 #[doc = " LeapGetConnectionInfo(), which creates this struct, to check the connection status."]
 #[doc = " @since 3.0.0"]
-#[derive(Deref)]
+#[derive(Deref, Clone, Copy)]
 pub struct ConnectionInfo(pub(crate) LEAP_CONNECTION_INFO);
 
 impl ConnectionInfo {

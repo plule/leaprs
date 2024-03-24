@@ -857,7 +857,7 @@ mod tests {
 
             connection
                 .wait_for(|e| match e {
-                    Event::Policy(_) => Some(()),
+                    EventRef::Policy(_) => Some(()),
                     _ => None,
                 })
                 .expect("Did not receive policy change");
@@ -916,7 +916,7 @@ mod tests {
                 // Note: If events are not polled, the frame interpolation fails with "is not seer"
                 connection
                     .wait_for(|e| match e {
-                        Event::Tracking(_) => Some(()),
+                        EventRef::Tracking(_) => Some(()),
                         _ => None,
                     })
                     .expect("no tracking data");
@@ -1003,7 +1003,7 @@ mod tests {
             .expect("Failed to request the config value");
         connection
             .wait_for(|e| match e {
-                Event::ConfigResponse(c) => {
+                EventRef::ConfigResponse(c) => {
                     if c.requestID != request_id {
                         None
                     } else if let Variant::Boolean(robust_mode_enabled) = c.value() {
@@ -1028,7 +1028,7 @@ mod tests {
             // Note: If events are not polled, the frame interpolation fails with "is not seer"
             connection
                 .wait_for(|e| match e {
-                    Event::Tracking(_) => Some(()),
+                    EventRef::Tracking(_) => Some(()),
                     _ => None,
                 })
                 .expect("no tracking data");
@@ -1066,7 +1066,7 @@ mod tests {
 
         connection
             .wait_for(|e| match e {
-                Event::Policy(_) => Some(()),
+                EventRef::Policy(_) => Some(()),
                 _ => None,
             })
             .expect("Did not receive policy change");
