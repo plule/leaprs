@@ -32,9 +32,9 @@ impl<'a> Deref for LeapVectorRef<'a> {
     }
 }
 
-impl Into<[f32; 3]> for LeapVectorRef<'_> {
-    fn into(self) -> [f32; 3] {
-        self.array()
+impl From<LeapVectorRef<'_>> for [f32; 3] {
+    fn from(v: LeapVectorRef) -> [f32; 3] {
+        v.array()
     }
 }
 
