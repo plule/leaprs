@@ -10,12 +10,12 @@ impl<'a> EyeEventRef<'a> {
     #[doc = " The position of the user's left eye."]
     #[doc = " @since 4.1.0"]
     pub fn left_eye_position(&self) -> LeapVectorRef {
-        LeapVectorRef::from(&self.left_eye_position)
+        LeapVectorRef(&self.left_eye_position)
     }
 
     #[doc = " The position of the user's right eye."]
     #[doc = " @since 4.1.0"]
     pub fn right_eye_position(&self) -> LeapVectorRef {
-        LeapVectorRef::from(&self.right_eye_position)
+        LeapVectorRef(&self.right_eye_position)
     }
 }

@@ -1,19 +1,11 @@
-use leap_sys::{
-    _LEAP_QUATERNION__bindgen_ty_1, _LEAP_QUATERNION__bindgen_ty_1__bindgen_ty_1, LEAP_QUATERNION,
-};
+use leap_sys::{_LEAP_QUATERNION__bindgen_ty_1__bindgen_ty_1, LEAP_QUATERNION};
 
 #[doc = " A four element, floating point quaternion. @since 3.1.2"]
-pub struct QuaternionRef<'a>(pub(crate) &'a _LEAP_QUATERNION__bindgen_ty_1);
-
-impl<'a> From<&'a LEAP_QUATERNION> for QuaternionRef<'a> {
-    fn from(quaternion: &'a LEAP_QUATERNION) -> Self {
-        Self(&quaternion.__bindgen_anon_1)
-    }
-}
+pub struct QuaternionRef<'a>(pub(crate) &'a LEAP_QUATERNION);
 
 impl<'a> QuaternionRef<'a> {
     pub fn array(&self) -> [f32; 4] {
-        unsafe { self.0.v }
+        unsafe { self.0.__bindgen_anon_1.v }
     }
 
     /// Convert to a [glam::Quat]
@@ -35,7 +27,7 @@ impl<'a> core::ops::Deref for QuaternionRef<'a> {
     type Target = _LEAP_QUATERNION__bindgen_ty_1__bindgen_ty_1;
 
     fn deref(&self) -> &Self::Target {
-        unsafe { &self.0.__bindgen_anon_1 }
+        unsafe { &self.0.__bindgen_anon_1.__bindgen_anon_1 }
     }
 }
 

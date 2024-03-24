@@ -329,10 +329,14 @@ impl Connection {
     #[doc = " @param pixel A Vector containing the position of a pixel in the image."]
     #[doc = " @returns A Vector containing the ray direction (the z-component of the vector is always 1)."]
     #[doc = " @since 3.1.3"]
-    pub fn pixel_to_rectilinear(&mut self, camera: PerspectiveType, pixel: [f32; 3]) -> [f32; 3] {
+    pub fn pixel_to_rectilinear<P: Into<[f32; 3]>>(
+        &mut self,
+        camera: PerspectiveType,
+        pixel: P,
+    ) -> [f32; 3] {
         unsafe {
             let leap_vector =
-                LeapPixelToRectilinear(self.handle, camera.into(), build_leap_vector(pixel));
+                LeapPixelToRectilinear(self.handle, camera.into(), build_leap_vector(pixel.into()));
             leap_vector.__bindgen_anon_1.v
         }
     }
@@ -360,10 +364,10 @@ impl Connection {
     #[doc = " @param rectilinear A Vector containing the ray direction."]
     #[doc = " @returns A Vector containing the pixel coordinates [x, y, 1] (with z always 1)."]
     #[doc = " @since 3.1.3"]
-    pub fn rectilinear_to_pixel(
+    pub fn rectilinear_to_pixel<P: Into<[f32; 3]>>(
         &mut self,
         camera: PerspectiveType,
-        rectilinear: [f32; 3],
+        rectilinear: P,
     ) -> [f32; 3] {
         unsafe {
             leap_vector_to_array(LeapRectilinearToPixel(
@@ -681,11 +685,11 @@ impl Connection {
     #[doc = " @param pixel A Vector containing the position of a pixel in the image."]
     #[doc = " @returns A Vector containing the ray direction (the z-component of the vector is always 1)."]
     #[doc = " @since 5.4.0"]
-    pub fn pixel_to_rectilinear_ex(
+    pub fn pixel_to_rectilinear_ex<P: Into<[f32; 3]>>(
         &mut self,
         device: &Device,
         camera: PerspectiveType,
-        pixel: [f32; 3],
+        pixel: P,
     ) -> [f32; 3] {
         unsafe {
             leap_vector_to_array(LeapPixelToRectilinearEx(
@@ -720,11 +724,11 @@ impl Connection {
     #[doc = " @param rectilinear A Vector containing the ray direction."]
     #[doc = " @returns A Vector containing the pixel coordinates [x, y, 1] (with z always 1)."]
     #[doc = " @since 5.4.0"]
-    pub fn rectilinear_to_pixel_ex(
+    pub fn rectilinear_to_pixel_ex<P: Into<[f32; 3]>>(
         &mut self,
         device: &Device,
         camera: PerspectiveType,
-        rectilinear: [f32; 3],
+        rectilinear: P,
     ) -> [f32; 3] {
         unsafe {
             leap_vector_to_array(LeapRectilinearToPixelEx(

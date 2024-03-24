@@ -16,12 +16,12 @@ impl<'a> ImuEventRef<'a> {
     #[doc = " The accelerometer measurements, in m/s^2."]
     #[doc = " @since 4.1.0"]
     pub fn accelerometer(&self) -> LeapVectorRef {
-        LeapVectorRef::from(&self.accelerometer)
+        LeapVectorRef(&self.accelerometer)
     }
 
     #[doc = " The gyroscope measurements, in rad/s."]
     #[doc = " @since 4.1.0"]
     pub fn gyroscope(&self) -> LeapVectorRef {
-        LeapVectorRef::from(&self.gyroscope)
+        LeapVectorRef(&self.gyroscope)
     }
 }

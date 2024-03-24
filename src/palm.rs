@@ -8,26 +8,26 @@ pub struct PalmRef<'a>(pub(crate) &'a LEAP_PALM);
 
 impl<'a> PalmRef<'a> {
     pub fn position(&self) -> LeapVectorRef {
-        LeapVectorRef::from(&self.position)
+        LeapVectorRef(&self.position)
     }
 
     pub fn stabilized_position(&self) -> LeapVectorRef {
-        LeapVectorRef::from(&self.stabilized_position)
+        LeapVectorRef(&self.stabilized_position)
     }
 
     pub fn velocity(&self) -> LeapVectorRef {
-        LeapVectorRef::from(&self.velocity)
+        LeapVectorRef(&self.velocity)
     }
 
     pub fn normal(&self) -> LeapVectorRef {
-        LeapVectorRef::from(&self.normal)
+        LeapVectorRef(&self.normal)
     }
 
     pub fn orientation(&self) -> QuaternionRef {
-        QuaternionRef::from(&self.orientation)
+        QuaternionRef(&self.orientation)
     }
 
     pub fn direction(&self) -> LeapVectorRef {
-        LeapVectorRef::from(&self.direction)
+        LeapVectorRef(&self.direction)
     }
 }

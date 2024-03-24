@@ -1,20 +1,14 @@
 use std::ops::Deref;
 
-use leap_sys::{_LEAP_VECTOR__bindgen_ty_1, _LEAP_VECTOR__bindgen_ty_1__bindgen_ty_1, LEAP_VECTOR};
+use leap_sys::{_LEAP_VECTOR__bindgen_ty_1__bindgen_ty_1, LEAP_VECTOR};
 
 #[doc = " A three element, floating-point vector."]
 #[doc = " @since 3.0.0"]
-pub struct LeapVectorRef<'a>(pub(crate) &'a _LEAP_VECTOR__bindgen_ty_1);
-
-impl<'a> From<&'a LEAP_VECTOR> for LeapVectorRef<'a> {
-    fn from(vector: &'a LEAP_VECTOR) -> Self {
-        Self(&vector.__bindgen_anon_1)
-    }
-}
+pub struct LeapVectorRef<'a>(pub(crate) &'a LEAP_VECTOR);
 
 impl<'a> LeapVectorRef<'a> {
     pub fn array(&self) -> [f32; 3] {
-        unsafe { self.0.v }
+        unsafe { self.0.__bindgen_anon_1.v }
     }
 
     /// Convert to a [glam::Vec3]
@@ -34,7 +28,13 @@ impl<'a> Deref for LeapVectorRef<'a> {
     type Target = _LEAP_VECTOR__bindgen_ty_1__bindgen_ty_1;
 
     fn deref(&self) -> &Self::Target {
-        unsafe { &self.0.__bindgen_anon_1 }
+        unsafe { &self.0.__bindgen_anon_1.__bindgen_anon_1 }
+    }
+}
+
+impl Into<[f32; 3]> for LeapVectorRef<'_> {
+    fn into(self) -> [f32; 3] {
+        self.array()
     }
 }
 
@@ -54,9 +54,9 @@ impl From<LeapVectorRef<'_>> for nalgebra::Vector3<f32> {
 
 /// Build a native [LEAP_VECTOR].
 /// Useful for method taking an owned [LEAP_VECTOR] as argument.
-pub(crate) fn build_leap_vector(v: [f32; 3]) -> LEAP_VECTOR {
+pub(crate) fn build_leap_vector<P: Into<[f32; 3]>>(v: P) -> LEAP_VECTOR {
     LEAP_VECTOR {
-        __bindgen_anon_1: { leap_sys::_LEAP_VECTOR__bindgen_ty_1 { v } },
+        __bindgen_anon_1: { leap_sys::_LEAP_VECTOR__bindgen_ty_1 { v: v.into() } },
     }
 }
 
