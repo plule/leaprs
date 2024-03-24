@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+## [0.2.0] - 2024-03-25
+
+### Added
+
 - All the wrapper structures now implement `Deref` of the wrapped `leap-sys` structures
 - All the reference wrapper structures now implement `Clone` and `Copy`
 - The opt-in features `glam` and `nalgebra` add conversion method for vectors and quaternions to these libraries.
@@ -17,11 +27,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 - Improved the examples to avoid common timeout unwrap()
 - The vectors and quaternion are not anymore copied
 - **Breaking** All the non-owning wrappers (most of them) are now named with `Ref` as a suffix.
-    `Hand` becomes `HandRef`, `Digit` becomes `DigitRef`, etc...
+    `Hand` becomes `HandRef`, `Digit` becomes `DigitRef`, etc.
 
 ### Removed
 
 - **Breaking** All the trivial accessor functions were removed, in favour of the `Deref` trait
+  `vector.x()` becomes `vector.x`, `hand.pinch_distance()` becomes `hand.pinch_distance`, etc.
 
 ### Fixed
 
