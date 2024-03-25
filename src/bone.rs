@@ -7,6 +7,8 @@ use crate::{LeapVectorRef, QuaternionRef};
 #[doc = ""]
 #[doc = " Bones are members of the LEAP_DIGIT struct."]
 #[doc = " @since 3.0.0"]
+/// # Fields
+/// Available via dereference: [LEAP_BONE]
 #[derive(Deref, Clone, Copy)]
 pub struct BoneRef<'a>(pub(crate) &'a LEAP_BONE);
 

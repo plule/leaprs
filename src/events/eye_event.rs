@@ -3,6 +3,8 @@ use leap_sys::LEAP_EYE_EVENT;
 
 use crate::LeapVectorRef;
 
+/// # Fields
+/// Available via dereference: [LEAP_EYE_EVENT].
 #[derive(Deref, Clone, Copy)]
 pub struct EyeEventRef<'a>(pub(crate) &'a LEAP_EYE_EVENT);
 

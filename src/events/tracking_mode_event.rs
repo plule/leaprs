@@ -6,6 +6,8 @@ use crate::TrackingMode;
 #[doc = " The response from a request to get or set a policy."]
 #[doc = " LeapPollConnection() creates this struct when the response becomes available."]
 #[doc = " @since 3.0.0"]
+/// # Fields
+/// Available via dereference: [LEAP_TRACKING_MODE_EVENT].
 #[derive(Deref, Clone, Copy)]
 pub struct TrackingModeEventRef<'a>(pub(crate) &'a LEAP_TRACKING_MODE_EVENT);
 

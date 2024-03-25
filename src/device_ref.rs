@@ -8,6 +8,8 @@ use crate::Device;
 #[doc = " Get a LEAP_DEVICE_REF by calling LeapGetDeviceList(). Access a device by"]
 #[doc = " calling LeapOpenDevice() with this reference. LeapOpenDevice() provides a"]
 #[doc = " LEAP_DEVICE struct, which is a handle to an open device."]
+/// # Fields
+/// Available via dereference: [LEAP_DEVICE_REF].
 #[derive(Deref, Clone, Copy)]
 pub struct DeviceRef(pub(crate) LEAP_DEVICE_REF);
 

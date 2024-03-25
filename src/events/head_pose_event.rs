@@ -3,6 +3,8 @@ use leap_sys::LEAP_HEAD_POSE_EVENT;
 
 use crate::{LeapVectorRef, QuaternionRef};
 
+/// # Fields
+/// Available via dereference: [LEAP_HEAD_POSE_EVENT].
 #[derive(Deref, Clone, Copy)]
 pub struct HeadPoseEventRef<'a>(pub(crate) &'a LEAP_HEAD_POSE_EVENT);
 

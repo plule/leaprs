@@ -6,6 +6,8 @@ use crate::ServiceState;
 #[doc = "  \\ingroup Structs"]
 #[doc = " Received from LeapPollConnection() when a connection to the Ultraleap Tracking Service is established."]
 #[doc = " @since 3.0.0"]
+/// # Fields
+/// Available via dereference: [LEAP_CONNECTION_EVENT].
 #[derive(Deref, Clone, Copy)]
 pub struct ConnectionEventRef<'a>(pub(crate) &'a LEAP_CONNECTION_EVENT);
 

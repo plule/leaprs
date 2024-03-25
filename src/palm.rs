@@ -3,6 +3,8 @@ use leap_sys::LEAP_PALM;
 
 use crate::{LeapVectorRef, QuaternionRef};
 
+/// # Fields
+/// Available via dereference: [LEAP_PALM].
 #[derive(Deref, Clone, Copy)]
 pub struct PalmRef<'a>(pub(crate) &'a LEAP_PALM);
 

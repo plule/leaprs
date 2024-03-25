@@ -6,6 +6,8 @@ use crate::BoneRef;
 #[doc = " Describes the digit of a hand."]
 #[doc = " Digits are members of the LEAP_HAND struct."]
 #[doc = " @since 3.0.0"]
+/// # Fields
+/// Available via dereference: [LEAP_DIGIT].
 #[derive(Deref, Clone, Copy)]
 pub struct DigitRef<'a>(pub(crate) &'a LEAP_DIGIT);
 

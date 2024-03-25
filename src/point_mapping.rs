@@ -4,6 +4,8 @@ use leap_sys::LEAP_POINT_MAPPING;
 
 use crate::{sized_with_trailing_data::SizedWithTrailingData, LeapVectorRef};
 
+/// # Fields
+/// Available via dereference: [LEAP_POINT_MAPPING].
 pub struct PointMapping {
     /// Store a boxed dynamic sized event
     /// The size is only known at runtime

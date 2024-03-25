@@ -5,7 +5,7 @@
 [![docs.rs](https://img.shields.io/docsrs/leaprs?style=flat-square)](https://docs.rs/leaprs)
 ![Crates.io](https://img.shields.io/crates/l/leaprs?style=flat-square)
 
-LeapRS is a safe wrapper for LeapC, the [Leap Motion C
+LeapRS is an unofficial safe wrapper for LeapC, the [Leap Motion C
 API](https://docs.ultraleap.com/tracking-api/). It uses the generated binding
 provided by [leap-sys](https://crates.io/crates/leap-sys).
 
@@ -40,9 +40,9 @@ and distortion methods are not fully translated and not fully tested.
 
 The allocation API is not exposed.
 
-## Installation
+## Setup
 
-`cargo add leaprs`
+Add `leaprs` to the current project: `cargo add leaprs`
 
 You also need to install the [LeapMotion Tracking
 Software](https://developer.leapmotion.com/tracking-software-download).
@@ -54,24 +54,16 @@ environment variable `LEAPSDK_LIB_PATH` (default: `C:\Program
 Files\Ultraleap\LeapSDK\lib\x64` on Windows and
 `/usr/share/doc/ultraleap-hand-tracking-service` on Linux).
 
-### Using with previous SDK versions
-
-Disabling the `geminy` feature enables building application for the previous SDK
-generation (Orion). In Cargo.toml:
-
-```toml
-[dependencies = { version = "*", default-features = false }]
-```
-
-You also need to point the `LEAPSDK_LIB_PATH` to a SDK with the Orion version.
-
-## Runtime
-
 At runtime, the application requires the LeapC.dll file to be available. The
 easiest way to do it during development is to add its folder to the `PATH`
 environment variable. For distribution, refer to the SDK licensing.
 
 ## Quick start
+
+The main entrypoint is [Connection::create]. For most of the basic usage of hand
+tracking, you will have to use [Connection::poll] and retrieve the underlying
+event with [ConnectionMessage::event]. The various possible events are described
+in the [EventRef] enum, including [EventRef::Tracking] containing the hand positions.
 
 ```rust
 use leaprs::*;
@@ -87,6 +79,18 @@ for _ in 0..10 {
     }
 }
 ```
+
+Most of the types in `leaprs` are wrappers with no data around the underlying `LeapC`
+structures. These wrappers expose both:
+
+- Handy methods for accessing the data, for example [TrackingEventRef::hands] lists
+  the visible hands
+- Direct access to the underlying data via the `Deref` trait, for example [HandRef]
+  gives direct access to [leap_sys::LEAP_HAND::confidence]: `hand_ref.confidence`
+
+When both members are available (`.hands` and `.hands()`), the function is the
+recommended one to get a safe wrapper. The field access can be useful to
+circumvent a `leaprs` limitation.
 
 ## `glam` and `nalgebra` Integration
 
@@ -144,6 +148,17 @@ for _ in 0..10 {
     }
 }
 ```
+
+## Using with previous SDK versions
+
+Disabling the `geminy` feature enables building application for the previous SDK
+generation (Orion). In Cargo.toml:
+
+```toml
+[dependencies = { version = "*", default-features = false }]
+```
+
+You also need to point the `LEAPSDK_LIB_PATH` to a SDK with the Orion version.
 
 ## License
 

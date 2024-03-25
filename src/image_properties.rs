@@ -4,6 +4,8 @@ use leap_sys::LEAP_IMAGE_PROPERTIES;
 use crate::{ImageFormat, ImageType};
 
 #[doc = " Properties of a sensor image."]
+/// # Fields
+/// Available via dereference: [LEAP_IMAGE_PROPERTIES].
 #[derive(Deref, Clone, Copy)]
 pub struct ImagePropertiesRef<'a>(pub(crate) &'a LEAP_IMAGE_PROPERTIES);
 

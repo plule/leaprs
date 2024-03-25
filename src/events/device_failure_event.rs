@@ -9,6 +9,8 @@ use crate::{Device, DeviceStatus};
 #[doc = " non-null, then you can use it to identify the failed device with a known,"]
 #[doc = " open device."]
 #[doc = " @since 3.0.0"]
+/// # Fields
+/// Available via dereference: [LEAP_DEVICE_FAILURE_EVENT].
 #[derive(Deref, Clone, Copy)]
 pub struct DeviceFailureEventRef<'a>(pub(crate) &'a LEAP_DEVICE_FAILURE_EVENT);
 

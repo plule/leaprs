@@ -8,6 +8,8 @@ use crate::{Capabilities, DevicePID, DeviceStatus};
 #[doc = " Get a LEAP_DEVICE_INFO by calling LeapGetDeviceInfo() with the handle for"]
 #[doc = " device. The device must be open."]
 #[doc = " @since 3.0.0"]
+/// # Fields
+/// Available via dereference: [LEAP_DEVICE_INFO].
 pub struct DeviceInfo {
     handle: LEAP_DEVICE_INFO,
     #[allow(dead_code)] // handle contains a pointer to serial

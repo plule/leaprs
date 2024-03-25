@@ -9,6 +9,8 @@ use crate::{leap_try, Error};
 #[doc = " \\ingroup Structs"]
 #[doc = " \\struct LEAP_CLOCK_REBASER"]
 #[doc = " An opaque clock rebase state structure. @since 3.1.2"]
+/// # Fields
+/// Available via dereference: [LEAP_CLOCK_REBASER].
 #[derive(Deref)]
 pub struct ClockRebaser(pub(crate) LEAP_CLOCK_REBASER);
 

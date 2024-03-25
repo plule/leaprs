@@ -3,6 +3,8 @@ use std::ops::Deref;
 use crate::{sized_with_trailing_data::SizedWithTrailingData, FrameHeaderRef, HandRef};
 use leap_sys::LEAP_TRACKING_EVENT;
 
+/// # Fields
+/// Available via dereference: [LEAP_TRACKING_EVENT].
 pub struct InterpolationTrackingEvent(pub(crate) Box<SizedWithTrailingData<LEAP_TRACKING_EVENT>>);
 
 impl InterpolationTrackingEvent {

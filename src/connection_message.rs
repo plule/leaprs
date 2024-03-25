@@ -8,6 +8,8 @@ use crate::event::EventRef;
 #[doc = " Defines a basic message from the LeapC message queue."]
 #[doc = " Set by calling LeapPollConnection()."]
 #[doc = " @since 3.0.0"]
+/// # Fields
+/// Available via dereference: [LEAP_CONNECTION_MESSAGE].
 #[derive(Deref, Clone, Copy)]
 pub struct ConnectionMessage<'a>(
     pub(crate) LEAP_CONNECTION_MESSAGE,

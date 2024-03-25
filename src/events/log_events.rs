@@ -6,6 +6,8 @@ use crate::LogEventRef;
 #[doc = " A notification that a device's status has changed. One of these messages is received by the client"]
 #[doc = " as soon as the service is connected, or when a new device is attached."]
 #[doc = " @since 3.1.3"]
+/// # Fields
+/// Available via dereference: [LEAP_LOG_EVENTS].
 #[derive(Deref, Clone, Copy)]
 pub struct LogEventsRef<'a>(pub(crate) &'a LEAP_LOG_EVENTS);
 

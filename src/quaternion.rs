@@ -1,6 +1,10 @@
 use leap_sys::{_LEAP_QUATERNION__bindgen_ty_1__bindgen_ty_1, LEAP_QUATERNION};
 
+pub type QuaternionFields = _LEAP_QUATERNION__bindgen_ty_1__bindgen_ty_1;
+
 #[doc = " A four element, floating point quaternion. @since 3.1.2"]
+/// # Fields
+/// Available via dereference: [QuaternionFields].
 pub struct QuaternionRef<'a>(pub(crate) &'a LEAP_QUATERNION);
 
 impl<'a> QuaternionRef<'a> {
@@ -24,7 +28,7 @@ impl<'a> QuaternionRef<'a> {
 }
 
 impl<'a> core::ops::Deref for QuaternionRef<'a> {
-    type Target = _LEAP_QUATERNION__bindgen_ty_1__bindgen_ty_1;
+    type Target = QuaternionFields;
 
     fn deref(&self) -> &Self::Target {
         unsafe { &self.0.__bindgen_anon_1.__bindgen_anon_1 }

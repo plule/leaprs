@@ -2,8 +2,12 @@ use std::ops::Deref;
 
 use leap_sys::{_LEAP_VECTOR__bindgen_ty_1__bindgen_ty_1, LEAP_VECTOR};
 
+pub type LeapVectorFields = _LEAP_VECTOR__bindgen_ty_1__bindgen_ty_1;
+
 #[doc = " A three element, floating-point vector."]
 #[doc = " @since 3.0.0"]
+/// # Fields
+/// Available via dereference: [LeapVectorFields].
 pub struct LeapVectorRef<'a>(pub(crate) &'a LEAP_VECTOR);
 
 impl<'a> LeapVectorRef<'a> {
@@ -25,7 +29,7 @@ impl<'a> LeapVectorRef<'a> {
 }
 
 impl<'a> Deref for LeapVectorRef<'a> {
-    type Target = _LEAP_VECTOR__bindgen_ty_1__bindgen_ty_1;
+    type Target = LeapVectorFields;
 
     fn deref(&self) -> &Self::Target {
         unsafe { &self.0.__bindgen_anon_1.__bindgen_anon_1 }

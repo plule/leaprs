@@ -16,6 +16,8 @@ pub enum HandType {
 
 #[doc = " Describes a tracked hand. @since 3.0.0"]
 #[derive(Deref, Clone, Copy)]
+/// # Fields
+/// Available via dereference: [LEAP_HAND].
 pub struct HandRef<'a>(pub(crate) &'a LEAP_HAND);
 
 impl<'a> HandRef<'a> {

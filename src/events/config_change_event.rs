@@ -9,5 +9,7 @@ use leap_sys::LEAP_CONFIG_CHANGE_EVENT;
 #[doc = " value to correlate the response to the originating request."]
 #[doc = " @returns The operation result code, a member of the eLeapRS enumeration."]
 #[doc = " @since 3.0.0"]
+/// # Fields
+/// Available via dereference: [LEAP_CONFIG_CHANGE_EVENT].
 #[derive(Deref, Clone, Copy)]
 pub struct ConfigChangeEventRef<'a>(pub(crate) &'a LEAP_CONFIG_CHANGE_EVENT);
