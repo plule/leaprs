@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ### Fixed
 
+## [0.2.1] - 2024-03-25
+
+### Fixed
+
 - Documentation example fixes
 - Fix the polled message being unsafely clonable
 
