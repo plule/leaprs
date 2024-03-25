@@ -192,7 +192,7 @@ mod tests {
         let mut connection = initialize_connection();
         let unknown_events: HashSet<_> = (0..100)
             .filter_map(|_| match connection.poll(100).map(|c| c.event()) {
-                Ok(Event::Unknown(ev)) => Some(ev),
+                Ok(EventRef::Unknown(ev)) => Some(ev),
                 _ => None,
             })
             .collect();

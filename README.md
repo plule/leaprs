@@ -81,7 +81,7 @@ c.open().unwrap();
 for _ in 0..10 {
     if let Ok(msg) = c.poll(1000) {
         match msg.event() {
-            Event::Tracking(e) => println!("{} hand(s)", e.hands().len()),
+            EventRef::Tracking(e) => println!("{} hand(s)", e.hands().len()),
             _ => {}   
         }
     }
@@ -108,7 +108,7 @@ c.open().unwrap();
 for _ in 0..10 {
     if let Ok(msg) = c.poll(1000) {
         match msg.event() {
-            Event::Tracking(e) => {
+            EventRef::Tracking(e) => {
                 for hand in e.hands() {
                     let position: Vec3 = hand.palm().position().into();
                     let orientation: Quat = hand.palm().orientation().into();
@@ -133,7 +133,7 @@ c.open().unwrap();
 for _ in 0..10 {
     if let Ok(msg) = c.poll(1000) {
         match msg.event() {
-            Event::Tracking(e) => {
+            EventRef::Tracking(e) => {
                 for hand in e.hands() {
                     let position: Vector3<f32> = hand.palm().position().into();
                     let orientation: UnitQuaternion<f32> = hand.palm().orientation().into();
