@@ -28,7 +28,7 @@ num_enum = "0.7.2"
 thiserror = "1"
 bitflags = "2"
 derive_deref = "1.1.1"
-glam = { version = "0.26", optional = true }
+glam = { version = "0.27", optional = true }
 nalgebra = { version = "0.32", optional = true }
 
 [dev-dependencies]
