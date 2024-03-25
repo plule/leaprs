@@ -1,4 +1,4 @@
-use std::{ffi::CString, mem};
+use std::{ffi::CString, marker::PhantomData, mem};
 
 use ::leap_sys::*;
 
@@ -9,10 +9,6 @@ use crate::*;
 #[doc = " @since 3.0.0"]
 pub struct Connection {
     handle: LEAP_CONNECTION,
-    // Each call to call() invalidates the connection message pointer,
-    // and it is distroy on the connection drop.
-    // Only distribute non mutable references of this one.
-    connection_message: Option<ConnectionMessage>,
 }
 
 impl Drop for Connection {
@@ -45,7 +41,6 @@ impl Connection {
 
         Ok(Self {
             handle: leap_connection,
-            connection_message: None,
         })
     }
 
@@ -97,17 +92,13 @@ impl Connection {
     #[doc = " times out, this method will return eLeapRS_Timeout. The evt pointer will reference a"]
     #[doc = " message of type eLeapEventType_None."]
     #[doc = " @since 3.0.0"]
-    pub fn poll(&mut self, timeout: u32) -> Result<&ConnectionMessage, Error> {
-        // The code after will invalidate it.
-        self.connection_message = None;
+    pub fn poll(&mut self, timeout: u32) -> Result<ConnectionMessage, Error> {
         let mut msg: LEAP_CONNECTION_MESSAGE;
         unsafe {
             msg = mem::zeroed();
             leap_try(LeapPollConnection(self.handle, timeout, &mut msg))?;
         }
-        self.connection_message = Some(ConnectionMessage(msg));
-
-        Ok(self.connection_message.as_ref().unwrap())
+        Ok(ConnectionMessage(msg, PhantomData))
     }
 
     #[doc = " Retrieves a list of Ultraleap Tracking camera devices currently attached to the system."]
