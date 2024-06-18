@@ -1,10 +1,14 @@
 use std::{env, path::PathBuf};
 
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 const DEFAULT_LEAPSDK_LIB_PATH: &str = r"C:\Program Files\Ultraleap\LeapSDK\lib\x64";
 
-#[cfg(not(windows))]
+#[cfg(target_os = "macos")]
+const DEFAULT_LEAPSDK_LIB_PATH: &str = r"/Applications/Ultraleap Hand Tracking.app/Contents/LeapSDK/lib";
+
+#[cfg(target_os = "linux")]
 const DEFAULT_LEAPSDK_LIB_PATH: &str = r"/usr/share/doc/ultraleap-hand-tracking-service";
+
 
 fn main() {
     // Find Leap SDK
