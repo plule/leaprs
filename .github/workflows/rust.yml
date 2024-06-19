@@ -31,6 +31,11 @@ jobs:
             leapsdk-ref: linux-gemini
             leapsdk-lib-path: ultraleap-hand-tracking-service
             cargo-features: --features gemini
+          - name: macos-gemini
+            runs-on: macos-latest
+            leapsdk-ref: macos-gemini
+            leapsdk-lib-path: LeapSDK/lib
+            cargo-features: --features gemini
     name: ${{ matrix.name }}
     if: eq(${{ github.repository }}, "plule/leaprs") # no secrets in clones
     runs-on: ${{ matrix.runs-on }}
