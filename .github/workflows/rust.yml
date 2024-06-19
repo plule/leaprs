@@ -10,7 +10,6 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  LEAPSDK_LIB_PATH: leap-sdk-redist/LeapSDK/lib/x64
 
 jobs:
   build:
@@ -24,8 +23,8 @@ jobs:
             cargo-features: --no-default-features --features nalgebra --features glam --features gemini
           - name: windows-orion
             runs-on: windows-latest
-            leapsdk-ref: linux-gemini
-            leapsdk-lib-path: ultraleap-hand-tracking-service
+            leapsdk-ref: windows-orion
+            leapsdk-lib-path: LeapSDK/lib/x64
             cargo-features: --no-default-features --features nalgebra --features glam
     name: build
     if: eq(${{ github.repository }}, "plule/leaprs") # no secrets in clones
