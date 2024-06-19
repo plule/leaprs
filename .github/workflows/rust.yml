@@ -20,13 +20,18 @@ jobs:
             runs-on: windows-latest
             leapsdk-ref: windows-gemini
             leapsdk-lib-path: LeapSDK/lib/x64
-            cargo-features: --no-default-features --features nalgebra --features glam --features gemini
+            cargo-features: --features gemini
           - name: windows-orion
             runs-on: windows-latest
             leapsdk-ref: windows-orion
             leapsdk-lib-path: LeapSDK/lib/x64
-            cargo-features: --no-default-features --features nalgebra --features glam
-    name: build
+            cargo-features: ""
+          - name: linux-gemini
+            runs-on: ubuntu-latest
+            leapsdk-ref: linux-gemini
+            leapsdk-lib-path: ultraleap-hand-tracking-service
+            cargo-features: --features gemini
+    name: ${{ matrix.name }}
     if: eq(${{ github.repository }}, "plule/leaprs") # no secrets in clones
     runs-on: ${{ matrix.runs-on }}
     env:
@@ -42,11 +47,11 @@ jobs:
         path: leap-sdk-redist
     - uses: Swatinem/rust-cache@v1
     - name: Build
-      run: cargo build ${{ matrix.cargo-features }}
+      run: cargo build --no-default-features --features nalgebra --features glam ${{ matrix.cargo-features }}
     - name: Build Examples
-      run: cargo build ${{ matrix.cargo-features }} --examples
+      run: cargo build --no-default-features --features nalgebra --features glam ${{ matrix.cargo-features }} --examples
     - name: Build Tests
-      run: cargo build ${{ matrix.cargo-features }} --tests
+      run: cargo build --no-default-features --features nalgebra --features glam ${{ matrix.cargo-features }} --tests
     - name: Doc
       run: cargo doc --features nalgebra --features glam
     - name: Style
