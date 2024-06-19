@@ -3,8 +3,9 @@ name: CI
 on:
   push:
     branches: [ main ]
-    tags:
-      - v*
+    tags: [ v* ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 env:
@@ -16,18 +17,27 @@ jobs:
     strategy:
       matrix:
         include:
-          - sdk-redist-ref: gemini
+          - name: windows-gemini
+            runs-on: windows-latest
+            leapsdk-ref: windows-gemini
+            leapsdk-lib-path: LeapSDK/lib/x64
             cargo-features: --no-default-features --features nalgebra --features glam --features gemini
-          - sdk-redist-ref: orion
+          - name: windows-orion
+            runs-on: windows-latest
+            leapsdk-ref: linux-gemini
+            leapsdk-lib-path: ultraleap-hand-tracking-service
             cargo-features: --no-default-features --features nalgebra --features glam
     name: build
-    runs-on: windows-latest
+    if: eq(${{ github.repository }}, "plule/leaprs") # no secrets in clones
+    runs-on: ${{ matrix.runs-on }}
+    env:
+      LEAPSDK_LIB_PATH: ${{ github.workspace }}/leap-sdk-redist/${{ matrix.leapsdk-lib-path }}
 
     steps:
     - uses: actions/checkout@v3
     - uses: actions/checkout@v3
       with:
-        ref: ${{ matrix.sdk-redist-ref }}
+        ref: ${{ matrix.leapsdk-ref }}
         repository: plule/leap-sdk-redist
         token: ${{ secrets.LEAP_SDK_REDIST_PAT }}
         path: leap-sdk-redist
