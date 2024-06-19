@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ### Changed
 
+- Internal: Automatically check the build on Linux and MacOS too
+
 ### Removed
 
 ### Fixed
