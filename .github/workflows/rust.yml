@@ -33,7 +33,7 @@ jobs:
             cargo-features: --features gemini
           - name: macos-gemini
             runs-on: macos-latest
-            leapsdk-ref: macos-gemini
+            leapsdk-ref: macos-intel-gemini
             leapsdk-lib-path: LeapSDK/lib
             cargo-features: --features gemini
     name: ${{ matrix.name }}
