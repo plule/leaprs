@@ -7,15 +7,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [0.2.2] - 2024-06-19
+
+### Added
+
 - Support for MacOS
 
 ### Changed
 
 - Documentation: Add links to the underlying structs
-
-### Removed
-
-### Fixed
 
 ## [0.2.1] - 2024-03-25
 
