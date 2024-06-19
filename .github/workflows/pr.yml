@@ -14,10 +14,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - sdk-redist-ref: gemini
-            cargo-features: --no-default-features --features nalgebra --features glam --features gemini
-          - sdk-redist-ref: orion
-            cargo-features: --no-default-features --features nalgebra --features glam
+          - cargo-features: --no-default-features --features nalgebra --features glam --features gemini
+          - cargo-features: --no-default-features --features nalgebra --features glam
     name: check
     runs-on: windows-latest
 
