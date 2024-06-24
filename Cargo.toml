@@ -29,7 +29,7 @@ thiserror = "1"
 bitflags = "2"
 derive_deref = "1.1.1"
 glam = { version = "0.28", optional = true }
-nalgebra = { version = "0.32", optional = true }
+nalgebra = { version = "0.33", optional = true }
 
 [dev-dependencies]
 throbber = "0.1"
