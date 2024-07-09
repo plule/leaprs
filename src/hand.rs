@@ -38,7 +38,32 @@ impl<'a> HandRef<'a> {
         pinch_distance
     }
 
-    pub fn 
+    pub fn grab_angle(&self) -> f32 {
+        let grab_angle;
+        unsafe {
+            grab_angle = &self.__bindgen_anon_1.grab_angle;
+        }
+        grab_angle
+    }
+
+    pub fn pinch_strength(&self) -> f32 {
+        let pinch_strength;
+        unsafe {
+            pinch_strength = &self.__bindgen_anon_1.pinch_strength;
+        }
+        pinch_strength
+    }
+
+    pub fn grab_strength(&self) -> f32 {
+        let grab_strength;
+        unsafe {
+            grab_strength = &self.__bindgen_anon_1.grab_strength;
+        }
+        grab_strength
+    }
+
+
+
 
     #[doc = " Additional information associated with the palm. @since 3.0.0"]
     pub fn palm(&self) -> PalmRef {
