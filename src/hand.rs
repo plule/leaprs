@@ -30,6 +30,16 @@ impl<'a> HandRef<'a> {
         }
     }
 
+    pub fn pinch_distance(&self) -> f32 {
+        let pinch_distance;
+        unsafe {
+            pinch_distance = &self.__bindgen_anon_1.pinch_distance;
+        }
+        pinch_distance
+    }
+
+    pub fn 
+
     #[doc = " Additional information associated with the palm. @since 3.0.0"]
     pub fn palm(&self) -> PalmRef {
         PalmRef(&self.palm)
