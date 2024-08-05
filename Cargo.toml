@@ -34,7 +34,7 @@ nalgebra = { version = "0.33", optional = true }
 [dev-dependencies]
 throbber = "0.1"
 image = "0.25.2"
-tempfile = "3.10.1"
+tempfile = "3.11.0"
 
 [package.metadata.docs.rs]
 features = ["glam", "nalgebra"]
