@@ -33,7 +33,7 @@ nalgebra = { version = "0.33", optional = true }
 
 [dev-dependencies]
 throbber = "0.1"
-image = "0.25.4"
+image = "0.25.5"
 tempfile = "3.14.0"
 
 [package.metadata.docs.rs]
